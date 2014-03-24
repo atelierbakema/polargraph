@@ -1,10 +1,9 @@
-Read about the project: [The Polargraph Project](The-Polargraph-Project)
+[Read about the project](The-Polargraph-Project)
+[Download the code bundle](https://github.com/euphy/polargraphcontroller/releases/tag/1.7.1)
 
 _Polargraph software bits and pieces are somewhat fragmented._
 
-There is a zip file containing the most recent versions of the firmware and controller, along with versions of the necessary libraries that should be used to compile them:
-
-[Polargraph Archive](https://github.com/euphy/polargraphcontroller/releases/tag/1.7.1)
+Separate repositories for smaller project elements, if you want them:
 
 ## Firmware.
 
