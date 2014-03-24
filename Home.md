@@ -8,12 +8,16 @@ There is a zip file containing the most recent versions of the firmware and cont
 
 The firmware is written for the Arduino platform.
 
- *. https://github.com/euphy/polargraph_server_a1
- *. https://github.com/euphy/polargraph_server_mega
- *. https://github.com/euphy/polargraph_server_polarshield
- *. https://github.com/euphy/polargraph_server_esf
+* https://github.com/euphy/polargraph_server_a1
+* https://github.com/euphy/polargraph_server_mega
+* https://github.com/euphy/polargraph_server_polarshield
+* https://github.com/euphy/polargraph_server_esf
 
 ## Controller
 
 The controller is written in Processing. It runs in Processing v1.5.
 ThePolargraphProject
+
+## Hardware
+
+https://github.com/euphy/polarshield_hardware
