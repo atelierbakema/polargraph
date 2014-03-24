@@ -18,6 +18,8 @@ The firmware is written for the Arduino platform.
 
 The controller is written in Processing. It runs in Processing v1.5.
 
+* https://github.com/euphy/polargraphcontroller
+
 ## Hardware.
 
 * https://github.com/euphy/polarshield_hardware
