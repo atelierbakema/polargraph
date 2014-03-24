@@ -1,4 +1,4 @@
-Read about the project here: (ThePolargraphProject)
+Read about the project here: [The Polargraph Project]
 
 _Polargraph software bits and pieces are somewhat fragmented._
 
