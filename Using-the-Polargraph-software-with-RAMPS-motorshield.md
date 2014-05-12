@@ -1,6 +1,6 @@
 RAMPS is a shield for Arduino MEGA, that has space for up to five motor drivers. It was designed for 3D printers, and is in very widespread use. [Here is a page about it.](http://reprap.org/wiki/Arduino_Mega_Pololu_Shield)
 
-The Polarshield is actually based loosely on RAMPS, and uses the same kind of motor drivers, so it should be easy to get it running!
+The Polarshield is actually based loosely on RAMPS, and uses the same kind of motor drivers, so it should be easy to get it running.
 
 This page is to collect the wisdom of those experimenting in this area.
 
