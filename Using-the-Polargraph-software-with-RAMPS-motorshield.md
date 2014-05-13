@@ -17,6 +17,8 @@ Motor B step | D60 | D7
 Motor B dir | D61 | D8
 Servo 1 | D7 | D9
 
+[RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
+
 So if you're using polargraph_server_polarshield, you should open up the configuration.ino tab, and update the values as so:
 
     const byte motoraEnablePin = 38;
@@ -26,6 +28,8 @@ So if you're using polargraph_server_polarshield, you should open up the configu
     const byte motorbEnablePin = 56;
     const byte motorbStepPin = 60;
     const byte motorbDirPin = 61;
+
+[link](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L58-L64)
 
 And in the main file (polargraph_server_polarshield.ino), update the servo pin:
 
@@ -38,4 +42,4 @@ So it might be worth taking these lines out too:
     pinMode(2, INPUT_PULLUP);
     attachInterrupt(INTERRUPT_TOUCH_PIN, lcd_touchInput, LOW);
 
-They're in `configuration.ino` too - they just enable the interrupt-ability of that pin.
+They're in [`configuration.ino`](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L58-L64) too - they just enable the interrupt-ability of that pin.
