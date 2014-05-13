@@ -31,7 +31,7 @@ So if you're using polargraph_server_polarshield, you should open up the configu
 
 [link](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L58-L64)
 
-And in the main file (polargraph_server_polarshield.ino), update the servo pin:
+And in the main file [polargraph_server_polarshield.ino](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L101), update the servo pin:
 
     int const PEN_HEIGHT_SERVO_PIN = 7;
 
