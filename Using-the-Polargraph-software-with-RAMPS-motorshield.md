@@ -35,11 +35,4 @@ And in the main file [polargraph_server_polarshield.ino](https://github.com/euph
 
     int const PEN_HEIGHT_SERVO_PIN = 4;
 
-Now, I _think_ that's all you should need to do to switch over... The polarshield has a load of pins used up by the screen, and there's one line which is configured as an interrupt for the touchscreen. That's D2, which, on RAMPS is set to the X endstop. I don't know what it'l do if it isn't pulled high or low (because it's not really fastened to a screen) - whether it'll trigger touches randomly, or what.
-
-So it might be worth taking these lines out too:
-
-    pinMode(2, INPUT_PULLUP);
-    attachInterrupt(INTERRUPT_TOUCH_PIN, lcd_touchInput, LOW);
-
-They're in [`configuration.ino`](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L58-L64) too - they just enable the interrupt-ability of that pin.
+Remember, that by default, the servo pins are not wired to connect power, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
