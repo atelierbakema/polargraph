@@ -36,3 +36,5 @@ And in the main file [polargraph_server_polarshield.ino](https://github.com/euph
     int const PEN_HEIGHT_SERVO_PIN = 4;
 
 Remember, that by default, the servo pins are not wired to connect power, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
+
+![How to connect the servo 5v supply on RAMPS](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/enable-servo-ramps.jpg)
