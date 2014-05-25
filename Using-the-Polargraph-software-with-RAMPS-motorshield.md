@@ -9,12 +9,13 @@ This page is to collect the wisdom of those experimenting in this area.
 
 motor pin name | RAMPS pin | Polarshield pin
 --- | --- | ---
-Motor A enable | D38 | D3
-Motor A step | D54 | D4
-Motor A dir | D55 | D5
+Motor A enable | D30 | D3
+Motor A step | D36 | D4
+Motor A dir | D34 | D5
 Motor B enable | D56 | D6
 Motor B step | D60 | D7
 Motor B dir | D61 | D8
+
 Servo 1 | D4 | D9
 
 [RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
