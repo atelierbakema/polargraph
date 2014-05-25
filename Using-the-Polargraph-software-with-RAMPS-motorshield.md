@@ -21,22 +21,14 @@ Servo 1 | D4 | D9
 
 This puts motor A (left hand) onto the driver for E1, and motor B (right hand) onto the driver for the Y axis. Not sure why, but none of the other channels seemed to work. (Any ideas?)
 
-So if you're using polargraph_server_polarshield, you should open up the configuration.ino tab, and update the values as so:
+Using the different hardware implementation no longer requires hacking the firmware, and can be changed by looking at the [motherboard config lines](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L60-L63) and making them so:
 
-    const byte motoraEnablePin = 30;
-    const byte motoraStepPin = 36;
-    const byte motoraDirPin = 34;
-    
-    const byte motorbEnablePin = 56;
-    const byte motorbStepPin = 60;
-    const byte motorbDirPin = 61;
+    #ifndef MOTHERBOARD
+    //#define MOTHERBOARD POLARSHIELD
+    #define MOTHERBOARD RAMPS14
+    #endif
 
-[link](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L58-L64)
 
-And in the main file [polargraph_server_polarshield.ino](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L101), update the servo pin:
-
-    int const PEN_HEIGHT_SERVO_PIN = 4;
-
-Remember, that by default, the servo pins are not wired to connect power, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
+Remember, the servo pins are not wired to the power by default, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
 
 ![How to connect the servo 5v supply on RAMPS](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/enable-servo-ramps.jpg)
