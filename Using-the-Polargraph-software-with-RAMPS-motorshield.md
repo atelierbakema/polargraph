@@ -19,6 +19,8 @@ Servo 1 | D4 | D9
 
 [RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
 
+This puts motor A (left hand) onto the driver for E1, and motor B (right hand) onto the driver for the Y axis. Not sure why, but none of the other channels seemed to work. (Any ideas?)
+
 So if you're using polargraph_server_polarshield, you should open up the configuration.ino tab, and update the values as so:
 
     const byte motoraEnablePin = 30;
