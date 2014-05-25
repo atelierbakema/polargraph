@@ -15,15 +15,15 @@ Motor A dir | D55 | D5
 Motor B enable | D56 | D6
 Motor B step | D60 | D7
 Motor B dir | D61 | D8
-Servo 1 | D7 | D9
+Servo 1 | D4 | D9
 
 [RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
 
 So if you're using polargraph_server_polarshield, you should open up the configuration.ino tab, and update the values as so:
 
-    const byte motoraEnablePin = 38;
-    const byte motoraStepPin = 54;
-    const byte motoraDirPin = 55;
+    const byte motoraEnablePin = 30;
+    const byte motoraStepPin = 36;
+    const byte motoraDirPin = 34;
     
     const byte motorbEnablePin = 56;
     const byte motorbStepPin = 60;
@@ -33,7 +33,7 @@ So if you're using polargraph_server_polarshield, you should open up the configu
 
 And in the main file [polargraph_server_polarshield.ino](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L101), update the servo pin:
 
-    int const PEN_HEIGHT_SERVO_PIN = 7;
+    int const PEN_HEIGHT_SERVO_PIN = 4;
 
 Now, I _think_ that's all you should need to do to switch over... The polarshield has a load of pins used up by the screen, and there's one line which is configured as an interrupt for the touchscreen. That's D2, which, on RAMPS is set to the X endstop. I don't know what it'l do if it isn't pulled high or low (because it's not really fastened to a screen) - whether it'll trigger touches randomly, or what.
 
