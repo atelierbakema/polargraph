@@ -19,3 +19,4 @@ For convenience, there are some precompiled binaries for a few different hardwar
 Sources:
 * http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/towards-running-a-polargraph-with-an-adafruit-motorshield-v2-thread284.0/
 * http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/motors-not-working-when-i-compile-but-hex-works-thread324/
+* http://www.polargraph.co.uk/2014/04/polargraph-server-for-adafruit-motorshield-v2/
