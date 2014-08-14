@@ -10,11 +10,11 @@ The new Adafruit library is slightly bigger than the old one, and the polargraph
 
 Disabling either `PIXEL_DRAWING` or `VECTOR_LINES` reduces the sketch size until it can fit on an UNO, but dynamic memory usage is still so high that it doesn't really work properly (and very hard to debug or troubleshoot).
 
-For this reason, if you want PIXEL_DRAWING, then you need to disable PENLIFT too.
+For this reason, if you want `PIXEL_DRAWING`, then you need to disable `PENLIFT` too.
 
 This is a bit of a pain, but I don't see an acceptable alternative.
 
-For convenience, there are some precompiled binaries in the polargraph_server_a1 repository.
+For convenience, there are some precompiled binaries for a few different hardware platforms in the https://github.com/euphy/polargraph_server_a1 repository.
 
 Sources:
 * http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/towards-running-a-polargraph-with-an-adafruit-motorshield-v2-thread284.0/
