@@ -24,3 +24,4 @@ The controller is written in Processing. It runs in Processing v1.5.
 ## Hardware.
 
 * https://github.com/euphy/polarshield_hardware
+* [Running Polargraph Server on AFMSv2 (Adafruit Motorshield v2)](https://github.com/euphy/polargraph/wiki/Polargraph-Server-for-Adafruit-Motorshield-v2)
