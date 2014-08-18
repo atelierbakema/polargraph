@@ -11,4 +11,4 @@ What's in a name?
 
 Polargraph is a particular brand of drawing machine. It is often used in a generic way to describe any of these kinds of machine, and I take that as a compliment to the ubiquity of the project, but it shouldn't really be used except when referring to this Polargraph project.
 
-It is not a generic name for a drawbot, and the term was not in use before this project began.
+It is not a generic name for a drawbot, and the term was not in use before this project began. Well, you know, except to refer to polar graphs.
