@@ -22,6 +22,10 @@ This means your motors are probably wired up correct, but you have your left and
 Something else!
 --------------
 
-Well that's a pickle. Of course, you could have only one motor wired up wrong, and it could be either one. To test each motor, try to make a move in only one axis.
+Well that's a pickle. Of course, you could have only one motor wired up wrong, and it could be either one. To test each motor, try to make a move in only one axis, while paying close attention to what the strings are doing.
 
+* If the wrong string changes length, then you have your motors swapped left-to-right.
+* If the string gets shorter instead of longer (or longer instead of shorter), then you have the wiring reversed.
+
+Be methodical.
 
