@@ -27,7 +27,7 @@ How to disable the features though?
 
 Any one of these three lines can be commented out (removed from the compilation) by putting `//` on the beginning of the line, or just by removing the line entirely.
 
-1. Now look in [configuration.ino, lines 23-29](https://github.com/euphy/polargraph_server_a1/blob/master/configuration.ino#L23-L29) and make sure that the correct lines are commented out or removed:
+2. Now look in [configuration.ino, lines 23-29](https://github.com/euphy/polargraph_server_a1/blob/master/configuration.ino#L23-L29) and make sure that the correct lines are commented out or removed:
 
 ```
 // Using Adafruit Motorshield V2? Comment out this one line underneath.
@@ -38,6 +38,8 @@ Any one of these three lines can be commented out (removed from the compilation)
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_PWMServoDriver.h"    
 ```
+
+3. Compile and upload.
 
 Precompiled binaries
 --------------------
