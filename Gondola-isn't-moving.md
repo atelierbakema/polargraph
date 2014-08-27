@@ -1,4 +1,4 @@
-Yes way, it happens to the best of us.
+Yes way, it happens to the best of us. If the gondola *is* moving, but in the wrong direction, read [my gondola is moving in reverse](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
 
 Test for it
 -----------
