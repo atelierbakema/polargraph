@@ -2,6 +2,7 @@ There's been a bit of ongoing investigation about getting the polargraph firmwar
 
 https://github.com/euphy/polargraph_server_a1
 
+> Attention! There is an [unstable **devel** branch of polargraph_server_a1](https://github.com/euphy/polargraph_server_a1/tree/devel) that has some significant optimisations in it. I'm hoping to get it tested soon, but if you feel up to it, please give it a try.
 The new Adafruit library is slightly bigger than the old one, and the polargraph_server_a1 firmware was super tight on space already, so I've split up the code into a set of features that can be easily enabled or disabled at compile time to save space:
 
 * `PIXEL_DRAWING` - This is pixel shading.
