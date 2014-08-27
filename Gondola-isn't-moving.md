@@ -6,7 +6,7 @@ Test for it
 1. Plug your machine into the USB, start the controller. Choose your serial port, and get the message at the top of the screen to go green (*polargraph connected*)
 1. click `set home`
     * Your motors will wriggle, and then be energised, and lock.
-1. click `move pen to point`, and click somewhere on the machine on-screen.
+1. click `move pen to point`, and click somewhere on the machine on-screen (near the home point is safe).
     * Your motors should pull the pen to a new location, not necessarily in a straight line
 1. click `move direct`, and click somewhere on the machine on-screen.
     * Your motors should pull the pen to a new location, moving the pen in a straight line.
