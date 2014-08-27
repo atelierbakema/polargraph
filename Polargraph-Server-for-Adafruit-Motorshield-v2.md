@@ -17,7 +17,7 @@ This is a bit of a pain, but I don't see an acceptable alternative.
 How to disable the features though?
 -----------------------------------
 
-1. Look in (polargraph_server_a1.ino, lines 39-41)[https://github.com/euphy/polargraph_server_a1/blob/master/polargraph_server_a1.ino#L37-L41] and see that there are three lines there
+1. Look in [polargraph_server_a1.ino, lines 39-41](https://github.com/euphy/polargraph_server_a1/blob/master/polargraph_server_a1.ino#L37-L41) and see that there are three lines there
 
     \#define PIXEL_DRAWING
     \#define PENLIFT
@@ -25,7 +25,15 @@ How to disable the features though?
 
 Any one of these three lines can be commented out (removed from the compilation) by putting `//` on the beginning of the line, or just by removing the line entirely.
 
-1. Now look in (configuration.ino, lines 23-29)[https://github.com/euphy/polargraph_server_a1/blob/master/configuration.ino#L23-L29] and make sure that the correct lines are commented out or removed.
+1. Now look in [configuration.ino, lines 23-29](https://github.com/euphy/polargraph_server_a1/blob/master/configuration.ino#L23-L29) and make sure that the correct lines are commented out or removed:
+
+    // Using Adafruit Motorshield V2? Comment out this one line underneath.
+    //#include <AFMotor.h>
+
+    // Using Adafruit Motorshield V1? Comment out the three INCLUDE lines below.
+    #include <Wire.h>
+    #include <Adafruit_MotorShield.h>
+    #include "utility/Adafruit_PWMServoDriver.h"    
 
 Precompiled binaries
 --------------------
@@ -33,6 +41,6 @@ Precompiled binaries
 For convenience, there are some precompiled binaries for a few different hardware platforms in the https://github.com/euphy/polargraph_server_a1 repository.
 
 Sources:
-* http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/towards-running-a-polargraph-with-an-adafruit-motorshield-v2-thread284.0/
-* http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/motors-not-working-when-i-compile-but-hex-works-thread324/
-* http://www.polargraph.co.uk/2014/04/polargraph-server-for-adafruit-motorshield-v2/
+* <http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/towards-running-a-polargraph-with-an-adafruit-motorshield-v2-thread284.0/>
+* <http://www.polargraph.co.uk/forum/polargraphs-group2/troubleshooting-forum5/motors-not-working-when-i-compile-but-hex-works-thread324/>
+* <http://www.polargraph.co.uk/2014/04/polargraph-server-for-adafruit-motorshield-v2/>
