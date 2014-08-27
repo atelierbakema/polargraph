@@ -14,4 +14,5 @@ https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMP
 Troubleshooting
 ===============
 
+The pen lift is going up and down, but the pen isn't moving around! https://github.com/euphy/polargraph/wiki/gondola-isn't-moving
 The pen is moving in the wrong direction? https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!
