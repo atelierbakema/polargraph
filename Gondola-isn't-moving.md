@@ -3,6 +3,7 @@ Yes way, it happens to the best of us.
 Test for it
 -----------
 
+1. Plug your machine into the USB, start the controller. Choose your serial port, and get the message at the top of the screen to go green (*polargraph connected*)
 1. click `set home`
     * Your motors will wriggle, and then be energised, and lock.
 1. click `move pen to point`, and click somewhere on the machine on-screen.
