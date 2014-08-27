@@ -14,6 +14,7 @@ What happened
 -------------
 
 * **None of the above did anything.** That's not good news. Indicates some deeper problem, probably with the power supply, power connections etc. Check your polarity, your supply voltage.
+    * This might be a communications problem, and the commands just aren't getting through.
 * **Step 1 locks the motors, step 2 moves the motors but step 3 does nothing.** Better. This is usually means that there is a mismatch between the size of the machine in the controller, and the size that you've told the machine. The machine looks at your request, and will often find that the move would take the pen off the  edge of the machine, and will politely refuse to cooperate.
 
 Debug
