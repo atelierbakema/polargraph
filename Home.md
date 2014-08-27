@@ -14,5 +14,5 @@ Building a machine
 Troubleshooting
 ===============
 
-* [The pen lift is going up and down, but the pen isn't moving around!](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
+* [Pen isn't moving around](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
 * [Movement is reversed!](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
