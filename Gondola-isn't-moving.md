@@ -25,6 +25,8 @@ There is a debug console in the Polargraph controller that shows you the raw com
 
     line was not on the page, skipping it!
 
+Note that if you are running the Polargraph Controller from source (in Processing), all of the debug messages are automatically shown in the Processing console already, just look there.
+
 Solution
 --------
 
