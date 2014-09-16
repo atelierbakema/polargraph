@@ -5,6 +5,11 @@ Background
 
 [The Polargraph Project](https://github.com/euphy/polargraph/wiki/The-Polargraph-Project)
 
+Website
+=======
+
+http://www.polargraph.co.uk/
+
 Building a machine
 ==================
 
