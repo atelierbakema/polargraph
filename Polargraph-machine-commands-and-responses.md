@@ -29,16 +29,31 @@ The client should wait until it receives a ``READY`` message before sending a co
 
 *  **Draw scribble shaded pixel:** `C06,<left distance>,<right distance>,<size>,<brightness>,END`
    Shade a pixel using a randomised pen movement pattern. This essentially scribbles in the pixel area to achieve the same kind of density of ink as C05. 
-   This uses pen width to decide on the maximum number of scribbles in the exact same way as C05 uses it to decide the maximum number of waves. That makes sense with C05 because it never overlaps the lines - however scribble pixel often overlaps lines, yet it is possible that you could never achieve full coverage (because of the randomness of the pattern). 
+
+   This uses pen width to decide on the maximum number of scribbles in the exact same way as C05 uses it to decide the maximum number of waves. That makes sense with C05 because it never overlaps the lines - however scribble pixel often overlaps lines, yet it is possible that you could never achieve full coverage (because of the randomness of the pattern).
+
    This makes it's shading behaviour a bit weird. I usually halve the pen width before for drawing with scribble pixel otherwise things come out too light. Increasing the pixel scaling will make the pixels edges blend into it's  neighbour's too, which has a nice scribbly effect.
 
 *  **Change drawing direction:** `C07,<direction mode>,<direction>,END`
    Square wave pixel (C05) has a direction in which the wave is drawn, either along a A axis (along an arc that is a particular radius from the left-hand motor), or along the B axis (from the right-hand motor). This command controls how that direction is chosen with the `direction mode` param, where options are:
+
    * 1: Automatic - attempts to decide the best way to do it based on where it's been and where it's going. This doesn't work that well. @TODO check if this is still true
    * 2: Preset - uses the last explicitly set direction.
    * 3: Random - Makes it up as it goes along. @TODO check if this is still true
 
-   The second param is a the actual direction, if one needs to be set, for instance, if `direction mode` is 2: preset.
+   The second param is a the actual direction, if one needs to be set, for instance, if `direction mode` is 2 (preset).
+
+   * 1: North-east direction: Along A axis, decreasing the B axis.
+   * 2: South-east direction: Along B axis, increasing the A axis.
+   * 3: South-west direction: Along A axis, increasing the B axis.
+   * 4: North-west direction: Along B axis, decreasing the A axis.
+
+*  **Test pen width using square pixel:** `C11,<pixel size>,<start pen tip size>,<end pen tip size>,<pen tip size increment>,END
+   Draws a series of test pixels, shaded to maximum density using a square wave pattern, but with a varying pen width setting. This can be used to measure how large the pen tip really is, but is really used to calibrate your "black point", to control what your maximum ink density is. It may not necessarily be a full coating of ink, or there might be nice effects you can get from overlapping ink.
+
+   The pixel size is the size in motor steps. The *start pen tip size* is the size the pen tip will be set to for the very first pixel, and the *end pen tip size* is the size of the pen tip in the final pixel. *Pen tip size increment* controls how many pixels there are in between the start and the end.
+
+   It is up to you to note next to each drawn pixel what the pen tip size was, and then to choose which patch you want as your maximum density and set it in the machine using `C02`.
 
 
 
