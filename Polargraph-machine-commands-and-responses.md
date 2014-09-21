@@ -48,7 +48,7 @@ The client should wait until it receives a ``READY`` message before sending a co
    * 3: South-west direction: Along A axis, increasing the B axis.
    * 4: North-west direction: Along B axis, decreasing the A axis.
 
-*  **Test pen width using square pixel:** `C11,<pixel size>,<start pen tip size>,<end pen tip size>,<pen tip size increment>,END
+*  **Test pen width using square pixel:** `C11,<pixel size>,<start pen tip size>,<end pen tip size>,<pen tip size increment>,END`
    Draws a series of test pixels, shaded to maximum density using a square wave pattern, but with a varying pen width setting. This can be used to measure how large the pen tip really is, but is really used to calibrate your "black point", to control what your maximum ink density is. It may not necessarily be a full coating of ink, or there might be nice effects you can get from overlapping ink.
 
    The pixel size is the size in motor steps. The *start pen tip size* is the size the pen tip will be set to for the very first pixel, and the *end pen tip size* is the size of the pen tip in the final pixel. *Pen tip size increment* controls how many pixels there are in between the start and the end.
