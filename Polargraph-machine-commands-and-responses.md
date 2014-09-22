@@ -55,6 +55,36 @@ The client should wait until it receives a ``READY`` message before sending a co
 
    It is up to you to note next to each drawn pixel what the pen tip size was, and then to choose which patch you want as your maximum density and set it in the machine using `C02`.
 
+*  **Set pen position:** `C09,<left distance>,<right distance>,END`
+   Simply tells the machine where the pen already is. This is used primarily during homing. Set the pen to a particular, pre-measured position, then **set home** sends a `C09` command.
+
+*  **Pen down:** `C13,[<servo position>,]END`
+   Moves the pen lift servo motor into the **down**, **lowered**, or **drawing** position, with the pen tip against the page. The machine has a set **up** position saved in EEPROM, but given an integer parameter, it moves the servo to that position instead, and will use that position as **up** until the machine is next reset - even if it is not stated explicitly on subsequent `C13` calls. Use `C45` to save specific lift servo positions to EEPROM.
+
+*  **Pen up:** `C14,[<servo position>,]END`
+   Moves the pen lift servo motor into the **up**, **raised**, or **lifted** position. The parameter behaves in the same way as `C13`.
+
+*  **Move pen direct:** `C17,<left target length>,<right target length>,<line segment lenght>,END`
+   Moves the pen to the target, plotting a straight line in cartesian space. This is your basic "draw straight line to point". The coordinates are still in the native coordinates system though, not cartesian coordinates. The line is chopped into lots of little lines, and while each one will not be exactly straight, overall the path is straight. The `line segment length` parameter controls how long the sub-lines are. Larger values mean slightly quicker drawing, but more jagged lines. Default is a small value, eg 2. You can't really go any smaller than that.
+
+Machine setup commands
+----------------------
+
+These settings are saved to the machine's internal EEPROM, and automatically reloaded upon reset.
+
+*  **Set machine size:** `C24,<width>,<height>,END`
+   Sets the machine's dimensions in millimetres.
+
+*  **Get current machine details:** `C26,END`
+   Request that the machine send a couple of responses, telling us all it's dirty secrets - how big it is, etc. These responses are detailed below in the Responses section of this page.
+
+*  **Reset EEPROM:** `C27,END`
+   Reset to factory defaults.
+
+*  **Set machine millimetre extension per motor revolution:** `C29,<mm per rev>,END`
+   Sets how much cord is payed out (or reeled in) with one revolution of the motor. This is one of the most important measurements to get right. It is nominally the circumference of the motor's drive sprockets, but the interaction of the beads into the sprocket teeth will make that inexact.
+
+*  **
 
 
 Responses
