@@ -82,9 +82,24 @@ These settings are saved to the machine's internal EEPROM, and automatically rel
    Reset to factory defaults.
 
 *  **Set machine millimetre extension per motor revolution:** `C29,<mm per rev>,END`
-   Sets how much cord is payed out (or reeled in) with one revolution of the motor. This is one of the most important measurements to get right. It is nominally the circumference of the motor's drive sprockets, but the interaction of the beads into the sprocket teeth will make that inexact.
+   Integer. Sets how much cord is payed out (or reeled in) with one revolution of the motor. This is one of the most important measurements to get right. It is nominally the circumference of the motor's drive sprockets, but the interaction of the beads into the sprocket teeth will make that inexact.
 
-*  **
+*  **Set motor steps per revolution:** `C30,<steps per rev>,END`
+   Integer. Most motors have 200 steps per revolution, but this can be multiplied with certain kinds of motor stepping styles. If it is possible to create intermediate steps with microstepping, I would recommend not doing so. Instead use `C37` below to add a step multiplier. Yes, the resolution will suffer, but it usually doesn't make any difference.
+
+*  **Set maximum motor speed:** `C31,<max motor speed>,END`
+   Measured in steps per second.
+
+*  **Set acceleration speed:** `C32,<acceleration speed>,END`
+   Measured in steps per second, per second. Beautiful and musical sounding.
+
+*  **Set step multiplier:** `C37,<multiplier>,END`
+   This is a global number that all incoming coordinates are multiplied by upon arrival. This is to allow the machine to work internally at a higher resolution than it is addressed in. The main purpose for this is to allow practical use of microstepping. 
+
+   With microstepping, each motor step is divided into many smaller steps, and it serves to move more smoothly between steps. It's quieter and more gentle. These intermediate steps are less positive than full steps, and so they are not reliable, except as a way to get between full steps. It is not a good idea to stop on a microstep, and that's the reason why the Polargraph machine is only addressable using full motor steps, even though internally it uses microsteps for all calculations.
+
+   Polarshield uses 8x microstepping, so this value should be set to 8 for Polarshield. Adafruit Motorshield uses 16x microstepping so this value should be set to 16 in those cases.
+
 
 
 Responses
