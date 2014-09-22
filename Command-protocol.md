@@ -35,4 +35,5 @@ or longer like **run pen width test**:
 Commands
 --------
 
+Commands and responses are detailed on [the Commands and Responses page.](https://github.com/euphy/polargraph/wiki/Polargraph-machine-commands-and-responses).
 
