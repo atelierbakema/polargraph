@@ -12,9 +12,9 @@ If you've bought a [Polargraph vitamin kit](http://polargraph.bigcartel.com/prod
 * Servo motor (for pen lift)
 
 ## What's missing
-* Arduino MEGA 2560 compatible microcontroller (I sell these)
+* Arduino MEGA 2560 compatible microcontroller ([I also sell these, surprise](http://polargraph.bigcartel.com/product/tinysine-tosduino-mega2560-r3))
 * Cables
-* 9v / 12v power supply
+* 9v / 12v 1500mA power supply
 
 ## Wiring
 
