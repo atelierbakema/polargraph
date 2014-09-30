@@ -9,6 +9,7 @@ Website
 =======
 
 http://www.polargraph.co.uk/
+http://www.polargraph.co.uk/forum/
 
 Building a machine
 ==================
