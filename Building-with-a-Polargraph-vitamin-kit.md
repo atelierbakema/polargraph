@@ -32,7 +32,9 @@ To use the shield with the motors mounted the traditional way (shafts pointing t
 
 Both motors are wired identically. The [firmware inverts the **direction** control pin of one of the motors](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L129) so that they turn in opposite directions.
 
-You can't damage anything by wiring these up in the wrong order, the [worst that will happen is that it won't move](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!). **However, always remember to cut the power before you unplug the motors. The motor drivers are sensitive to the kind of current spikes that occur when you suddenly remove the motor.**
+You can't damage anything by wiring these up in the wrong order, the [worst that will happen is that it'll go the wrong way](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!). 
+
+**Always remember to cut the power before you unplug the motors. The motor drivers are sensitive to the kind of current spikes that occur when you suddenly remove the motor.**
 
 ## Connectors
 
@@ -40,7 +42,7 @@ The Polarshield has the same connectors on it as the PolargraphSD.
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184343781_HDR.jpg)
 
-These are neat. In principle you can just shove a bare end into each aperture. In practice, I prefer to use a tiny screwdriver in the slot above to fit them more gently.
+[These are neat.](http://uk.mouser.com/Search/ProductDetail.aspx?R=1778858virtualkey65100000virtualkey651-1778858) In principle you can just shove a bare end into each aperture. In practice, I prefer to use a tiny screwdriver in the slot to fit them more gently.
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184534289.jpg)
 
