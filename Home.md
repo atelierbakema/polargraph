@@ -14,6 +14,7 @@ Building a machine
 ==================
 
 * [Software](https://github.com/euphy/polargraph/wiki/Code)
+* [Building with a vitamin kit](https://github.com/euphy/polargraph/wiki/Building-Vitamin-Kit)
 * [Building a Polargraph with an UNO and Adafruit Motorshield v2](https://github.com/euphy/polargraph/wiki/Polargraph-Server-for-Adafruit-Motorshield-v2)
 * [Building a Polargraph based on a RAMPS 3D printer motor driver shield](https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMPS-motorshield)
 
