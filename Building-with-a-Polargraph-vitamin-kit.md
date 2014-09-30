@@ -1,5 +1,7 @@
 If you've bought a Polargraph vitamin kit, then assembly is up to you.
 
+![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184709934.jpg)
+
 ## What's in it
 
 * Polarshield, with LCD and stepper drivers
