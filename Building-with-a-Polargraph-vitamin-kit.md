@@ -1,6 +1,6 @@
-If you've bought a Polargraph vitamin kit, then assembly is up to you.
-
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184709934.jpg)
+
+If you've bought a [Polargraph vitamin kit](http://polargraph.bigcartel.com/product/polarshield), then assembly is up to you.
 
 ## What's in it
 
