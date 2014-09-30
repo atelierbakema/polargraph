@@ -29,3 +29,4 @@ To use the shield with the motors mounted the traditional way (shafts pointing t
 1  Green
 1  Black
 
+![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140930_132001180.jpg)
