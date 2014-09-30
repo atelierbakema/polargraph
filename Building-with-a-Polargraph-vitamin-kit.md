@@ -24,8 +24,8 @@ The motors that are in the kit are bipolar steppers with four wires. The four wi
 
 To use the shield with the motors mounted the traditional way (shafts pointing towards the wall), then the sequence to wire the motors is (left-to-right): 
 
-1 Blue
-1 Red
-1 Green
-1 Black
+1  Blue
+1  Red
+1  Green
+1  Black
 
