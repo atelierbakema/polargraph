@@ -30,3 +30,5 @@ To use the shield with the motors mounted the traditional way (shafts pointing t
 1. Black
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140930_132001180.jpg)
+
+Both motors are wired identically. The [firmware inverts the **direction** control pin of one of the motors](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L129) so that they turn in opposite directions.
