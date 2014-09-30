@@ -3,8 +3,8 @@ Welcome to the polargraph wiki!
 Background
 ==========
 
-[The Polargraph Project](https://github.com/euphy/polargraph/wiki/The-Polargraph-Project)
-[The original Instructable](http://www.instructables.com/id/Polargraph-Drawing-Machine/)
+* [The Polargraph Project](https://github.com/euphy/polargraph/wiki/The-Polargraph-Project)
+* [The original Instructable](http://www.instructables.com/id/Polargraph-Drawing-Machine/)
 
 Website
 =======
