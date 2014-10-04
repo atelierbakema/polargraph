@@ -15,14 +15,19 @@ Use a command line like:
     -P<name of serial port>
     -D -Uflash:w:<path to compiled hex file>:i
 
-For example, for me to upload the **blink** Arduino example sketch, my commandline looks like:
+For example, for me to upload the **blink** Arduino example sketch on Windows, my commandline looks like:
 
     C:\dev\Arduino\hardware/tools/avr/bin/avrdude 
     -CC:\dev\Arduino\hardware/tools/avr/etc/avrdude.conf 
-    -v -patmega2560 -carduino -b115200 
+    -v -patmega2560 -carduino -b115200 -cstk500v2
     -P\\.\COM1 
     -D -Uflash:w:C:\Users\SANDY_~1\AppData\Local\Temp\build8973161778813839551.tmp\Blink.cpp.hex:i
 
 And I got that from turning on verbose uploading mode in the Arduino IDE (File -> Preferences), and attempting to upload the sketch to a disconnected Arduino board. So you can do that to figure out what your command will look like: where your avrdude files are, things like that.
 
 It might look slightly different on Linux or MacOS.
+
+XLoader on Windows
+------
+
+[Xloader](http://xloader.russemotto.com/) is a pretty shell around avrdude that I recommend you use on Windows. It's neat and just works.
