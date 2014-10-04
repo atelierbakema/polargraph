@@ -11,9 +11,18 @@ Use a command line like:
 
     <path to arduino>/hardware/tools/avr/bin/avrdude
     -C<path to arduino>/hardware/tools/avr/etc/avrdude.conf
-    -v -patmega2560 -carduino -D -b 115200 -cstk500v2
+    -v -patmega2560 -carduino -b 115200 -cstk500v2
     -P<name of serial port>
-    -Uflash:w:<path to compiled hex file>:i
+    -D -Uflash:w:<path to compiled hex file>:i
 
-For example, for me to compile 
+For example, for me to upload the **blink** Arduino example sketch, my commandline looks like:
 
+    C:\dev\Arduino\hardware/tools/avr/bin/avrdude 
+    -CC:\dev\Arduino\hardware/tools/avr/etc/avrdude.conf 
+    -v -patmega2560 -carduino -b115200 
+    -P\\.\COM1 
+    -D -Uflash:w:C:\Users\SANDY_~1\AppData\Local\Temp\build8973161778813839551.tmp\Blink.cpp.hex:i
+
+And I got that from turning on verbose uploading mode in the Arduino IDE (File -> Preferences), and attempting to upload the sketch to a disconnected Arduino board. So you can do that to figure out what your command will look like: where your avrdude files are, things like that.
+
+It might look slightly different on Linux or MacOS.
