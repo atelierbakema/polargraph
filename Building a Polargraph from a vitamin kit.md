@@ -60,4 +60,6 @@ The Polarshield is pre-set to use 8x microstepping, and the standard motors in t
 
 http://www.polargraph.co.uk/setup/polargraphsd-controller-application/
 
-The controller doesn't like having steps per rev changed while it's running. Doesn't break it or anything, just spoils all your existing measurements, so you're best off closing it, then opening default.properties.txt and editing it manually - look for the line starting `machine.motors.stepsPerRev`.
+**Irritation warning**
+
+_The controller doesn't like having steps per rev changed while it's running. Doesn't break it or anything, just spoils all your existing measurements, so you're best off closing it, then opening default.properties.txt and editing it manually - look for the line starting `machine.motors.stepsPerRev`._
