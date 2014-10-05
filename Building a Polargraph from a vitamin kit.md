@@ -59,3 +59,5 @@ The Polarshield is pre-set to use 8x microstepping, and the standard motors in t
 * Step multiplier – set it to 8 (why? This is the default microstepping value for the polarshield – this sets the internal resolution that the machine uses while moving)
 
 http://www.polargraph.co.uk/setup/polargraphsd-controller-application/
+
+The controller doesn't like having steps per rev changed while it's running. Doesn't break it or anything, just spoils all your existing measurements, so you're best off closing it, then opening default.properties.txt and editing it manually - look for the line starting `machine.motors.stepsPerRev`.
