@@ -30,4 +30,4 @@ Do a bit of diagnosis by doing **set home** then physically moving the pen 10mm 
 
 ## Wide bottom
 
-Apart from making the rocking world go round, this is essentially the same problem as [narrow bottom](https://github.com/euphy/polargraph/wiki/Distorted-drawings#narrow-bottom) , but the pen is too low.
+Apart from making the rocking world go round, this is essentially the same problem as [narrow bottom](#narrow-bottom) , but the pen is too low.
