@@ -1,6 +1,6 @@
 Distorted drawings are symptoms of a machine that is poorly specified OR poorly calibrated (or both!).
 
-The problem is, the initial error might be very small (just a few millimetres), and there's no way to tell if the error is in the specification, or in the calibration (homing).
+The problem is, the initial error might be very small (just a few millimetres off), and there's no way to tell if the error is in the specification, or in the calibration (homing).
 
 Three symptoms, two problems.
 
@@ -13,3 +13,15 @@ Less commonly: Your home point may be measured and marked correctly, but the res
 
 Solution: Measure your machine again, measure your home point, make sure your controller reflects the size of your machine down to the millimetre, save it and upload machine spec. Try again.
 
+## Narrow bottom
+The drawing tapers as the pen moves down the page. 
+
+Very common, for a couple of reasons:
+* The pen is actually slightly higher up the page than the machine thinks it is / The strings are slightly shorter than the machine thinks they are.
+   Maybe your home point is physically higher than you have told the controller, or the pen was actually higher than the home point when it was calibrated.
+   
+   Solution: Measure, fix, re-upload machine spec. Do a bit of diagnosis by doing **set home** then physically moving the pen 10mm down, and see if that makes the distortion better or worse. Select an area in the controller and do **Draw outline selected** to quickly sketch out a rectangle for testing.
+
+
+
+Solution:
