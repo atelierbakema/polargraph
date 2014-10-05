@@ -50,3 +50,12 @@ The Polarshield has the same connectors on it as the PolargraphSD.
 
 If you'd want screw terminals or something like that, there are some 3.5mm pitch holes that can accept a larger connector, hidden away under the stepper drivers. I usually need to shave a bit of plastic off the housing to make it fit, and the soldering on the inside is a bit tight, but do-able.
 
+## Software
+
+The Polarshield is pre-set to use 8x microstepping, and the standard motors in the kit have 200 steps per revolution. The settings for your controller app should be:
+
+* mm per rev – set it to 95 (why?  This is the length of string dealt out by one revolution of the motor)
+* Steps per rev – set it to 200 if you have a Polargraph kit bought after July 2014, otherwise it'll probably be 400 (why? This is the number of whole steps that the motor is capable of making)
+* Step multiplier – set it to 8 (why? This is the default microstepping value for the polarshield – this sets the internal resolution that the machine uses while moving)
+
+http://www.polargraph.co.uk/setup/polargraphsd-controller-application/
