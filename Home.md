@@ -1,5 +1,7 @@
 Welcome to the polargraph wiki!
 
+[Some FAQs on the main Polargraph site.](http://www.polargraph.co.uk/faq/)
+
 Background
 ==========
 
