@@ -20,7 +20,6 @@ Building a machine
 * [Software](https://github.com/euphy/polargraph/wiki/Code)
 * [Uploading precompiled firmware](https://github.com/euphy/polargraph/wiki/Uploading-precompiled-binary-hex-files)
 * [Vitamin kit](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit)
-* [Building a Polargraph with an UNO and Adafruit Motorshield v2](https://github.com/euphy/polargraph/wiki/Polargraph-Server-for-Adafruit-Motorshield-v2)
 * [Building a Polargraph based on a RAMPS 3D printer motor driver shield](https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMPS-motorshield)
 
 Troubleshooting
