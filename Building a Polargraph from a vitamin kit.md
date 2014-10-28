@@ -64,6 +64,6 @@ http://www.polargraph.co.uk/setup/polargraphsd-controller-application/
 
 _The controller doesn't like having steps per rev changed while it's running. Doesn't break it or anything, just spoils all your existing measurements, so you're best off closing it, then opening default.properties.txt and editing it manually - look for the line starting `machine.motors.stepsPerRev`._
 
-Assembling Gondola
+##Assembling Gondola
 There's a video about this here.
 [![Gondola assembly video still](http://img.youtube.com/vi/ycrGUTGlzik/0.jpg)](http://www.youtube.com/watch?v=ycrGUTGlzik)
