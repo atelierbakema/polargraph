@@ -66,4 +66,4 @@ _The controller doesn't like having steps per rev changed while it's running. Do
 
 Assembling Gondola
 There's a video about this here.
-<iframe width="560" height="315" src="//www.youtube.com/embed/ycrGUTGlzik" frameborder="0" allowfullscreen></iframe>
+[![Gondola assembly video still](http://img.youtube.com/vi/ycrGUTGlzik/0.jpg)](http://www.youtube.com/watch?v=ycrGUTGlzik)
