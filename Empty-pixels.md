@@ -29,6 +29,8 @@ Grid size, pen size, resolution and shading detail are interlinked, and tightly 
 * Use a smaller pen, or increase your grid size.
 * Do a [pen width test](http://www.instructables.com/id/Polargraph-Drawing-Machine/step25/) at your chosen grid size to see what you can expect, and to measure your actual pen tip width.
 * Remember that pen width is NOT saved on the machine when it is rebooted. You need to do **send pen width** from the controller after each reset, or include it in your exported command queue.
+* Look at the message responses in the controller app when you are sending your pixel drawing commands, and your **send pen width** commands. The machine will warn you if it thinks you're about to waste your time, but it won't stop you ([Feedback in the controller](http://www.polargraph.co.uk/2014/08/feedback-in-the-controller/)).
+
 
 
 
