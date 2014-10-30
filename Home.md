@@ -28,3 +28,4 @@ Troubleshooting
 * [Pen isn't moving around](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
 * [Movement is reversed!](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
 * [Distorted drawings](https://github.com/euphy/polargraph/wiki/Distorted-drawings)
+* [There's no detail in my pixel!](https://github.com/euphy/polargraph/wiki/Empty-pixels)
