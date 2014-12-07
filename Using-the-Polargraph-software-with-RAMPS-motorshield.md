@@ -1,6 +1,6 @@
 RAMPS is a shield for Arduino MEGA, that has space for up to five motor drivers. It was designed for 3D printers, and is in very widespread use. [Here is a page about it.](http://reprap.org/wiki/Arduino_Mega_Pololu_Shield) The Polarshield is actually based loosely on RAMPS, and uses the same kind of motor drivers, so it is easy to get running.
 
-Using the [polargraph_server_polarshield firmware](https://github.com/euphy/polargraph_server_polarshield), [edit the motherboard config lines](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L60-L63) and making them so:
+Using the [polargraph_server_polarshield firmware](https://github.com/euphy/polargraph_server_polarshield), edit the [motherboard config lines](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L60-L63) and making them so:
 
     #ifndef MOTHERBOARD
     //#define MOTHERBOARD POLARSHIELD
