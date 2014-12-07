@@ -1,6 +1,25 @@
-RAMPS is a shield for Arduino MEGA, that has space for up to five motor drivers. It was designed for 3D printers, and is in very widespread use. [Here is a page about it.](http://reprap.org/wiki/Arduino_Mega_Pololu_Shield)
+RAMPS is a shield for Arduino MEGA, that has space for up to five motor drivers. It was designed for 3D printers, and is in very widespread use. [Here is a page about it.](http://reprap.org/wiki/Arduino_Mega_Pololu_Shield) The Polarshield is actually based loosely on RAMPS, and uses the same kind of motor drivers, so it is easy to get running.
 
-The Polarshield is actually based loosely on RAMPS, and uses the same kind of motor drivers, so it should be easy to get it running.
+Using the polargraph_server_polarshield firmware, [edit the motherboard config lines](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L60-L63) and making them so:
+
+    #ifndef MOTHERBOARD
+    //#define MOTHERBOARD POLARSHIELD
+    #define MOTHERBOARD RAMPS14
+    #endif
+
+And also comment out this [line activating the touchscreen.]
+(https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L85)
+
+    //#define USE_LCD
+
+###Motor assignations
+
+* Motor A (left hand) is on the driver for E1, extruder 1.
+* Motor B (right hand) is on the driver for the Y axis.
+
+Remember, the servo pins are not wired to the power by default, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
+
+![How to connect the servo 5v supply on RAMPS](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/enable-servo-ramps.jpg)
 
 This page is to collect the wisdom of those experimenting in this area.
 
@@ -19,16 +38,3 @@ Servo 1 | D4 | D9
 
 [RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
 
-This puts motor A (left hand) onto the driver for E1, and motor B (right hand) onto the driver for the Y axis. Not sure why, but none of the other channels seemed to work. (Any ideas?)
-
-Using the different hardware implementation no longer requires hacking the firmware, and can be changed by looking at the [motherboard config lines](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L60-L63) and making them so:
-
-    #ifndef MOTHERBOARD
-    //#define MOTHERBOARD POLARSHIELD
-    #define MOTHERBOARD RAMPS14
-    #endif
-
-
-Remember, the servo pins are not wired to the power by default, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
-
-![How to connect the servo 5v supply on RAMPS](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/enable-servo-ramps.jpg)
