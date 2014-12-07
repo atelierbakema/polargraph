@@ -25,6 +25,7 @@ Building a machine
 Troubleshooting
 ===============
 
+* [Machine stuck on BUSY](https://github.com/euphy/polargraph/wiki/Machine-stuck-on-BUSY)
 * [Pen isn't moving around](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
 * [Movement is reversed!](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
 * [Distorted drawings](https://github.com/euphy/polargraph/wiki/Distorted-drawings)
