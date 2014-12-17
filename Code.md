@@ -1,6 +1,6 @@
 [Read about the project](The-Polargraph-Project)
 
-[Download the code bundle](https://github.com/euphy/polargraphcontroller/releases/latest)
+**[Download the code bundle](https://github.com/euphy/polargraphcontroller/releases/latest)**
 
 _Polargraph software bits and pieces are somewhat fragmented._
 
