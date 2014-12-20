@@ -1,1 +1,1 @@
-[Back to the wiki main page](https://github.com/euphy/polargraph/wiki)
+[Go to the wiki main page](https://github.com/euphy/polargraph/wiki)
