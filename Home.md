@@ -21,7 +21,7 @@ Building a machine
 * [Uploading precompiled firmware](https://github.com/euphy/polargraph/wiki/Uploading-precompiled-binary-hex-files)
 * [Vitamin kit](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit)
 * [Building a Polargraph based on a RAMPS 3D printer motor driver shield](https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMPS-motorshield)
-* [Vector art queue optimiser](http://github.com/euphy/polargraph/wiki/Vector-Optimiser)
+* [Vector art queue optimiser](http://github.com/euphy/polargraph/wiki/Vector-Optimizer)
 
 Troubleshooting
 ===============
