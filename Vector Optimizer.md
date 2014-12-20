@@ -3,6 +3,8 @@ I [covered this great little tool on the blog](http://www.polargraph.co.uk/2014/
 Before and after:
 ![Before and after optimisation](http://www.polargraph.co.uk/wp-content/uploads/2014/12/motorcycle_pair_800.jpg)
 
+This is an excellent little script. I hope I'll be able to pull the actual features into the main Polargraph Controller eventually, but until then, thanks to Evan and Olivier for investing the time into this project, and publishing the results. It's a neat piece of code too, good to read through.
+
 ## How to do it
 ###1. Download the optimizer
 Get the code from [Evan's github repo](https://github.com/ezheidtmann/polargraph-optimizer). You can check it out with git or download it as a zip. Put it into a folder on your computer.
@@ -22,5 +24,3 @@ Wait a couple of seconds (or more) until it's finished. The command tells Python
 
 ###5. Use queue_2.txt
 You can load it back into the controller if you want to see how it looks, or you can just put it in the PolargraphSD on an SD card and draw from there.
-
-This is an excellent little script. I hope I'll be able to pull the actual features into the main Polargraph Controller eventually, but until then, thanks to Evan and Olivier for investing the time into this project, and publishing the results. It's a neat piece of code too. As a full-time python developer, I like it.
