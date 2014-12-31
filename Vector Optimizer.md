@@ -12,13 +12,13 @@ Get the code from [Evan's github repo](https://github.com/ezheidtmann/polargraph
 ###2. Environment
 The optimizer is a program written in Python. To be able to run this, you need to have Python installed. You might find you already have it. Open a command prompt and type `python`, if you get a `>>>` prompt then you've got it installed already, otherwise head to [python downloads](https://www.python.org/downloads/) and get it and install version 2.x.
 
-###3. Produce your command queue
-Use the Polargraph Controller to load your vector artwork, produce your command queue. Export the queue as a text file, for example, queue.txt.
+###3. Produce your command queue, queue_1.txt
+Use the Polargraph Controller to load your vector artwork, produce your command queue. Export the queue as a text file, for example, queue_1.txt.
 
-###4. Use the optimizer
+###4. Use the optimizer on queue_1.txt to make queue_2.txt
 Open a command prompt in the directory where you have the optimizer files, and do:
 
-    python process.py queue.txt > queue_2.txt
+    python process.py queue_1.txt > queue_2.txt
 
 Wait a couple of seconds (or more) until it's finished. The command tells Python to run `process.py`, with the exported queue as a parameter, and it also sends the output of the program to a new file: `queue_2.txt`. The names of the files here don't matter.
 
