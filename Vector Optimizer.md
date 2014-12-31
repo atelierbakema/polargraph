@@ -16,7 +16,7 @@ The optimizer is a program written in Python. To be able to run this, you need t
 Use the Polargraph Controller to load your vector artwork, produce your command queue. Export the queue as a text file, for example, queue_1.txt.
 
 ###4. Use the optimizer on queue_1.txt to make queue_2.txt
-Open a command prompt in the directory where you have the optimizer files, and do:
+Open a command prompt in the directory where you have the optimizer files, and type:
 
     python process.py queue_1.txt > queue_2.txt
 
