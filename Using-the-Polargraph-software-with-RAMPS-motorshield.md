@@ -7,6 +7,7 @@ Using the [polargraph_server_polarshield firmware](https://github.com/euphy/pola
     #define MOTHERBOARD RAMPS14
     #endif
 
+<a name="use-lcd"></a>
 And also comment out this [line activating the touchscreen.]
 (https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L85)
 
