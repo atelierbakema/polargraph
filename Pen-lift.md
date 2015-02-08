@@ -1,6 +1,6 @@
 The pen lift feature in Polargraph is simple. There is a small R/C servo motor fitted to the gondola, and wired up on [pin 9](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L144-L147) of the Arduino-compatible microcontroller board.
 
-![video of the pen lift moving](<iframe width="560" height="315" src="https://www.youtube.com/embed/K6rT2SFoNa4" frameborder="0" allowfullscreen></iframe>)
+[![video of the pen lift moving](https://img.youtube.com/vi/K6rT2SFoNa4/0.jpg)](https://www.youtube.com/watch?v=K6rT2SFoNa4)
 
 Internally, there are two values:
 * PEN UP: the control horn is pointed directly at the drawing surface, and so the centre of the gondola (and so the pen tip) is levered away from it. It's 12 o'clock. ([code](https://github.com/euphy/polargraph_server_polarshield/blob/master/polargraph_server_polarshield.ino#L139-L140))
