@@ -38,5 +38,5 @@ Motor B step | D60 | D7
 Motor B dir | D61 | D8
 Servo 1 | D4 | D9
 
-[RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/ErikZalm/Marlin/blob/Marlin_v1/Marlin/pins.h#L527-L537)
+[RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/MarlinFirmware/Marlin/blob/Development/Marlin/pins_RAMPS_13.h#L20-L52)
 
