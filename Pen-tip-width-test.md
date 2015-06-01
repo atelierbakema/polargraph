@@ -1,3 +1,5 @@
+See also [this article about the relationship between pen width and pixel size.](https://github.com/euphy/polargraph/wiki/Empty-pixels)
+
 You can change the pen width on the setup tab, by changing the value of pen tip size and clicking send pen tip size.  The tip size is not saved in the machine, it needs to be resent every time the machine is restarted, which is why the value is pre-loaded in the queue when you restart the controller.
 
 ##Calibration
