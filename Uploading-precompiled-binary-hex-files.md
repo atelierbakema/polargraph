@@ -2,6 +2,11 @@ Getting all the libraries and the source code to build the Polargraph firmware i
 
 For that reason I package up pre-compiled hex files of the various firmwares, and you can upload these to the Arduino without having to have all the ducks lined up in a row to actually compile it.
 
+XLoader on Windows
+------
+
+[Xloader](http://xloader.russemotto.com/) is a pretty shell around avrdude (below) that I recommend you use on Windows. It's neat and just works.
+
 Use AVRDUDE
 -------
 
@@ -27,7 +32,3 @@ And I got that from turning on verbose uploading mode in the Arduino IDE (File -
 
 It might look slightly different on Linux or MacOS.
 
-XLoader on Windows
-------
-
-[Xloader](http://xloader.russemotto.com/) is a pretty shell around avrdude that I recommend you use on Windows. It's neat and just works.
