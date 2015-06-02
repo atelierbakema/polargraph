@@ -10,7 +10,7 @@ This is an excellent little script. I hope I'll be able to pull the actual featu
 Get the code from [Evan's github repo](https://github.com/ezheidtmann/polargraph-optimizer). You can check it out with git or download it as a zip. Put it into a folder on your computer.
 
 ###2. Environment
-The optimizer is a program written in Python. To be able to run this, you need to have Python 2 installed. You might find you already have it. Open a command prompt and type `python`, if you get a `>>>` prompt then you've got it installed already, otherwise head to [python downloads](https://www.python.org/downloads/) and get it and install version 2.x. It doesn't work in Python 3.
+The optimizer is a program written in Python. To be able to run this, you need to have Python 2 or 3 installed. You might find you already have it. Open a command prompt and type `python`, if you get a `>>>` prompt then you've got it installed already, otherwise head to [python downloads](https://www.python.org/downloads/) and get it and install version 2.x or version 3.x.
 
 ###3. Produce your command queue, queue_1.txt
 Use the Polargraph Controller to load your vector artwork, produce your command queue. Export the queue as a text file, for example, queue_1.txt.
