@@ -18,14 +18,15 @@ The firmware is written for the Arduino platform.
 ## Controller.
 
 The controller is written in Processing. 
+* https://github.com/euphy/polargraphcontroller/
 
-There's a version for Processing v2
-* https://github.com/euphy/polargraphcontroller
+And some releases, currently the newest is for Processing v2:
+* https://github.com/euphy/polargraphcontroller/releases/latest
 
 Or the older one that runs in Processing v1.5 if you have issues with the new version:
 * https://github.com/euphy/polargraphcontroller/releases/tag/2015-07-18-10-05
 
-Either way, it does require a Java runtime environment.
+Either way, it does require a Java runtime environment to be installed.
 
 ## Hardware.
 
