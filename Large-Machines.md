@@ -3,7 +3,7 @@ Very large machines
 
 Most machines seem to end up ready to draw A1 sized pictures at the most, so that means a machine around a metre wide.
 
-I have seen machines 9m wide, and another 6m tall. Each have their own problems.
+I have built a machine 8m wide, and seen another 6m tall. Each have their own problems.
 
 * [Huge Portland Design Week Project](http://www.polargraph.co.uk/2014/10/huge-portland-design-week-project/) is a good example of a big machine.
 
