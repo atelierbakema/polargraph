@@ -23,7 +23,7 @@ Building a machine
 * [Building a Polargraph based on a RAMPS 3D printer motor driver shield](https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMPS-motorshield)
 * [Vector art queue optimiser](http://github.com/euphy/polargraph/wiki/Vector-Optimizer)
 * [Pen lift](https://github.com/euphy/polargraph/wiki/Pen-lift)
-* [BIG machines - size limits](https://github.com/euphy/polargraph/wiki/Large-Machines)
+* [Large machines, size limits](https://github.com/euphy/polargraph/wiki/Large-Machines)
 
 Troubleshooting
 ===============
