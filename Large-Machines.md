@@ -1,4 +1,4 @@
-Very large machines
+Large machines
 ===================
 
 Most machines seem to end up ready to draw A1 sized pictures at the most, so that means a machine around a metre wide.
