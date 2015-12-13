@@ -21,7 +21,7 @@ The client should wait until it receives a ``READY`` message before sending a co
 
    The mapping of brightness to number of waves is controlled in the Polargraph Server firmware, and is usually linked to pen width to prevent ink saturation on very dense pixels.
 
-        `C05,1000,784,55,11,END` 
+        C05,1000,784,55,11,END
 
         // Draw a pixel 55 steps square, and with it's centre 1000 steps 
         // from the left-hand motor, and 784 steps from the right-hand motor. 
