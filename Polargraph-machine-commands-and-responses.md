@@ -23,9 +23,10 @@ The client should wait until it receives a ``READY`` message before sending a co
 
         `C05,1000,784,55,11,END` 
 
-        // Draw a pixel 55 steps square, and with it's centre 1000 steps from the left-hand motor, 
-        // and 784 steps from the right-hand motor. Given what you know about the pen installed, 
-        // shade it using a square wave pattern so it is something like 11 255ths covered in ink.
+        // Draw a pixel 55 steps square, and with it's centre 1000 steps 
+        // from the left-hand motor, and 784 steps from the right-hand motor. 
+        // Given what you know about the pen installed, shade it using a 
+        // square wave pattern so it is something like 11 255ths covered in ink.
 
 *  **Draw scribble shaded pixel:** `C06,<left distance>,<right distance>,<size>,<brightness>,END`
    Shade a pixel using a randomised pen movement pattern. This essentially scribbles in the pixel area to achieve the same kind of density of ink as C05. 
