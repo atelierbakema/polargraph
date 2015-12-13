@@ -17,7 +17,7 @@ The client should wait until it receives a ``READY`` message before sending a co
 *  **Draw square wave shaded pixel:** `C05,<left distance>,<right distance>,<size>,<brightness>,END`
    Shade a pixel so it has a particular brightness. A pixel in this case is a "square" patch, whose sides are perpendicular to the axes of the machine. That is, it is a square drawn using the native coordinates system. This is usually a squished diamond in cartesian space.
 
-   It is specified with a position (it's centre), a size (number of steps along it's sides) and a brightness value (how bright or dark it is). Position and size are measured in motor steps. A square wave pixel is shaded with a square wave pattern. A very dark pixel has many, full-width waves, a very bright pixel has no waves. Brightness is specified as a gray scale value, from 0 (black) to 255 (white), where the white is supplied by white paper, and black by blank ink.
+   It is specified with a position (it's centre), a size (number of steps along it's sides) and a brightness value (how bright or dark it is). Position and size are measured in motor steps. A square wave pixel is shaded with a square wave pattern. A very dark pixel has many, full-width waves, a very bright pixel has no waves. Brightness is specified as a gray scale value, from 0 (black) to 255 (white), where the white is supplied by white paper, and black by black ink.
 
    The mapping of brightness to number of waves is controlled in the Polargraph Server firmware, and is usually linked to pen width to prevent ink saturation on very dense pixels.
 
