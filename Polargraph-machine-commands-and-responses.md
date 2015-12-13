@@ -31,7 +31,7 @@ The client should wait until it receives a ``READY`` message before sending a co
 *  **Draw scribble shaded pixel:** `C06,<left distance>,<right distance>,<size>,<brightness>,END`
    Shade a pixel using a randomised pen movement pattern. This essentially scribbles in the pixel area to achieve the same kind of density of ink as C05. 
 
-   This uses pen width to decide on the maximum number of scribbles in the exact same way as C05 uses it to decide the maximum number of waves. That makes sense with C05 because it never overlaps the lines - however scribble pixel often overlaps lines, yet it is possible that you could never achieve full coverage (because of the randomness of the pattern).
+   This uses pen width to decide on the maximum number of scribbles in the exact same way as C05 uses it to decide the maximum number of waves. That makes sense with C05 because it never overlaps the lines - however scribble pixel often overlaps lines, so it is possible that you could scribble all day and still never achieve full coverage (because of the randomness of the pattern going over the same area).
 
    This makes it's shading behaviour a bit weird. I usually halve the pen width before for drawing with scribble pixel otherwise things come out too light. Increasing the pixel scaling will make the pixels edges blend into it's  neighbour's too, which has a nice scribbly effect.
 
