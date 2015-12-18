@@ -50,6 +50,11 @@ The Polarshield has the same connectors on it as the PolargraphSD.
 
 If you'd want screw terminals or something like that, there are some 3.5mm pitch holes that can accept a larger connector, hidden away under the stepper drivers. I usually need to shave a bit of plastic off the housing to make it fit, and the soldering on the inside is a bit tight, but do-able.
 
+There's these little boards that I use to terminate the motor wires.
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/euphy/16114656290/in/datetaken/" title="Motor breakout boards and connectors."><img src="https://farm8.staticflickr.com/7487/16114656290_b2d9548fc2_n.jpg" width="320" height="240" alt="Motor breakout boards and connectors."></a>
+
+
 ## Software
 
 The Polarshield is pre-set to use 8x microstepping, and the standard motors in the kit have 200 steps per revolution. The settings for your controller app should be:
