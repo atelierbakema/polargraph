@@ -28,6 +28,7 @@ Building a machine
 Troubleshooting
 ===============
 
+* [Controller doesn't run](https://github.com/euphy/polargraph/wiki/Controller-doesn't-run)
 * [Machine stuck on BUSY](https://github.com/euphy/polargraph/wiki/Machine-stuck-on-BUSY)
 * [Pen isn't moving around](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
 * [Movement is reversed!](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
