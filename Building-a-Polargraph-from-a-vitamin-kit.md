@@ -15,6 +15,7 @@ If you've bought a [Polargraph vitamin kit](http://polargraph.bigcartel.com/prod
 * Arduino MEGA 2560 compatible microcontroller ([I also sell these, surprise](http://polargraph.bigcartel.com/product/tinysine-tosduino-mega2560-r3))
 * Cables
 * 9v / 12v 1500mA power supply
+* A case
 
 ## Wiring
 
@@ -53,6 +54,13 @@ If you'd want screw terminals or something like that, there are some 3.5mm pitch
 There's these little boards that I use to terminate the motor wires.
 
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/euphy/16114656290/in/datetaken/" title="Motor breakout boards and connectors."><img src="https://farm8.staticflickr.com/7487/16114656290_b2d9548fc2_n.jpg" width="320" height="240" alt="Motor breakout boards and connectors."></a>
+
+## Case
+
+A case for the electronics is not necessary at all, but it makes it a little neater. The board itself is somewhat ESD-sensitive, so can behave slightly erratically if it is getting handled a lot (the touch screen often stops responding). It's non-permanent.
+
+You can download and laser cut (or print, I guess) the case that the PolargraphSD comes in. The PDF file is here: https://github.com/euphy/polargraph_models/blob/master/casev2/flat2/polargraph_case_parts_basic_v2.2.pdf and it needs six M3 12mm bolts, and nuts and washers.
+
 
 
 ## Software
