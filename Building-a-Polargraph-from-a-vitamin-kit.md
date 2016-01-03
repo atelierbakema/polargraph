@@ -63,7 +63,11 @@ You can download and laser cut (or print, I guess) the case that the PolargraphS
 
 The PDF file is here: https://github.com/euphy/polargraph_models/blob/master/casev2/flat2/polargraph_case_parts_basic_v2.2.pdf. It is designed to be cut from 3mm thick acrylic (or MDF), and held together with six M3 12mm bolts, and nuts and washers.
 
+There's some pictures to help with assembly in this flickr album:
+
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/euphy/albums/72157662946794342" title="PolargraphSD case assembly"><img src="https://farm6.staticflickr.com/5754/24146014225_80125fa152.jpg" width="500" height="281" alt="PolargraphSD case assembly"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+https://www.flickr.com/photos/euphy/albums/72157662946794342
 
 ## Software
 
