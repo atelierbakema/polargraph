@@ -17,6 +17,12 @@ If you've bought a [Polargraph vitamin kit](http://polargraph.bigcartel.com/prod
 * 9v / 12v 1500mA power supply
 * A case
 
+## What this involves
+* Put the Polarshield onto an Arduino MEGA 2560 compatible microcontroller
+* Compile and upload the firmware onto the arduino (http://www.polargraph.co.uk/setup/polargraphsd-updating-firmware/)
+* Build the motor brackets, and [wire the motors up to the Polarshield](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit#wiring)
+* [Build the gondola](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit#assembling-gondola)
+
 ## Wiring
 
 The motors that are in the kit are bipolar steppers with four wires. The four wires power two separate motor drive coils, so there are two pairs of wires, one pair for each coil.
