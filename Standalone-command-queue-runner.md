@@ -26,3 +26,14 @@ It'll work fine on a Raspberry Pi and requires very little CPU or memory overhea
         python send.py mycommands.txt /dev/ttyACM0
 
 To find out which port the Arduino is connected to type `ls /dev/` before and after pluging the Arduino in. 
+
+The Python script will be terminated once the SSH connection is lost. You can use the `screen` command to avoid this.
+
+1. Install screen with `sudo apt-get install screen`
+1. prefix the above command with screen:
+
+        screen python send.py mycommands.txt /dev/ttyACM0
+
+1. Everything will look the same now. You can detach from the screen by pressing `CTRL-D` and then `a`
+1. When you are detached from the screen (ie. no output from the script) you can exit your SSH connection and the Polargraph will continue to draw.
+1. To get back to the detached screen type `screen -r`
