@@ -21,8 +21,8 @@ It'll work fine on a Raspberry Pi and requires very little CPU or memory overhea
         pip install pyserial
 
 1. At the command line (terminal), change to the directory where you have stored `send.py` and your command queue text file.
-1. If your command queue file was called `mycommands.txt`, and your arduino was connected to `COM7`, then you'd do:
+1. If your command queue file was called `mycommands.txt`, and your arduino was connected to `/dev/ttyACM0`, then you'd do:
 
-        python send.py mycommands.txt COM7
+        python send.py mycommands.txt /dev/ttyACM0
 
-
+To find out which port the Arduino is connected to type `ls /dev/` before and after pluging the Arduino in. 
