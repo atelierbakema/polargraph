@@ -1,5 +1,3 @@
-#Vector Drawing Styles
-
 The Polargraph machine can draw SVGs. There's lots of different ways to trace bitmaps to make nice vector art.
 
 Polargrapher Krummrey has done a great survey of some, [originally posted on the forum.](http://www.polargraph.co.uk/forum/polargraphs-group2/drawing-techniques-forum4/style-overview-thread493.0/)
