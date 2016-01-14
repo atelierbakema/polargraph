@@ -8,6 +8,12 @@ Background
 * [The Polargraph Project](https://github.com/euphy/polargraph/wiki/The-Polargraph-Project)
 * [The original Instructable](http://www.instructables.com/id/Polargraph-Drawing-Machine/)
 
+Images
+======
+
+* [Flickr album](https://www.flickr.com/photos/euphy/albums/72157626497662024)
+* [Vector drawing style comparison](https://github.com/euphy/polargraph/wiki/Vector-Drawing-Styles)
+
 Website
 =======
 
