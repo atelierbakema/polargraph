@@ -23,6 +23,7 @@ Website
 Building a machine
 ==================
 
+* [How to use the Polargraph Controller](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller)
 * [Building from a Vitamin kit](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit)
 * [Software](https://github.com/euphy/polargraph/wiki/Code)
 * [Uploading precompiled firmware](https://github.com/euphy/polargraph/wiki/Uploading-precompiled-binary-hex-files)
