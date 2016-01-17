@@ -1,5 +1,3 @@
-## What is it?
-
 The Polargraph Controller is a little app that we use to specify the size of the machine, the sprockets, and the motor driver types.
 
 You can see a preview of the machine, and lay out your artwork on it, visualising many aspects of the drawing.
