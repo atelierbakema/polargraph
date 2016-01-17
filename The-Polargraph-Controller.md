@@ -30,5 +30,5 @@ The command queue is a list of command waiting to be sent to the machine. The qu
 
 The items in the queue are sent in order. Some commands are rushed to the front of the queue, these are referred to as "realtime commands", and show up in cyan in the queue:
 
-    * Send pen tip size
-    * Send motor speed
+* Send pen tip size
+* Send motor speed
