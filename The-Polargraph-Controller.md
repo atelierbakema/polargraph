@@ -10,3 +10,11 @@ There are precompiled binary versions of the controller [in the main software bu
 
 ![Controller layout 1](https://github.com/euphy/polargraph/wiki/images/app_layout_01.png)
 
+##Tabs
+
+* [Input](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller-Input-Tab)
+* [Setup](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller-Setup-Tab)
+* [Roving](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller-Roving-Tab)
+* [Trace](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller-Trace-Tab)
+* [Queue](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller-Queue-Tab)
+
