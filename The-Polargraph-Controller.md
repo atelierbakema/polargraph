@@ -4,7 +4,7 @@ You can see a preview of the machine, and lay out your artwork on it, visualisin
 
 ## Run it
 
-There are precompiled binary versions of the controller [in the main software bundle.](https://github.com/euphy/polargraphcontroller/releases/latest). If those don't work (Processing is a little fickle), then you can [compile and run it from source](https://github.com/euphy/polargraph/wiki/Running-the-controller-from-source-code) fairly easily.
+There are precompiled binary versions of the controller for Windows, OSX and Linux [in the main software bundle.](https://github.com/euphy/polargraphcontroller/releases/latest). If those don't work (Processing is a little fickle), then you can [compile and run it from source](https://github.com/euphy/polargraph/wiki/Running-the-controller-from-source-code) fairly easily.
 
 ![Controller layout 1](https://github.com/euphy/polargraph/wiki/images/app_layout_01.png)
 
