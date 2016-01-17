@@ -8,6 +8,8 @@ There are precompiled binary versions of the controller for Windows, OSX and Lin
 
 ## Interface
 
+The parts highlighted below are common to most tabs.
+
 ![Controller layout 1](https://github.com/euphy/polargraph/wiki/images/app_layout_01.png)
 
 ## Tabs
