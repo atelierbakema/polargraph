@@ -30,6 +30,10 @@ Or the older one that runs in Processing v1.5 if you have issues with the new ve
 
 Either way, it does require a Java runtime environment to be installed.
 
+## Standalone queue runner for low power devices
+
+There's a little [script here on github](https://github.com/euphy/polargraph/wiki/Standalone-command-queue-runner) that accepts a queue in a text file, and pipes out the commands one by one. Takes almost no CPU.
+
 ## Hardware.
 
 * https://github.com/euphy/polarshield_hardware
