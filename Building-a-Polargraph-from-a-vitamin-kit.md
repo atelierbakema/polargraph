@@ -51,7 +51,7 @@ The Polarshield has the same connectors on it as the PolargraphSD.
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184343781_HDR.jpg)
 
-[These are neat.](http://uk.mouser.com/Search/ProductDetail.aspx?R=1778858virtualkey65100000virtualkey651-1778858) In principle you can just shove a bare end into each aperture. In practice, I prefer to use a tiny screwdriver in the slot to fit them more gently.
+[These are neat, here's the data sheet about them.](http://uk.mouser.com/Search/ProductDetail.aspx?R=1778858virtualkey65100000virtualkey651-1778858) In principle you can just shove a bare end into each circular aperture. A tiny screwdriver in the rectangular slot opens up the spring cage inside, so in practice, I open them first because stranded wire isn't always stiff enough to get a good connection through force alone.
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184534289.jpg)
 
