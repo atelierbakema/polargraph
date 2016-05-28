@@ -6,7 +6,7 @@ Commands are composed of a command number, plus between zero and four parameters
 
 is a message, telling the machine that it's pen is 1000 steps away from the left motor, and 2000 steps away from the right motor.
 
-The command is terminated by a <CR> (ASCII 10) character.
+The command is terminated by a CR (ASCII 10) character.
 
 Once the command has been received and acted upon, the machine will respond with a ``READY`` message, to ask for the next command.
 
