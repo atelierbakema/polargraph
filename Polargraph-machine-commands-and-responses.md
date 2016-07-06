@@ -2,9 +2,11 @@
 
 Commands are send serially, as ascii. They take the form:
 
-    <command>,[<param1>,<param2>,<param3>,<param4>,]END[:<checksum>]
+    <command>,[<param1>,<param2>,<param3>,<param4>,]END
 
 Where items in squared brackets are optional.
+
+Each command is terminated by ASCII `10` (new line, `\n` or `0x0A`) character
 
 The client should wait until it receives a ``READY`` message before sending a command.
 
