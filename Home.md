@@ -31,6 +31,7 @@ Building a machine
 * [Vector art queue optimiser](http://github.com/euphy/polargraph/wiki/Vector-Optimizer)
 * [Pen lift](https://github.com/euphy/polargraph/wiki/Pen-lift)
 * [Large machines, size limits](https://github.com/euphy/polargraph/wiki/Large-Machines)
+* [Polargraph commands and protocol](https://github.com/euphy/polargraph/wiki/Polargraph-machine-commands-and-responses)
 
 Troubleshooting
 ===============
