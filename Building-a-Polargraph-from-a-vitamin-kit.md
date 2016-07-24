@@ -53,6 +53,8 @@ The Polarshield has the same connectors on it as the PolargraphSD.
 
 [These are neat, here's the data sheet about them.](http://uk.mouser.com/Search/ProductDetail.aspx?R=1778858virtualkey65100000virtualkey651-1778858) In principle you can just shove a bare end into each circular aperture. A tiny screwdriver in the rectangular slot opens up the spring cage inside, so in practice, I open them first because stranded wire isn't always stiff enough to get a good connection through force alone.
 
+![](https://youtu.be/7CiI953Qo_o)
+
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184534289.jpg)
 
 If you'd want screw terminals or something like that, there are some 3.5mm pitch holes that can accept a larger connector, hidden away under the stepper drivers. I usually need to shave a bit of plastic off the housing to make it fit, and the soldering on the inside is a bit tight, but do-able.
