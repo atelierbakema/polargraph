@@ -1,6 +1,4 @@
-# Bright Pixel / Dark Pixel
-
-These numberspinners let you set the levels of the brightest and the darkest pixel that you want to render. They apply a simple cutoff, and ignore pixels that are brighter (less ink) and darker (more ink) than the values in these two controls.
+The `Bright Pixel` and `Dark Pixel` numberspinners let you set the levels of the brightest and the darkest pixel that you want to render. They apply a simple cutoff, and ignore pixels that are brighter (less ink) and darker (more ink) than the values in these two controls.
 
 (gif of modification)
 
