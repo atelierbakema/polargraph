@@ -1,6 +1,7 @@
 The `Bright Pixel` and `Dark Pixel` numberspinners let you set the levels of the brightest and the darkest pixel that you want to render. They apply a simple cutoff, and ignore pixels that are brighter (less ink) and darker (more ink) than the values in these two controls.
 
 (gif of modification)
+![](https://github.com/euphy/polargraph/raw/master/docs/images/bright-dark%20pixel%20demo.gif)
 
 When you are looking at the density preview of your artwork, as you slide the values of bright/dark pixel, you'll see pixels disappearing from the preview (as above).
 
