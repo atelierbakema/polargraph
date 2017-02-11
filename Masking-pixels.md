@@ -1,6 +1,10 @@
 Pixel masking is designed to work like a "chroma key" mechanism. You pick a particular colour from the source image using the `CHOOSE MASK COLOUR` feature, and then any pixels that have that colour are not rendered.
 
-I'll show an example here. Drawing [this picture](https://github.com/euphy/polargraph/blob/master/docs/images/example_mask.png), without masking will look something like this.
+I'll show an example here. Drawing:
+
+![](https://github.com/euphy/polargraph/blob/master/docs/images/example_mask.png)
+
+without masking will look something like this:
 
 ![](https://github.com/euphy/polargraph/raw/master/docs/images/masking-example-02-pixelated.PNG)
 
