@@ -25,7 +25,7 @@ Building a machine
 
 * [How to use the Polargraph Controller](https://github.com/euphy/polargraph/wiki/The-Polargraph-Controller)
 * [Building from a Vitamin kit](https://github.com/euphy/polargraph/wiki/Building-a-Polargraph-from-a-vitamin-kit)
-* [Software](https://github.com/euphy/polargraph/wiki/Code)
+* [Source code](https://github.com/euphy/polargraph/wiki/Source-code)
 * [Uploading precompiled firmware](https://github.com/euphy/polargraph/wiki/Uploading-precompiled-binary-hex-files)
 * [Building a Polargraph based on a RAMPS 3D printer motor driver shield](https://github.com/euphy/polargraph/wiki/Using-the-Polargraph-software-with-RAMPS-motorshield)
 * [Vector art queue optimiser](http://github.com/euphy/polargraph/wiki/Vector-Optimizer)
