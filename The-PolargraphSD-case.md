@@ -1,0 +1,5 @@
+The PolargraphSD has a case made of 16 laser cut acrylic parts. The case is not strictly necessary, but the touchscreen on the Polarshield is susceptible to a static electricity issue that makes it unresponsive. It's a temporary problem, but it's damn annoying and very hard to fix.
+
+<a data-flickr-embed="true" href="https://www.flickr.com/photos/euphy/albums/72157662946794342" title="PolargraphSD case assembly"><img src="https://c1.staticflickr.com/6/5754/24146014225_80125fa152_z.jpg" width="640" height="360" alt="PolargraphSD case assembly"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+The parts can be got here from https://github.com/euphy/polargraph_models/blob/master/casev2/flat2/polargraph_case_parts_basic_v2.2.pdf, designed to be cut from 3mm material. The part are held together with 10mm long M3 bolts and nuts.
