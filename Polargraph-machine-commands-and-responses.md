@@ -10,8 +10,10 @@ Each command is terminated by ASCII `10` (new line, `\n` or `0x0A`) character
 
 The client should wait until it receives a ``READY`` message before sending a command.
 
+Distances are specified in motor steps unless stated otherwise.
+
 *  **Change length:** `C01,<left target length>,<right target length>,END`
-   Move motors at maximum speed until machine cords are at target distance from motors. 
+   Move motors at maximum speed until machine cords are at target distance from motors, as measured in motor steps. 
 
 *  **Change pen tip width:** `C02,<pen tip size>,END`
    Set pen tip to a new size. Unit here is millimetres, and should be a decimal. It is read as a `float` internally.
