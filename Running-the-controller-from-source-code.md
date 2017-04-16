@@ -22,6 +22,8 @@ Processing, Java and Windows are a slightly fickle combination, and a compiled e
         <Processing sketchbook folder>/libraries/diewald_CV_kit/
         <Processing sketchbook folder>/libraries/geomerative/
 
+*Note:* there may be no libraries inside code bundle, then you have to download them yourself and restart Processing.
+
 1.  Copy the whole `polargraphcontroller` folder from `processing-source/` into your Processing sketchbook folder. It'll look like:
 
         <Processing sketchbook folder>/polargraphcontroller
