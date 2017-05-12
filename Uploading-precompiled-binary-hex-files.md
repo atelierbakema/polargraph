@@ -2,9 +2,9 @@ Getting all the libraries and the source code to build the Polargraph firmware i
 
 For that reason I package up pre-compiled hex files of the various firmwares, and you can upload these to the Arduino without having to have all the ducks lined up in a row to actually compile it.
 
-In the [latest code bundle](https://github.com/euphy/polargraphcontroller/releases/latest), there's a folder in `arduino-source` named after each firmware. For instance, to upload the firmware to an UNO, when you're using an Adafruit Motorshield v1, look for
+In the [latest code bundle](https://github.com/euphy/polargraphcontroller/releases/latest), there's a folder in `arduino-source` named after each firmware. For instance, to upload the firmware to an UNO, when you're using an PolargraphSD, look for
 
-    arduino-source/polargraph_server_a1/polargraph_server_a1_adafruit_v1.cpp.hex
+    arduino-source/polargraph_server_polarshield/polargraph_server_polarshield.ino.hex
 
 XLoader on Windows
 ------
