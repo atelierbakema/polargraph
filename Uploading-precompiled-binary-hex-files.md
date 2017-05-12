@@ -24,13 +24,13 @@ Use a command line like:
     -P<name of serial port>
     -D -Uflash:w:<path to hex file>:i
 
-For example, for me to upload the **blink** Arduino example sketch on Windows, my commandline looks like:
+For example, for me to upload the **polargraph_server_a1** precompiled firmware on Windows, my commandline looks like:
 
     C:\dev\Arduino\hardware/tools/avr/bin/avrdude 
     -CC:\dev\Arduino\hardware/tools/avr/etc/avrdude.conf 
     -v -patmega2560 -carduino -b115200 -cstk500v2
     -P\\.\COM1 
-    -D -Uflash:w:C:\Users\sandy_000\Documents\Arduino\polargraph_firmware\polargraph_server_a1\polargraph_server_a1_adafruit_v1.cpp.hex:i
+    -D -Uflash:w:C:\Users\sandy_000\Documents\Arduino\polargraph_firmware\polargraph_server_a1\polargraph_server_a1.ino.hex:i
 
 
 And I got that from turning on verbose uploading mode in the Arduino IDE (File -> Preferences), and attempting to upload the sketch to a disconnected Arduino board. So you can do that to figure out what your command will look like: where your avrdude files are, things like that.
