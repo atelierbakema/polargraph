@@ -38,7 +38,7 @@ Troubleshooting
 ===============
 
 * [How to run from source (if the controller binaries don't work)](https://github.com/euphy/polargraph/wiki/Running-the-controller-from-source-code)
-* [Controller takes up too much CPU to leave it running / I want to use a Raspberry Pi] (https://github.com/euphy/polargraph/wiki/Standalone-command-queue-runner)
+* [Controller takes up too much CPU to leave it running or I want to use a Raspberry Pi](https://github.com/euphy/polargraph/wiki/Standalone-command-queue-runner)
 * [Machine stuck on BUSY](https://github.com/euphy/polargraph/wiki/Machine-stuck-on-BUSY)
 * [Pen isn't moving around](https://github.com/euphy/polargraph/wiki/Gondola-isn't-moving)
 * [Movement is reversed!](https://github.com/euphy/polargraph/wiki/It's-going-the-wrong-way!)
