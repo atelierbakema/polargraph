@@ -1,7 +1,9 @@
 The Polargraph Controller is a pretty thing (in some ways), and a memory and CPU hog. You might tolerate that while you're actively using it (laying out, building some artwork), but you might not want your little laptop fried for two days while it draws out a few lines.
 
-##A solution
+
+## A solution
 If you have a PolargraphSD, of course you just export the command queue as a text file, put it on an SD card and run the queue from the machine, without even being connected to a computer.
+
 
 ## A different solution
 If you have an UNO-based Polargraph, then you don't have that luxury. However, if you **export queue** to a text file, you can use the python script in the gist below to send the queue, line by line to the Polargraph machine.
