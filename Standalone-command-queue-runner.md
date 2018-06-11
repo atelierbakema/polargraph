@@ -12,7 +12,7 @@ If you have an UNO-based Polargraph, then you don't have that luxury. However, i
 
 It'll work fine on a Raspberry Pi and requires very little CPU or memory overhead.
 
-##How to use it
+## How to use it
 
 1. Download the `send.py` file. (copy-paste into a new file is fine.)
 1. Copy your command queue file into the same directory (folder) that you have put `send.py`.
