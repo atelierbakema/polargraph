@@ -40,3 +40,4 @@ Servo 1 | D4 | D9
 
 [RAMPS pin numbers taken from ErikZalm's Marlin firmware.](https://github.com/MarlinFirmware/Marlin/blob/Development/Marlin/pins_RAMPS_13.h#L20-L52)
 
+*Note:* There seem to exist different batches of RAMPS1.4 with pin numbers slightly changed. [The test script for RAMPS1.4](https://reprap.org/wiki/File:RAMPS1.4_TestCode.pde) is very useful to find out correct pin assignments.
