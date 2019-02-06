@@ -1,11 +1,11 @@
-Welcome to the polargraph wiki!
+Welcome to the Polargraph wiki!
 
 [Some FAQs on the main Polargraph site.](http://www.polargraph.co.uk/faq/)
 
 Background
 ==========
 
-* [The Polargraph Project](https://github.com/euphy/polargraph/wiki/What-is-Polargraph?)
+* [What-is-Polargraph%3F](https://github.com/euphy/polargraph/wiki/What-is-Polargraph%3F)
 * [The original Instructable](http://www.instructables.com/id/Polargraph-Drawing-Machine/)
 
 Images
