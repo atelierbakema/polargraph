@@ -5,7 +5,7 @@ Welcome to the Polargraph wiki!
 Background
 ==========
 
-* [What-is-Polargraph%3F](https://github.com/euphy/polargraph/wiki/What-is-Polargraph%3F)
+* [What is Polargraph?](https://github.com/euphy/polargraph/wiki/What-is-Polargraph%3F)
 * [The original Instructable](http://www.instructables.com/id/Polargraph-Drawing-Machine/)
 
 Images
