@@ -11,8 +11,8 @@ Separate repositories for smaller project elements, if you want them:
 The firmware is written for the Arduino platform.
 
 * https://github.com/euphy/polargraph_server_a1 For UNO and MEGA boards with Adafruit motorshields.
-* https://github.com/euphy/polargraph_server_polarshield The official firmware for the PolargraphSD, which is a MEGA with a Polarshield on top.
-* https://github.com/euphy/polargraph_server_esf Experimental firmware built for the Edinburgh Science Festival Polargraph machines which were based on a Teensy 3.
+* https://github.com/euphy/polargraph_server_polarshield The official firmware for the PolargraphSD v2, which is a MEGA with a Polarshield on top.
+* https://github.com/euphy/polargraph_server_polarshield_esp32 Firmware for PolargraphSD v3. This is an ESP32-based drawing machines built around a Polarshield v3.x.
 
 ## The Polargraph Controller App.
 
