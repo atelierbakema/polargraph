@@ -1,7 +1,7 @@
 ## The problem
 Processing, Java and Windows are a slightly fickle combination, and a compiled executable binary made on one system may not run ok on another system. Of course there is always a good reason why, but if you've tried running the 32 bit version, and you've tried running the 64 bit version, and neither work, it's usually easier to compile it and run from source than trying to diagnose your Java problems.
 
->###What is Processing? 
+>### What is Processing? 
 >Processing is a programming language and an environment (editor) that allows small, but sophisticated graphical apps to be developed quickly. It's based on Java. Polargraph Controller is written in Processing, and is run by loading the Polargraph Controller's source code into the Processing editor, and running it.
 
 ## How to do it
