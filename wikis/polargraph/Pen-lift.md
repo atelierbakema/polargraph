@@ -13,7 +13,7 @@ Adjust using the controller
 
 On the <b>SETUP</b> tab of the controller, there are four buttons, near the bottom of the list:
 
-![pen lift buttons](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/penlift_buttons.jpg)
+![pen lift buttons](../../docs/images/penlift_buttons.jpg)
 
 The first two are obvious, the **TEST LIFT RANGE** button sends a message to oscillate the motor between those numbers a few times. Once you adjust the **UP** position and the **DOWN** position a few times, and run a few more tests, you can upload the the settings into the EEPROM of the machine with **UPLOAD LIFT RANGE**, and it'll be saved for future use. Hurray, right?
 

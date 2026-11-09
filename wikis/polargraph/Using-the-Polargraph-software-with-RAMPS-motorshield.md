@@ -21,7 +21,7 @@ And also comment out this [line activating the touchscreen.]
 ###Servo pins
 Remember, the servo pins are not wired to the power by default, so you need to put a jumper or a link between VCC and +5, right next to the reset button on RAMPS. [source] (http://forums.reprap.org/read.php?219,256377)
 
-![How to connect the servo 5v supply on RAMPS](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/enable-servo-ramps.jpg)
+![How to connect the servo 5v supply on RAMPS](../../docs/images/enable-servo-ramps.jpg)
 
 This page is to collect the wisdom of those experimenting in this area.
 

@@ -1,4 +1,4 @@
-![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184709934.jpg)
+![](../../docs/images/IMG_20140819_184709934.jpg)
 
 If you've bought a [Polargraph vitamin kit](http://polargraph.bigcartel.com/product/polargraph-sd-vitamins-kit), then assembly is up to you.
 
@@ -37,7 +37,7 @@ To use the shield with the motors mounted the traditional way (shafts pointing t
 1. Green
 1. Black
 
-![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140930_132001180.jpg)
+![](../../docs/images/IMG_20140930_132001180.jpg)
 
 Both motors are wired identically. The [firmware inverts the **direction** control pin of one of the motors](https://github.com/euphy/polargraph_server_polarshield/blob/master/configuration.ino#L129) so that they turn in opposite directions.
 
@@ -49,13 +49,13 @@ You can't damage anything by wiring these up in the wrong order, the [worst that
 
 The Polarshield has the same connectors on it as the PolargraphSD.
 
-![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184343781_HDR.jpg)
+![](../../docs/images/IMG_20140819_184343781_HDR.jpg)
 
 [These are neat, here's the data sheet about them.](http://uk.mouser.com/Search/ProductDetail.aspx?R=1778858virtualkey65100000virtualkey651-1778858) In principle you can just shove a bare end into each circular aperture. A tiny screwdriver in the rectangular slot opens up the spring cage inside, so in practice, I open them first because stranded wire isn't always stiff enough to get a good connection through force alone.
 
 [![How to fit connectors](https://img.youtube.com/vi/7CiI953Qo_o/0.jpg)](https://www.youtube.com/watch?v=7CiI953Qo_o)
 
-![](https://github.com/euphy/polargraph/raw/master/docs/images/IMG_20140819_184534289.jpg)
+![](../../docs/images/IMG_20140819_184534289.jpg)
 
 If you'd want screw terminals or something like that, there are some 3.5mm pitch holes that can accept a larger connector, hidden away under the stepper drivers. I usually need to shave a bit of plastic off the housing to make it fit, and the soldering on the inside is a bit tight, but do-able.
 

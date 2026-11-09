@@ -16,4 +16,4 @@ If it was set to **start=0.6**, **end=2.0** and **increment=0.1**, the machine w
 
 Once you've decided which square you want to be your darkest, set the pen tip width to the setting required and save properties.
 
-![pen width test](https://raw.githubusercontent.com/euphy/polargraph/master/docs/images/F8MORTCGV0L2NUH.LARGE.jpg)
+![pen width test](../../docs/images/F8MORTCGV0L2NUH.LARGE.jpg)
