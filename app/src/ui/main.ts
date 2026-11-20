@@ -11,7 +11,7 @@ import {
   type MachineConfig,
   type PaperConfig,
 } from '../core/machine.ts';
-import { buildPlan, estimateSeconds, fitToPaper, place, type DrawingPlan, type Placement } from '../core/plan.ts';
+import { buildPlan, estimateSeconds, fitToPaper, place, type DrawingPlan, type OrderStrategy, type Placement } from '../core/plan.ts';
 import { importSvg, type SvgImportResult } from '../core/svg.ts';
 import { exportLegacy, sdFileName, validateLegacy } from '../core/export/legacy.ts';
 import { exportGcode } from '../core/export/gcode.ts';
@@ -34,7 +34,11 @@ interface Settings {
   version: 1;
   machine: MachineConfig;
   paper: PaperSettings;
+  /** Persoonlijke voorkeur voor de tekenvolgorde. */
+  order: OrderStrategy;
 }
+
+const ORDERS: OrderStrategy[] = ['nearest', 'right-handed', 'left-handed', 'original'];
 
 const STORAGE_KEY = 'polargraph-studio:settings:v1';
 
@@ -42,6 +46,7 @@ const DEFAULT_SETTINGS: Settings = {
   version: 1,
   machine: { widthMm: 1000, heightMm: 1500, ...POLARGRAPH_SD_DEFAULTS },
   paper: { size: 'A3', orientation: 'portrait', customWidthMm: 500, customHeightMm: 700, topMm: 250, leftMm: null },
+  order: 'nearest',
 };
 
 function loadSettings(): { settings: Settings; fromStorage: boolean } {
@@ -74,6 +79,7 @@ function mergeSettings(input: unknown): Settings {
     d.paper.topMm = num(i.paper.topMm, d.paper.topMm);
     d.paper.leftMm = typeof i.paper.leftMm === 'number' && Number.isFinite(i.paper.leftMm) ? i.paper.leftMm : null;
   }
+  if (ORDERS.includes(i.order as OrderStrategy)) d.order = i.order as OrderStrategy;
   return d;
 }
 
@@ -93,7 +99,6 @@ const state = {
   source: null as SvgImportResult | null,
   fileName: 'voorbeeld.svg',
   placement: { scale: 1, offsetX: 0, offsetY: 0, rotation: 0 } as Placement,
-  optimize: true,
   plan: null as DrawingPlan | null,
   placedBounds: null as ReturnType<typeof boundsOf>,
 };
@@ -125,7 +130,7 @@ const inputs = {
   rotation: $<HTMLSelectElement>('rotation'),
   offsetX: $<HTMLInputElement>('offsetX'),
   offsetY: $<HTMLInputElement>('offsetY'),
-  optimize: $<HTMLInputElement>('optimize'),
+  order: $<HTMLSelectElement>('order'),
   paperSize: $<HTMLSelectElement>('paperSize'),
   orientation: $<HTMLSelectElement>('orientation'),
   paperW: $<HTMLInputElement>('paperW'),
@@ -158,7 +163,7 @@ function recompute(): void {
   const paper = paperConfig();
   const placed = placedLines();
   state.placedBounds = boundsOf(placed);
-  state.plan = buildPlan(placed, paper, { order: state.optimize ? 'nearest' : 'original' });
+  state.plan = buildPlan(placed, paper, { order: state.settings.order });
   viewer.setScene({ machine, paper, strokes: state.plan.strokes });
   renderStats();
   renderWarnings(paper);
@@ -236,6 +241,7 @@ function syncSettingsInputs(): void {
   inputs.mmPerRev.value = String(machine.mmPerRev);
   inputs.stepsPerRev.value = String(machine.stepsPerRev);
   inputs.stepMultiplier.value = String(machine.stepMultiplier);
+  inputs.order.value = state.settings.order;
   inputs.paperSize.value = paper.size;
   inputs.orientation.value = paper.orientation;
   inputs.paperW.value = String(paper.customWidthMm);
@@ -433,9 +439,9 @@ for (const input of [inputs.offsetX, inputs.offsetY]) {
     setPlacement(state.placement.scale, state.placement.rotation, x ?? undefined, y ?? undefined);
   });
 }
-inputs.optimize.addEventListener('change', () => {
-  state.optimize = inputs.optimize.checked;
-  recompute();
+inputs.order.addEventListener('change', () => {
+  state.settings.order = inputs.order.value as OrderStrategy;
+  onSettingsChanged();
 });
 
 inputs.paperSize.addEventListener('change', () => {

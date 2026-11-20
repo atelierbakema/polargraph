@@ -222,6 +222,9 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 ### Ideeën om op te nemen in de planning
 
+- **Tekenvolgorde zoals een kunstenaar** (20 nov, gebouwd): kies tussen slim (kortste weg), rechtshandig (linksboven naar rechtsonder) en linkshandig (rechtsboven naar linksonder). Alle drie werken van boven naar onder, omdat de penlift van de PolargraphSD onder de pen zit en anders over verse inkt schuurt. De keuze wordt onthouden.
+- **Droogtijd bij kruisende lijnen** (idee van Mark): als een lijn een net getekende lijn kruist, eerst ergens anders verder tekenen, of even wachten tot de inkt droog is. De droogtijd hangt af van pen en papier, dus dat wordt een instelling. Wachten kan in G-code met `G4` (pauze). Voor Sandy's firmware moet dat nog worden uitgezocht.
+
 - **Drie manieren om te tekenen:** SD-kaart (machines met scherm), USB direct vanuit de browser (machines zonder scherm, versie 0.3), en een **Raspberry Pi** als netwerkplotter, zoals OctoPrint bij 3D-printers: de Pi hangt met USB aan de machine en je stuurt tekeningen via wifi vanaf je telefoon of laptop.
 - **Oude 3D-printerbordjes:** Marlin (vanaf 2.1) heeft een polargraph-stand, toegevoegd door de makers van Makelangelo. FluidNC (ESP32) heeft een WallPlotter-stand. Daarmee kan vrijwel elk oud 3D-printerbord een polargraph aansturen. Eerst testen op Mark's bordjes.
 - **Bouwpakket:** naar het voorbeeld van "print your own speakers": een lijst met te bestellen onderdelen (bord, 2 motoren, servo, schakelaars), STL-bestanden om zelf te printen, een duidelijke bouwbeschrijving, en de app op atelierbakema.com. Geschikt voor een ouder met kind en een 3D-printer.

@@ -41,7 +41,15 @@
             <label>Links (mm) <input type="number" id="offsetX" step="1" /></label>
             <label>Boven (mm) <input type="number" id="offsetY" step="1" /></label>
           </div>
-          <label class="check"><input type="checkbox" id="optimize" checked /> Slimme volgorde (minder heen en weer)</label>
+          <label>Volgorde van tekenen
+            <select id="order">
+              <option value="nearest">Slim: kortste weg, van boven naar onder</option>
+              <option value="right-handed">Rechtshandig: linksboven naar rechtsonder</option>
+              <option value="left-handed">Linkshandig: rechtsboven naar linksonder</option>
+              <option value="original">Zoals in het bestand</option>
+            </select>
+          </label>
+          <p class="hint">Alle volgordes behalve "zoals in het bestand" werken van boven naar onder, zodat de penlift niet over verse lijnen schuurt.</p>
         </section>
 
         <section class="step" id="step-paper">

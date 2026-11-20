@@ -14,7 +14,7 @@
  *   --ware-grootte       niet passend maken, maar de maten uit de SVG gebruiken
  *   --draai <0|90|180|270>
  *   --formaat <sd|gcode> sd = bestand voor Sandy's firmware (standaard), gcode = G-code
- *   --volgorde <slim|origineel>
+ *   --volgorde <slim|rechts|links|origineel>
  *   -o <bestand>         uitvoerbestand (standaard: naam voor de SD-kaart)
  */
 
@@ -103,7 +103,14 @@ const placement: Placement = flags.has('--ware-grootte')
   : fitToPaper(svg.lines, paper, getNum('--marge', false, 10), rotation);
 const placed = place(svg.lines, placement, flags.has('--ware-grootte') ? { widthMm: svg.widthMm, heightMm: svg.heightMm } : undefined);
 
-const order = flags.get('--volgorde') === 'origineel' ? 'original' : 'nearest';
+const orderArg = String(flags.get('--volgorde') ?? 'slim');
+const ORDER_ARGS: Record<string, 'nearest' | 'right-handed' | 'left-handed' | 'original'> = {
+  slim: 'nearest',
+  rechts: 'right-handed',
+  links: 'left-handed',
+  origineel: 'original',
+};
+const order = ORDER_ARGS[orderArg] ?? fail('--volgorde moet slim, rechts, links of origineel zijn.');
 const plan = buildPlan(placed, paper, { order });
 for (const w of plan.warnings) console.log(`Let op: ${w}`);
 

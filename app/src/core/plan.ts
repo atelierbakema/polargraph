@@ -43,12 +43,28 @@ export interface PlanStats {
   bounds: Bounds | null;
 }
 
-export type OrderStrategy = 'nearest' | 'original';
+/**
+ * - nearest: kortste weg, steeds de dichtstbijzijnde volgende lijn, van boven naar beneden;
+ * - right-handed: zoals een rechtshandige tekent, van linksboven naar rechtsonder;
+ * - left-handed: zoals een linkshandige tekent, van rechtsboven naar linksonder;
+ * - original: de volgorde uit het bestand.
+ */
+export type OrderStrategy = 'nearest' | 'right-handed' | 'left-handed' | 'original';
 
 export interface PlanOptions {
   /** Startpunt van de pen op het papier (mm). Standaard linksboven: (0, 0). */
   start?: Point;
   order?: OrderStrategy;
+  /**
+   * Bij de kortste-wegvolgorde de tekening van boven naar beneden afwerken (standaard aan),
+   * zodat de penlift niet over net getekende lijnen schuurt.
+   */
+  topToBottom?: boolean;
+  /**
+   * Hoogte van de stroken bij rechts- of linkshandig tekenen (mm). Standaard een tiende
+   * van de hoogte van de tekening, minimaal 10 mm.
+   */
+  bandHeightMm?: number;
   /** Lijnen die op minder dan deze afstand op elkaar aansluiten, worden zonder pen op te tillen getekend. */
   joinToleranceMm?: number;
   /** Stukjes korter dan dit worden weggelaten (mm). */
@@ -102,8 +118,13 @@ export function fitToPaper(lines: Polyline[], paper: PaperConfig, marginMm = 10,
   };
 }
 
-/** Kiest de volgorde: steeds de dichtstbijzijnde volgende lijn, eventueel achterstevoren. */
-export function orderNearest(lines: Polyline[], start: Point): Polyline[] {
+/**
+ * Kiest de volgorde: steeds de dichtstbijzijnde volgende lijn, eventueel achterstevoren.
+ * Met `upwardPenalty` > 0 telt terug omhoog gaan zwaarder, zodat de tekening van boven
+ * naar beneden wordt afgewerkt. Dat is nodig omdat de penlift van de PolargraphSD onder de
+ * pen zit en over vers getekende lijnen eronder zou kunnen schuren.
+ */
+export function orderNearest(lines: Polyline[], start: Point, upwardPenalty = 0): Polyline[] {
   const remaining = lines.slice();
   const result: Polyline[] = [];
   let pos = start;
@@ -113,13 +134,14 @@ export function orderNearest(lines: Polyline[], start: Point): Polyline[] {
     let bestDist = Infinity;
     for (let i = 0; i < remaining.length; i++) {
       const line = remaining[i];
-      const dStart = distance(pos, line[0]);
+      const cost = (p: Point) => distance(pos, p) + upwardPenalty * Math.max(0, pos.y - p.y);
+      const dStart = cost(line[0]);
       if (dStart < bestDist) {
         bestDist = dStart;
         bestIndex = i;
         bestReverse = false;
       }
-      const dEnd = distance(pos, line[line.length - 1]);
+      const dEnd = cost(line[line.length - 1]);
       if (dEnd < bestDist) {
         bestDist = dEnd;
         bestIndex = i;
@@ -131,6 +153,57 @@ export function orderNearest(lines: Polyline[], start: Point): Polyline[] {
     const oriented = bestReverse ? chosen.slice().reverse() : chosen;
     result.push(oriented);
     pos = oriented[oriented.length - 1];
+  }
+  return result;
+}
+
+/**
+ * Tekenen zoals met de hand: de tekening wordt in horizontale stroken van boven naar
+ * beneden afgewerkt. Binnen een strook gaat het van links naar rechts (rechtshandig) of
+ * van rechts naar links (linkshandig), zodat de pen en de gondel niet terug over vers
+ * getekende lijnen gaan. Binnen die richting wordt steeds de dichtstbijzijnde lijn gekozen,
+ * maar teruggaan tegen de tekenrichting in telt zwaarder.
+ */
+export function orderByHand(lines: Polyline[], hand: 'right' | 'left', bandHeightMm: number): Polyline[] {
+  const dir = hand === 'right' ? 1 : -1;
+  const band = (line: Polyline) => Math.floor(Math.min(...line.map((p) => p.y)) / bandHeightMm);
+  const bands = new Map<number, Polyline[]>();
+  for (const line of lines) {
+    const key = band(line);
+    const list = bands.get(key);
+    if (list) list.push(line);
+    else bands.set(key, [line]);
+  }
+  const result: Polyline[] = [];
+  const allBounds = boundsOf(lines);
+  if (!allBounds) return result;
+  let pos: Point = { x: dir === 1 ? allBounds.minX : allBounds.maxX, y: allBounds.minY };
+  for (const key of [...bands.keys()].sort((a, b) => a - b)) {
+    const remaining = bands.get(key)!.slice();
+    // Elke strook begint weer aan de "begin"-kant, net als een nieuwe regel bij schrijven.
+    const top = key * bandHeightMm;
+    pos = { x: dir === 1 ? allBounds.minX : allBounds.maxX, y: Math.max(top, pos.y - bandHeightMm) };
+    while (remaining.length > 0) {
+      let best = 0;
+      let bestReverse = false;
+      let bestCost = Infinity;
+      remaining.forEach((line, i) => {
+        for (const reverse of [false, true]) {
+          const start = reverse ? line[line.length - 1] : line[0];
+          const backwards = Math.max(0, (pos.x - start.x) * dir);
+          const cost = distance(pos, start) + 2 * backwards;
+          if (cost < bestCost) {
+            bestCost = cost;
+            best = i;
+            bestReverse = reverse;
+          }
+        }
+      });
+      const [chosen] = remaining.splice(best, 1);
+      const oriented = bestReverse ? chosen.slice().reverse() : chosen;
+      result.push(oriented);
+      pos = oriented[oriented.length - 1];
+    }
   }
   return result;
 }
@@ -178,7 +251,14 @@ export function buildPlan(placedLines: Polyline[], paper: PaperConfig, options: 
   lines = cleanPolylines(lines, options.minSegmentMm ?? 0.05);
   if (lines.length === 0) warnings.push('Er blijft niets over om te tekenen.');
 
-  const ordered = (options.order ?? 'nearest') === 'nearest' ? orderNearest(lines, start) : lines;
+  const order = options.order ?? 'nearest';
+  let ordered: Polyline[];
+  if (order === 'nearest') ordered = orderNearest(lines, start, options.topToBottom === false ? 0 : 3);
+  else if (order === 'right-handed' || order === 'left-handed') {
+    const b = boundsOf(lines);
+    const band = options.bandHeightMm ?? Math.max(10, b ? (b.maxY - b.minY) / 10 : 10);
+    ordered = orderByHand(lines, order === 'right-handed' ? 'right' : 'left', band);
+  } else ordered = lines;
   const strokes = joinStrokes(ordered, options.joinToleranceMm ?? 0.05);
   return { strokes, stats: computeStats(strokes, start), warnings };
 }

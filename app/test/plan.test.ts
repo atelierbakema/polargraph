@@ -75,3 +75,44 @@ describe('tekenplan', () => {
     expect(placed[0][1]).toMatchObject({ x: 50, y: 100 });
   });
 });
+
+describe('tekenen zoals met de hand', () => {
+  // Een raster van 3 bij 3 korte streepjes, in willekeurige volgorde aangeleverd.
+  const grid: Polyline[] = [];
+  for (const row of [2, 0, 1]) {
+    for (const col of [1, 2, 0]) {
+      const x = 20 + col * 60;
+      const y = 20 + row * 60;
+      grid.push([{ x, y }, { x: x + 20, y }]);
+    }
+  }
+  const rowCol = (s: Polyline) => [Math.round((s[0].y - 20) / 60), Math.round((Math.min(s[0].x, s[1].x) - 20) / 60)];
+
+  it('rechtshandig: van linksboven naar rechtsonder, en elke lijn van links naar rechts', () => {
+    const plan = buildPlan(grid, paper, { order: 'right-handed', bandHeightMm: 30 });
+    expect(plan.strokes.map(rowCol)).toEqual([[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]);
+    for (const s of plan.strokes) expect(s[0].x).toBeLessThan(s[1].x);
+  });
+
+  it('linkshandig: van rechtsboven naar linksonder, en elke lijn van rechts naar links', () => {
+    const plan = buildPlan(grid, paper, { order: 'left-handed', bandHeightMm: 30 });
+    expect(plan.strokes.map(rowCol)).toEqual([[0, 2], [0, 1], [0, 0], [1, 2], [1, 1], [1, 0], [2, 2], [2, 1], [2, 0]]);
+    for (const s of plan.strokes) expect(s[0].x).toBeGreaterThan(s[1].x);
+  });
+});
+
+describe('van boven naar onder', () => {
+  it('werkt de slimme volgorde van boven naar beneden af, ook als omhoog korter is', () => {
+    // Na de middelste lijn ligt de bovenste iets dichterbij dan de onderste,
+    // maar omhoog gaan mag alleen als het echt veel scheelt.
+    const lines: Polyline[] = [
+      [{ x: 10, y: 100 }, { x: 60, y: 100 }],
+      [{ x: 60, y: 92 }, { x: 110, y: 92 }],
+      [{ x: 60, y: 110 }, { x: 110, y: 110 }],
+    ];
+    const plan = buildPlan(lines, paper, { start: { x: 10, y: 100 } });
+    expect(plan.strokes.map((s) => s[0].y)).toEqual([100, 110, 92]);
+    const plain = buildPlan(lines, paper, { start: { x: 10, y: 100 }, topToBottom: false });
+    expect(plain.strokes.map((s) => s[0].y)).toEqual([100, 92, 110]);
+  });
+});
