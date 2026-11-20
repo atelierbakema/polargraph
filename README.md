@@ -3,12 +3,18 @@ Polargraph — archief en documentatie
 
 Deze repo is het centrale archief van de Polargraph-software en -documentatie
 van Sandy Noble (GitHub: `euphy`, website polargraph.co.uk — inmiddels offline).
-Doel: alles op één plek bewaren, zodat er niets verloren gaat.
+Doel: alles op één plek bewaren, zodat er niets verloren gaat, en de software
+hier verder onderhouden en verbeteren.
 
 ## Wat staat waar
 
 | Map | Inhoud |
 |---|---|
+| [`controller/`](controller/) | **De desktop-app** (Processing) waarmee je tekeningen maakt en naar de machine stuurt |
+| [`firmware/polarshield/`](firmware/polarshield/) | Firmware voor Arduino Mega + Polarshield met touchscreen (Polargraph SD) |
+| [`firmware/polarshield-esp32/`](firmware/polarshield-esp32/) | Firmware voor de ESP32-versie van de Polarshield (PlatformIO) |
+| [`firmware/a1-uno/`](firmware/a1-uno/) | Firmware voor Arduino Uno + Adafruit Motorshield (de eerste machines) |
+| [`docs/analyse-software.md`](docs/analyse-software.md) | **Analyse van de software:** gevonden bugs en verbetervoorstellen |
 | [`wikis/polargraph/`](wikis/polargraph/Home.md) | **De handleiding.** Volledige wiki van Sandy (28 pagina's), inclusief geschiedenis. Begin bij [Home.md](wikis/polargraph/Home.md). |
 | [`wikis/polargraphcontroller/`](wikis/polargraphcontroller/) | Wiki van de controller-app |
 | [`wikis/polargraph_server_polarshield/`](wikis/polargraph_server_polarshield/) | Wiki van de Polarshield-firmware (Arduino Mega) |
@@ -17,19 +23,15 @@ Doel: alles op één plek bewaren, zodat er niets verloren gaat.
 | [`docs/images/`](docs/images/) | Afbeeldingen die de wiki gebruikt |
 | [`archive/`](archive/) | **Complete backups** van al Sandy's repo's: alle code, alle branches, alle versies (tags) en alle wiki-geschiedenis. Zie [archive/README.md](archive/README.md). |
 
-## De code zelf
+## Over de code
 
-Om mee te werken (bekijken, aanpassen, bouwen) staan de repo's ook los in dit account:
+De mappen `controller/` en `firmware/` bevatten de laatste versie van Sandy's
+code (de `master`-branch van elke repo). Elke map heeft een `HERKOMST.md` met de
+exacte bron-commit. De volledige geschiedenis, alle oude versies en branches
+staan in [`archive/`](archive/).
 
-| Repo | Wat |
-|---|---|
-| [polargraphcontroller](https://github.com/atelierbakema/polargraphcontroller) | De desktop-app (Processing) waarmee je tekeningen maakt en naar de machine stuurt |
-| [polargraph_server_polarshield_esp32](https://github.com/atelierbakema/polargraph_server_polarshield_esp32) | Firmware voor Polarshield met ESP32 (PlatformIO) |
-| [polargraph_server_a1](https://github.com/atelierbakema/polargraph_server_a1) | Firmware voor Arduino Uno + Adafruit Motorshield |
-
-Let op: in die losse repo's staat alleen de hoofdbranch. De oude versies, de
-overige branches én de oorspronkelijke Mega-firmware (`polargraph_server_polarshield`,
-die niet als losse repo in dit account staat) zitten wél in [`archive/`](archive/).
+De losse forks in dit account (`polargraphcontroller`, `polargraph_server_polarshield_esp32`,
+`polargraph_server_a1`) zijn niet meer nodig om mee te werken: deze repo is de werkplek.
 
 ## Wat (nog) niet automatisch bewaard kon worden
 
