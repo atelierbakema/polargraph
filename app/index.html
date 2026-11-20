@@ -84,6 +84,13 @@
               <label>Breedte tussen motoren (mm) <input type="number" id="machineW" min="100" step="1" /></label>
               <label>Hoogte motoren tot vloer (mm) <input type="number" id="machineH" min="100" step="1" /></label>
             </div>
+            <label>Firmware op de machine
+              <select id="firmware">
+                <option value="original">Origineel van Sandy Noble (1.4.3 of ouder)</option>
+                <option value="ab1">Atelier Bakema (1.4.3-ab1 of nieuwer)</option>
+              </select>
+            </label>
+            <p class="hint">De versie staat linksonder op het touchscreen als de machine opstart.</p>
             <details class="advanced">
               <summary>Motorinstellingen</summary>
               <div class="grid2">
@@ -107,6 +114,21 @@
           <button type="button" class="primary" id="exportSd">Bewaar voor SD-kaart</button>
           <button type="button" id="exportGcode">Bewaar als G-code</button>
           <p class="hint">Het SD-bestand werkt met de huidige firmware van de PolargraphSD. G-code is voor de nieuwe firmware en voor andere plotters.</p>
+        </section>
+
+        <section class="step" id="step-simulate">
+          <h2><span class="num">5</span> Proefdraaien</h2>
+          <p class="hint">Bekijk wat de machine met een SD-bestand doet, regel voor regel zoals de firmware het leest. Werkt ook met je oude bestanden van de SD-kaart.</p>
+          <div class="row">
+            <button type="button" id="simulatePlan">Proefdraai deze tekening</button>
+            <label class="button">Open SD-bestand<input type="file" id="simulateFile" accept=".txt,.TXT,text/plain" hidden /></label>
+          </div>
+          <div id="simResult" hidden>
+            <p class="sim-title" id="simTitle"></p>
+            <dl class="stats" id="simStats"></dl>
+            <ul class="warnings" id="simMessages"></ul>
+            <button type="button" id="simBack">Terug naar mijn tekening</button>
+          </div>
         </section>
       </aside>
 

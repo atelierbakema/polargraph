@@ -275,3 +275,19 @@ dialog form > button.primary { align-self: flex-end; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+.sim-title { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.warnings li.info { background: var(--surface); color: var(--muted); border: 1px solid var(--line); }
+.stage.simulating::after {
+  content: "Proefdraai";
+  position: absolute;
+  right: 12px;
+  top: 60px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  pointer-events: none;
+}

@@ -220,6 +220,8 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 - **20 november 2026:** de kern van de app is gebouwd en getest (`app/src/core/`, 32 tests). Het gaat om de meetkunde van de machine, SVG inlezen, plaatsen op het papier, slimme lijnvolgorde, en export naar Sandy's SD-formaat en naar G-code. Er is ook een commandoregelprogramma (`app/src/cli.ts`). Nog niet getest op de echte machine. 
 - **20 november 2026 (later):** eerste versie van de webinterface (`app/index.html`, `app/src/ui/`). SVG laden of slepen, op het papier plaatsen (passend, schaal, draaien, positie), voorbeeld met tekenlijnen, beweeglijnen en koorden die je aan en uit zet, afspelen, rustig zoomen en schuiven met knoppen "Alles in beeld" en "Papier", instellingen bewaren in de browser en als bestand, en exporteren naar SD-bestand (met checklist) of G-code. Starten met `npm run dev` in `app/`.
 
+- **20 november 2026 (avond):** aangepaste firmware **1.4.3-ab1** voor de PolargraphSD (`firmware/polarshield-ab/`), met bugfixes F1 t/m F4, een bestandenlijst zonder verborgen Mac-bestanden en een wachtcommando (`C51`) voor de inktdroogtijd. Compileert; nog niet op de machine getest. In de app: keuze welke firmware er op de machine staat, en **proefdraaien**: een SD-bestand regel voor regel uitvoeren zoals de firmware dat doet, ook voor oude bestanden.
+
 ### Ideeën om op te nemen in de planning
 
 - **Tekenvolgorde zoals een kunstenaar** (20 nov, gebouwd): kies tussen slim (kortste weg), rechtshandig (linksboven naar rechtsonder) en linkshandig (rechtsboven naar linksonder). Alle drie werken van boven naar onder, omdat de penlift van de PolargraphSD onder de pen zit en anders over verse inkt schuurt. De keuze wordt onthouden.

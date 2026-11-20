@@ -29,6 +29,11 @@ export interface LegacyExportOptions {
   includeMachineSpec?: boolean;
   /** Aan het eind terug naar de linkerbovenhoek. Standaard aan. */
   returnToStart?: boolean;
+  /**
+   * Wachten op droge inkt met C51. Alleen voor de Atelier Bakema-firmware (1.4.3-ab1 en
+   * nieuwer); de originele firmware kent dit commando niet. Standaard uit.
+   */
+  pauseCommand?: boolean;
 }
 
 export const CMD = {
@@ -40,6 +45,7 @@ export const CMD = {
   setMmPerRev: 'C29',
   setStepsPerRev: 'C30',
   setStepMultiplier: 'C37',
+  pause: 'C51',
 } as const;
 
 function cmd(name: string, ...params: Array<number | string>): string {
@@ -76,12 +82,14 @@ export function exportLegacy(plan: DrawingPlan, machine: MachineConfig, paper: P
     last = s;
   };
 
-  for (const stroke of plan.strokes) {
+  plan.strokes.forEach((stroke, index) => {
     lines.push(cmd(CMD.penUp));
     moveTo(stroke[0]);
+    const pause = plan.pauses[index] ?? 0;
+    if (options.pauseCommand && pause > 0) lines.push(cmd(CMD.pause, Math.round(pause * 1000)));
     lines.push(cmd(CMD.penDown));
     for (let i = 1; i < stroke.length; i++) moveTo(stroke[i]);
-  }
+  });
   lines.push(cmd(CMD.penUp));
   if (options.returnToStart ?? true) moveTo(startPoint);
 

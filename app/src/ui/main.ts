@@ -15,6 +15,7 @@ import { buildPlan, DEFAULT_SPEEDS, estimateSeconds, fitToPaper, place, type Dra
 import { importSvg, type SvgImportResult } from '../core/svg.ts';
 import { exportLegacy, sdFileName, validateLegacy } from '../core/export/legacy.ts';
 import { exportGcode } from '../core/export/gcode.ts';
+import { simulateLegacy, type FirmwareVariant, type SimResult } from '../core/simulate/legacy.ts';
 import { Viewer } from './view.ts';
 import exampleSvg from './example.svg?raw';
 
@@ -38,6 +39,8 @@ interface Settings {
   order: OrderStrategy;
   /** Inktdroogtijd in seconden; 0 = uit. */
   inkDryingSec: number;
+  /** Welke firmware er op de machine staat. */
+  firmware: FirmwareVariant;
 }
 
 const ORDERS: OrderStrategy[] = ['nearest', 'right-handed', 'left-handed', 'original'];
@@ -50,6 +53,7 @@ const DEFAULT_SETTINGS: Settings = {
   paper: { size: 'A3', orientation: 'portrait', customWidthMm: 500, customHeightMm: 700, topMm: 250, leftMm: null },
   order: 'nearest',
   inkDryingSec: 0,
+  firmware: 'original',
 };
 
 function loadSettings(): { settings: Settings; fromStorage: boolean } {
@@ -84,6 +88,7 @@ function mergeSettings(input: unknown): Settings {
   }
   if (ORDERS.includes(i.order as OrderStrategy)) d.order = i.order as OrderStrategy;
   d.inkDryingSec = Math.max(0, num(i.inkDryingSec, d.inkDryingSec));
+  if (i.firmware === 'original' || i.firmware === 'ab1') d.firmware = i.firmware;
   return d;
 }
 
@@ -105,6 +110,8 @@ const state = {
   placement: { scale: 1, offsetX: 0, offsetY: 0, rotation: 0 } as Placement,
   plan: null as DrawingPlan | null,
   placedBounds: null as ReturnType<typeof boundsOf>,
+  /** Proefdraai die nu getoond wordt, of null. */
+  simulation: null as SimResult | null,
 };
 
 function paperConfig(): PaperConfig {
@@ -136,6 +143,7 @@ const inputs = {
   offsetY: $<HTMLInputElement>('offsetY'),
   order: $<HTMLSelectElement>('order'),
   inkDrying: $<HTMLInputElement>('inkDrying'),
+  firmware: $<HTMLSelectElement>('firmware'),
   paperSize: $<HTMLSelectElement>('paperSize'),
   orientation: $<HTMLSelectElement>('orientation'),
   paperW: $<HTMLInputElement>('paperW'),
@@ -169,7 +177,11 @@ function recompute(): void {
   const placed = placedLines();
   state.placedBounds = boundsOf(placed);
   state.plan = buildPlan(placed, paper, { order: state.settings.order, inkDryingSec: state.settings.inkDryingSec, speeds: DEFAULT_SPEEDS });
-  viewer.setScene({ machine, paper, strokes: state.plan.strokes });
+  if (state.simulation) {
+    viewer.setScene({ machine: state.simulation.machine, paper, strokes: [], simulated: state.simulation });
+  } else {
+    viewer.setScene({ machine, paper, strokes: state.plan.strokes });
+  }
   renderStats();
   renderWarnings(paper);
   syncPlacementInputs();
@@ -212,9 +224,9 @@ function renderWarnings(paper: PaperConfig): void {
   for (const p of checkSetup(state.settings.machine, paper)) items.push({ text: p.message, error: p.level === 'error' });
   for (const w of state.source?.warnings ?? []) items.push({ text: w });
   for (const w of state.plan?.warnings ?? []) items.push({ text: w });
-  if ((state.plan?.stats.pauseSec ?? 0) > 0) {
+  if ((state.plan?.stats.pauseSec ?? 0) > 0 && state.settings.firmware === 'original') {
     items.push({
-      text: 'Wachten op droge inkt kan de huidige firmware (SD-bestand) nog niet. De volgorde houdt er wel rekening mee. In G-code wacht de machine wel.',
+      text: 'Wachten op droge inkt kan de originele firmware niet. De volgorde houdt er wel rekening mee. Met de Atelier Bakema-firmware of in G-code wacht de machine wel.',
     });
   }
   for (const item of items) {
@@ -254,6 +266,7 @@ function syncSettingsInputs(): void {
   inputs.stepMultiplier.value = String(machine.stepMultiplier);
   inputs.order.value = state.settings.order;
   inputs.inkDrying.value = String(state.settings.inkDryingSec);
+  inputs.firmware.value = state.settings.firmware;
   inputs.paperSize.value = paper.size;
   inputs.orientation.value = paper.orientation;
   inputs.paperW.value = String(paper.customWidthMm);
@@ -270,6 +283,11 @@ function loadSvgText(text: string, name: string): void {
   try {
     state.source = importSvg(text);
     state.fileName = name;
+    if (state.simulation) {
+      state.simulation = null;
+      $('simResult').hidden = true;
+      $('canvas').parentElement!.classList.remove('simulating');
+    }
     $('filename').textContent = name;
     fit();
   } catch (e) {
@@ -336,9 +354,66 @@ function download(name: string, text: string, type: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+function legacyText(): string {
+  return exportLegacy(state.plan!, state.settings.machine, paperConfig(), { pauseCommand: state.settings.firmware === 'ab1' });
+}
+
+// ---------- Proefdraaien ----------
+
+function showSimulation(text: string, title: string): void {
+  const sim = simulateLegacy(text, state.settings.machine, state.settings.firmware);
+  state.simulation = sim;
+  $('simTitle').textContent = title;
+  const stats = $('simStats');
+  stats.innerHTML = '';
+  const rows: Array<[string, string]> = [
+    ['Commando\'s', fmtNum(sim.stats.commands)],
+    ['Tekenen', `${fmtNum(sim.stats.drawLengthMm / 1000, 1)} m`],
+    ['Verplaatsen', `${fmtNum(sim.stats.travelLengthMm / 1000, 1)} m`],
+  ];
+  if (sim.stats.pauseMs > 0) rows.push(['Wachten', `± ${fmtNum(Math.max(1, sim.stats.pauseMs / 60000), 0)} min`]);
+  if (sim.machine.widthMm !== state.settings.machine.widthMm || sim.machine.heightMm !== state.settings.machine.heightMm) {
+    rows.push(['Machinemaat uit bestand', `${fmtNum(sim.machine.widthMm)} × ${fmtNum(sim.machine.heightMm)} mm`]);
+  }
+  for (const [k, v] of rows) {
+    const dt = document.createElement('dt');
+    dt.textContent = k;
+    const dd = document.createElement('dd');
+    dd.textContent = v;
+    stats.append(dt, dd);
+  }
+  const list = $('simMessages');
+  list.innerHTML = '';
+  const problems = sim.messages.filter((m) => m.level !== 'info');
+  if (problems.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'info';
+    li.textContent = 'Geen problemen gevonden. Zo zou de machine het tekenen.';
+    list.append(li);
+  }
+  for (const m of sim.messages.slice(0, 30)) {
+    const li = document.createElement('li');
+    li.className = m.level === 'error' ? 'error' : m.level === 'info' ? 'info' : '';
+    li.textContent = m.line > 0 ? `Regel ${m.line}: ${m.text}` : m.text;
+    list.append(li);
+  }
+  $('simResult').hidden = false;
+  $('canvas').parentElement!.classList.add('simulating');
+  setProgress(1);
+  recompute();
+  viewer.fitPaper();
+}
+
+function endSimulation(): void {
+  state.simulation = null;
+  $('simResult').hidden = true;
+  $('canvas').parentElement!.classList.remove('simulating');
+  recompute();
+}
+
 function exportSd(): void {
   if (!state.plan) return;
-  const text = exportLegacy(state.plan, state.settings.machine, paperConfig());
+  const text = legacyText();
   const issues = validateLegacy(text);
   if (issues.length > 0) {
     alertMessage(`Er ging iets mis bij het maken van het bestand (regel ${issues[0].line}: ${issues[0].message}).`);
@@ -500,6 +575,21 @@ $<HTMLInputElement>('loadSettings').addEventListener('change', async (e) => {
 });
 
 $('exportSd').addEventListener('click', exportSd);
+$('simulatePlan').addEventListener('click', () => {
+  if (!state.plan || state.plan.strokes.length === 0) return;
+  showSimulation(legacyText(), `Proefdraai: ${sdFileName(state.fileName)}`);
+});
+$<HTMLInputElement>('simulateFile').addEventListener('change', async (e) => {
+  const input = e.target as HTMLInputElement;
+  const f = input.files?.[0];
+  if (f) showSimulation(await f.text(), `Proefdraai: ${f.name}`);
+  input.value = '';
+});
+$('simBack').addEventListener('click', endSimulation);
+inputs.firmware.addEventListener('change', () => {
+  state.settings.firmware = inputs.firmware.value as FirmwareVariant;
+  onSettingsChanged();
+});
 $('exportGcode').addEventListener('click', exportG);
 for (const [buttonId, textId] of [['copyText', 'fileText'], ['copyGcode', 'gcodeText']]) {
   $(buttonId).addEventListener('click', async () => {

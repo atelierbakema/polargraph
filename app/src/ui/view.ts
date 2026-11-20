@@ -13,6 +13,11 @@ export interface Scene {
   paper: PaperConfig;
   /** Lijnen in papiercoördinaten, in tekenvolgorde. */
   strokes: Polyline[];
+  /**
+   * Proefdraai: bewegingen van de machine zelf, in machinecoördinaten. Als dit gezet is,
+   * worden `strokes` genegeerd.
+   */
+  simulated?: { segments: Array<{ from: Point; to: Point; penDown: boolean }>; start: Point };
 }
 
 export interface ViewOptions {
@@ -86,7 +91,7 @@ export class Viewer {
   /** Positie van de pen bij de huidige voortgang, in machinecoördinaten. */
   penPosition(): Point {
     if (!this.scene) return { x: 0, y: 0 };
-    const home = this.toMachine({ x: 0, y: 0 });
+    const home = this.homePoint();
     if (this.segments.length === 0) return home;
     const target = this.options.progress * this.totalLength;
     for (const s of this.segments) {
@@ -139,6 +144,12 @@ export class Viewer {
     this.canvas.height = Math.round(height * dpr);
   }
 
+  /** Startpunt: linksboven op het papier, of bij een proefdraai waar het bestand begint. */
+  private homePoint(): Point {
+    if (this.scene?.simulated) return this.scene.simulated.start;
+    return this.toMachine({ x: 0, y: 0 });
+  }
+
   private toMachine(p: Point): Point {
     const paper = this.scene!.paper;
     return { x: p.x + paper.leftMm, y: p.y + paper.topMm };
@@ -150,12 +161,22 @@ export class Viewer {
     this.segments = [];
     let total = 0;
     if (!this.scene) return;
-    const home = this.toMachine({ x: 0, y: 0 });
+    const home = this.homePoint();
     let pos = home;
     const add = (from: Point, to: Point, penDown: boolean) => {
       total += Math.hypot(to.x - from.x, to.y - from.y);
       this.segments.push({ from, to, penDown, end: total });
     };
+    if (this.scene.simulated) {
+      for (const s of this.scene.simulated.segments) {
+        const path = s.penDown ? this.drawPath : this.travelPath;
+        path.moveTo(s.from.x, s.from.y);
+        path.lineTo(s.to.x, s.to.y);
+        add(s.from, s.to, s.penDown);
+      }
+      this.totalLength = total;
+      return;
+    }
     for (const stroke of this.scene.strokes) {
       const pts = stroke.map((p) => this.toMachine(p));
       this.travelPath.moveTo(pos.x, pos.y);
@@ -261,7 +282,7 @@ export class Viewer {
     }
 
     // Startpunt: linkerbovenhoek van het papier.
-    const home = this.toMachine({ x: 0, y: 0 });
+    const home = this.homePoint();
     ctx.strokeStyle = cssVar('--accent');
     ctx.lineWidth = px(2);
     ctx.beginPath();
