@@ -14,6 +14,7 @@ hier verder onderhouden en verbeteren.
 | [`firmware/polarshield/`](firmware/polarshield/) | Firmware voor Arduino Mega + Polarshield met touchscreen (Polargraph SD) |
 | [`firmware/polarshield-esp32/`](firmware/polarshield-esp32/) | Firmware voor de ESP32-versie van de Polarshield (PlatformIO) |
 | [`firmware/a1-uno/`](firmware/a1-uno/) | Firmware voor Arduino Uno + Adafruit Motorshield (de eerste machines) |
+| [`docs/visie-en-planning.md`](docs/visie-en-planning.md) | **Visie en planning** voor de nieuwe webapp |
 | [`docs/analyse-software.md`](docs/analyse-software.md) | **Analyse van de software:** gevonden bugs en verbetervoorstellen |
 | [`wikis/polargraph/`](wikis/polargraph/Home.md) | **De handleiding.** Volledige wiki van Sandy (28 pagina's), inclusief geschiedenis. Begin bij [Home.md](wikis/polargraph/Home.md). |
 | [`wikis/polargraphcontroller/`](wikis/polargraphcontroller/) | Wiki van de controller-app |
