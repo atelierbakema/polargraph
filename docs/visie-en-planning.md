@@ -114,6 +114,29 @@ Met een kleine aanpassing van de firmware wordt het nog prettiger:
 - **Automatisch uitschakelen instelbaar.** Nu gaan de motoren na 10 minuten altijd uit, en dat is niet aan te passen. Dat wordt een instelling, inclusief "nooit".
 - **De knop MOTORS ON** gaat niet meer stilletjes uit van een home-positie. Die aanname is nu de bron van veel verwarring.
 
+#### Installatiewizard op de machine
+
+Mark's idee: een **installatiewizard** op het touchscreen, zoals bij een 3D-printer of een nieuwe telefoon. Je doorloopt hem alleen als je de machine opnieuw opstelt ("ik heb mijn machine veranderd"):
+
+1. "Hoe breed is je machine?" Meet de afstand tussen de motoren en vul die in met +/− knoppen.
+2. "Hoe hoog hangen de motoren boven de vloer?" Meet en vul in.
+3. Eventueel: motortype en tandwiel. Standaard staan die al goed.
+4. Opslaan in het geheugen van de machine. De firmware heeft daar al plekken voor (breedte en hoogte via `C24`).
+
+De **machine kent dan zijn eigen maten**, en een tekenbestand hoeft alleen nog te weten:
+
+- het papier: breedte, hoogte, en waar het hangt (afstand onder de motoren, links of gecentreerd);
+- de tekening zelf.
+
+Bij elke tekening hoef je dan alleen de pen op linksboven van het papier te zetten (met de pijltjes) en op start te drukken.
+
+**Belangrijke ontwerpkeuze die hieruit volgt:** in de huidige opzet rekent de computer alles om naar koordlengtes van de motoren, en die staan zo in het SD-bestand. Zo'n bestand werkt dus alleen bij precies die machinebreedte: verander je de breedte, dan kloppen al je oude bestanden niet meer. In de nieuwe opzet schrijft de app de tekening in **millimeters op het papier**, en rekent de **machine** zelf om naar koordlengtes met zijn eigen maten. Dan:
+
+- werkt hetzelfde bestand op elke machinebreedte, ook bij iemand anders met een Polargraph;
+- hoeft de machinebreedte maar op één plek te kloppen: in de machine.
+
+Dit vraagt een uitbreiding van de firmware (een commando voor "beweeg naar x,y in mm op het papier"). Tot die tijd (versies 0.1 t/m 0.3) vraagt de app de machinematen zelf ook, en maakt hij bestanden in koordlengtes die bij de huidige firmware passen.
+
 ### Stap 3: automatisch homen met schakelaars (versie 0.5, hardware)
 
 Zie hieronder. Daarmee verdwijnt het handmatige deel helemaal.
@@ -177,7 +200,7 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 | **0.1** | Jouw belangrijkste werkwijze vervangen | SVG laden, op het papier plaatsen en schalen, tekenlijnen en beweeglijnen zien en aan/uit zetten, SD-bestand maken met checklist. Machinematen en papierpositie invullen. Homen via "start vanaf linksboven" (werkt met de huidige firmware). |
 | **0.2** | Comfort | Instellingen opslaan en laden (inclusief import uit de oude app), tijdsinschatting, slimmere lijnvolgorde (minder beweeglijnen), voorbeeldweergave afspelen. |
 | **0.3** | Tekenen via USB | Verbinden in Chrome/Edge, pen handmatig bewegen, live tekenen met voortgang, pauze en stop. |
-| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen. Home-wizard op het touchscreen, "niet gehomed"-status, instelbare auto-uitschakeling. |
+| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen. Installatiewizard en home-wizard op het touchscreen, "niet gehomed"-status, instelbare auto-uitschakeling, tekenbestanden in millimeters op het papier. |
 | **0.5** | Automatisch homen | Eindschakelaars monteren, kalibratie (`C48`) testen en verbeteren, knop "Kalibreer machine" in de app en op het touchscreen. |
 | **0.6+** | Meer creatieve mogelijkheden | Penbreedte en vulpatronen, meerdere kleuren of lagen (pen wisselen), tekst, foto's en rastereffecten. |
 | **1.0** | Openbaar | Stabiel en gedocumenteerd, gepubliceerd op atelierbakema.com voor iedereen met een Polargraph. |
