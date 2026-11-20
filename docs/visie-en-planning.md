@@ -88,6 +88,24 @@ De schakelaars komen op de aansluitingen voor eindschakelaars: pin 16 voor links
 - de afstand tussen de twee motoren (nauwkeurig gemeten);
 - waar het papier hangt ten opzichte van de motoren (bovenrand en linkerrand). Dat is een instelling in de app, die je alleen opnieuw doet als je het papier verplaatst.
 
+**Hoe het homen moet gaan (uitwerking met Mark):**
+
+1. **Instellingen die je opgeeft** (in de app, opgeslagen in je machine-instellingen):
+   - **Breedte tussen de motoren.** Die verschilt per opstelling: met hetzelfde touw kan de machine 2 meter of 5 meter breed zijn. Dit is de belangrijkste instelling en moet nauwkeurig gemeten worden.
+   - **Waar het papier hangt:** afstand van de motoren tot de bovenrand van het papier, en de horizontale positie (standaard gecentreerd).
+   - **Hoogte van de motoren tot de vloer**, als veiligheidsgrens: zo ver mag de gondel nooit zakken. Voor het bepalen van de positie is deze waarde niet nodig.
+2. **Je hoeft de gondel nergens neer te zetten.** Vanuit elke positie:
+   - Links aantrekken tot de schakelaar klikt, terwijl rechts koord viert.
+   - Dan links koord vieren en rechts aantrekken tot die schakelaar klikt.
+3. **Zekerheid door herhalen, zoals bij een 3D-printer.** Elke schakelaar wordt twee keer benaderd: eerst snel tot hij klikt, dan een klein stukje terug (bijv. 10 mm), en dan langzaam opnieuw. De tweede, langzame meting is de echte. Daarna gaat de machine nog één keer links-rechts heen en weer en vergelijkt de getelde stappen met de eerste ronde. Wijken ze meer af dan een kleine marge, dan is er iets mis (koord geslipt, gondel klem), en meldt de machine dat in plaats van te gaan tekenen.
+4. **Klaar:** de machine weet waar hij hangt, rijdt naar het startpunt van de tekening en begint.
+
+Dit is een verbetering ten opzichte van Sandy's routine, die elke schakelaar één keer benadert zonder controle.
+
+**Hardware:** de schakelaars worden op het bord aangesloten op de ingangen die de firmware als pin 16 (links) en pin 14 (rechts) gebruikt. Op welke aansluitingen of soldeerpunten dat op jouw bord zit, bepalen we met een foto van het bord.
+
+**Om te onderzoeken:** als de schakelaar de gondel op een vast punt naast de motor vasthoudt (niet alleen op een vaste koordlengte), kan de machine in principe ook de breedte tussen de motoren zelf meten: het aantal stappen dat koord B inloopt van de linker- naar de rechterschakelaar volgt rechtstreeks uit die breedte. Dan zou je de breedte niet eens meer hoeven op te geven. Dit is een mooie latere verbetering, maar voor de eerste versie geven we de breedte gewoon op.
+
 **Wat dit oplevert:**
 
 - Geen "home blijft niet hangen" meer: na het aanzetten of na de auto-uitschakeling laat je de machine zichzelf opnieuw kalibreren.
