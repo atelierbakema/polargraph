@@ -37,3 +37,15 @@ De servo-aansluitingen in hetzelfde schema: `SER1`/`SER2`, met pin 1 GND, pin 2 
 ## Historie
 
 Sandy heeft de kalibratieknop in versie 1.2 van de firmware weer van het touchscreen gehaald (commit `b00066c`, "removed the calibrate button"). De code (`calibrate.ino`, commando `C48`) is wel blijven staan. De routine is dus niet afgemaakt, en we moeten hem goed testen voordat we erop bouwen.
+
+## Mark's oude 3D-printerbordjes: Megatronics
+
+Mark heeft een aantal **Megatronics**-bordjes liggen (RepRapWorld). Die zijn gebouwd rond dezelfde chip als de PolargraphSD (ATmega2560, net als een Arduino Mega), en Marlin heeft aansluitschema's voor de verschillende versies (Megatronics, v2, v3 en v3.x).
+
+**Nog uit te zoeken:**
+
+- welke versie het precies is (staat op de print, bijvoorbeeld "v2.0" of "v3.1");
+- of Marlin's polargraph-stand op deze bordjes draait en past in het geheugen;
+- of er motordrivers op zitten of los bij moeten.
+
+Als dat werkt, is een Megatronics plus twee stappenmotoren en een servo een goedkope basis voor een bouwpakket.
