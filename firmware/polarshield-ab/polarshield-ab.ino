@@ -128,6 +128,7 @@ const long EEPROM_MACHINE_HOME_B = 38; // 4 bytes
 const int EEPROM_PENLIFT_DOWN = 42; // 2 bytes
 const int EEPROM_PENLIFT_UP = 44; // 2 bytes
 const int EEPROM_LANGUAGE = 46; // 1 byte, taal van het touchscreen (-ab1)
+const int EEPROM_THEME = 47; // 1 byte, kleurenschema van het touchscreen (-ab2)
 
 // Pen raising servo
 Servo penHeight;

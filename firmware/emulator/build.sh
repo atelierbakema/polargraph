@@ -46,9 +46,9 @@ cp "$WORK/build/sketch/$NAME.ino.cpp" "$WORK/sketch.cpp"
 em++ -O2 -std=gnu++11 -w -DARDUINO=10806 -DPOLARGRAPH_EMULATOR \
   -I"$WORK/sketch/$NAME" -I"$HERE/stubs" -I"$HERE/vendor" \
   -s ASYNCIFY=1 -s ASYNCIFY_STACK_SIZE=65536 \
-  -s ALLOW_MEMORY_GROWTH=1 -s SINGLE_FILE=1 -s MODULARIZE=1 -s EXPORT_NAME="$EXPORT" \
-  -s EXPORTED_FUNCTIONS='["_main","_malloc","_free","_emu_framebuffer","_emu_framebuffer_version","_emu_touch","_emu_serial_in","_emu_sd_add","_emu_set_speed","_emu_motor_a","_emu_motor_b","_emu_servo_angle","_emu_servo_on"]' \
-  -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU16","HEAPU8","UTF8ToString","stringToUTF8","lengthBytesUTF8"]' \
+  -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 -s SINGLE_FILE=1 -s MODULARIZE=1 -s EXPORT_NAME="$EXPORT" \
+  -s EXPORTED_FUNCTIONS='["_main","_malloc","_free","_emu_framebuffer","_emu_framebuffer_version","_emu_touch","_emu_serial_in","_emu_sd_add","_emu_set_speed","_emu_motor_a","_emu_motor_b","_emu_servo_angle","_emu_servo_on","_emu_eeprom"]' \
+  -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","callMain","HEAPU16","HEAPU8","UTF8ToString","stringToUTF8","lengthBytesUTF8"]' \
   "$WORK/sketch.cpp" \
   "$HERE/emu.cpp" "$HERE/vendor/WString.cpp" "$HERE/vendor/Print.cpp" "$HERE/vendor/AccelStepper.cpp" \
   "$HERE/vendor/DefaultFonts.c" $(ls "$WORK/sketch/$NAME"/*.c 2>/dev/null) \

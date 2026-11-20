@@ -201,25 +201,65 @@ const byte BUTTON_DEC_PENLIFT_DOWN = 43;
 const byte BUTTON_ADJUST_PENLIFT = 44;
 const byte BUTTON_PENLIFT_SAVE_TO_EEPROM = 45;
 const byte BUTTON_LANGUAGE = 46; // -ab1
+const byte BUTTON_THEME = 47; // -ab2
 
-/*  Kleuren van het touchscreen (Atelier Bakema, -ab1).
-    Light  = knoppen, Dark = achtergrond, Bright = tekst. Pas hier aan voor een ander kleurenschema.
-    (Voorheen kreeg de knopkleur een "willekeurige" waarde.) */
-byte colorLightRed = 31;     // knop: diep groenblauw  #1F6F64
-byte colorLightGreen = 111;
-byte colorLightBlue = 100;
+/*  Kleuren van het touchscreen (-ab2). Er zijn een paar kleurenschema's; de keuze
+    staat in de EEPROM (adres 47) en is te wijzigen met de knop KLEUREN in de instellingen.
+    colorLight = knoppen, colorDark = achtergrond, colorBright = tekst op de achtergrond,
+    colorButtonText = tekst op de knoppen. */
+byte colorLightRed, colorLightGreen, colorLightBlue;
+byte colorDarkRed, colorDarkGreen, colorDarkBlue;
+byte colorBrightRed, colorBrightGreen, colorBrightBlue;
+byte colorButtonTextRed, colorButtonTextGreen, colorButtonTextBlue;
+byte colorAccentRed, colorAccentGreen, colorAccentBlue;
+byte colorShineRed, colorShineGreen, colorShineBlue;
 
-byte colorDarkRed = 29;      // achtergrond: inkt  #1D2124
-byte colorDarkGreen = 33;
-byte colorDarkBlue = 36;
+struct Theme {
+  byte background[3];
+  byte button[3];
+  byte text[3];
+  byte buttonText[3];
+  byte accent[3];
+  byte shine[3];
+  const char *name[2]; // EN, NL
+};
 
-byte colorBrightRed = 244;   // tekst: papier  #F4F2EC
-byte colorBrightGreen = 242;
-byte colorBrightBlue = 236;
+const char THEME_0_EN[] PROGMEM = "Teal";      const char THEME_0_NL[] PROGMEM = "Zeegroen";
+const char THEME_1_EN[] PROGMEM = "Ink blue";  const char THEME_1_NL[] PROGMEM = "Inktblauw";
+const char THEME_2_EN[] PROGMEM = "Graphite";  const char THEME_2_NL[] PROGMEM = "Grafiet";
+const char THEME_3_EN[] PROGMEM = "Orange";    const char THEME_3_NL[] PROGMEM = "Oranje";
+const char THEME_4_EN[] PROGMEM = "Paper";     const char THEME_4_NL[] PROGMEM = "Papier";
+const char THEME_5_EN[] PROGMEM = "Classic";   const char THEME_5_NL[] PROGMEM = "Klassiek";
 
-const byte colorAccentRed = 224;   // ingedrukte knop: oranje  #E0732E
-const byte colorAccentGreen = 115;
-const byte colorAccentBlue = 46;
+const Theme THEMES[] PROGMEM = {
+  // achtergrond      knop               tekst              knoptekst          accent            glans
+  {{29, 33, 36},   {31, 111, 100},  {244, 242, 236}, {244, 242, 236}, {224, 115, 46},  {228, 252, 244}, {THEME_0_EN, THEME_0_NL}},
+  {{22, 26, 38},   {47, 91, 183},   {240, 242, 248}, {255, 255, 255}, {240, 190, 70},  {225, 236, 255}, {THEME_1_EN, THEME_1_NL}},
+  {{24, 24, 24},   {72, 76, 80},    {236, 236, 232}, {250, 250, 246}, {224, 115, 46},  {255, 255, 255}, {THEME_2_EN, THEME_2_NL}},
+  {{33, 26, 22},   {200, 92, 36},   {246, 238, 228}, {255, 250, 244}, {47, 91, 183},   {255, 236, 214}, {THEME_3_EN, THEME_3_NL}},
+  {{226, 222, 211}, {29, 33, 36},   {29, 33, 36},    {244, 242, 236}, {224, 115, 46},  {255, 255, 255}, {THEME_4_EN, THEME_4_NL}},
+  {{5, 5, 5},      {51, 102, 204},  {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {200, 220, 255}, {THEME_5_EN, THEME_5_NL}},
+};
+const byte THEME_COUNT = sizeof(THEMES) / sizeof(THEMES[0]);
+const byte DEFAULT_THEME = 0;
+byte lcdTheme = DEFAULT_THEME;
+
+// Het blaadje op het opstartscherm is altijd papier met inkt, in elk kleurenschema.
+const byte CARD_R = 244, CARD_G = 242, CARD_B = 236;
+const byte INK_R = 29, INK_G = 33, INK_B = 36;
+
+void lcd_applyTheme(byte t)
+{
+  if (t >= THEME_COUNT) t = DEFAULT_THEME;
+  lcdTheme = t;
+  const Theme *th = &THEMES[t];
+  colorDarkRed = pgm_read_byte(&th->background[0]); colorDarkGreen = pgm_read_byte(&th->background[1]); colorDarkBlue = pgm_read_byte(&th->background[2]);
+  colorLightRed = pgm_read_byte(&th->button[0]); colorLightGreen = pgm_read_byte(&th->button[1]); colorLightBlue = pgm_read_byte(&th->button[2]);
+  colorBrightRed = pgm_read_byte(&th->text[0]); colorBrightGreen = pgm_read_byte(&th->text[1]); colorBrightBlue = pgm_read_byte(&th->text[2]);
+  colorButtonTextRed = pgm_read_byte(&th->buttonText[0]); colorButtonTextGreen = pgm_read_byte(&th->buttonText[1]); colorButtonTextBlue = pgm_read_byte(&th->buttonText[2]);
+  colorAccentRed = pgm_read_byte(&th->accent[0]); colorAccentGreen = pgm_read_byte(&th->accent[1]); colorAccentBlue = pgm_read_byte(&th->accent[2]);
+  colorShineRed = pgm_read_byte(&th->shine[0]); colorShineGreen = pgm_read_byte(&th->shine[1]); colorShineBlue = pgm_read_byte(&th->shine[2]);
+}
 
 // Taal van het touchscreen (-ab1). Opgeslagen in de EEPROM.
 const byte LANG_EN = 0;
@@ -232,6 +272,80 @@ extern "C" const uint8_t AbButtonFont[];
 extern "C" const uint8_t AbLogo[];
 extern "C" const uint16_t AbLogoWidth;
 extern "C" const uint16_t AbLogoHeight;
+
+extern "C" const uint8_t AbUiHeight;
+extern "C" const uint8_t AbUiWidths[];
+extern "C" const uint16_t AbUiOffsets[];
+extern "C" const uint8_t AbUiData[];
+
+/** Breedte in pixels van een tekst in het Inter-lettertype (-ab2). */
+int lcd_textWidth(const char *text)
+{
+  int w = 0;
+  for (const char *p = text; *p; p++) {
+    byte c = (byte)*p;
+    if (c < 32 || c > 126) c = '?';
+    w += pgm_read_byte(&AbUiWidths[c - 32]);
+  }
+  return w;
+}
+
+/** Tekst in het Inter-lettertype met zachte randen (-ab2). De achtergrond moet er al staan:
+ *  randpixels worden gemengd tussen tekstkleur (fr,fg,fb) en achtergrondkleur (br,bg,bb). */
+void lcd_drawText(const char *text, int x, int y, byte fr, byte fg, byte fb, byte br, byte bg, byte bb)
+{
+  for (const char *p = text; *p; p++) {
+    byte c = (byte)*p;
+    if (c < 32 || c > 126) c = '?';
+    byte w = pgm_read_byte(&AbUiWidths[c - 32]);
+    uint16_t offset = pgm_read_word(&AbUiOffsets[c - 32]);
+    uint16_t bit = 0;
+    for (byte row = 0; row < AbUiHeight; row++) {
+      int runStart = -1;
+      byte runLevel = 0;
+      for (byte col = 0; col <= w; col++) {
+        byte level = 0;
+        if (col < w) {
+          byte data = pgm_read_byte(&AbUiData[offset + bit / 4]);
+          level = (data >> (6 - 2 * (bit % 4))) & 3;
+          bit++;
+        }
+        if (level != runLevel) {
+          if (runLevel > 0) {
+            lcd.setColor(br + ((int)fr - br) * runLevel / 3, bg + ((int)fg - bg) * runLevel / 3, bb + ((int)fb - bb) * runLevel / 3);
+            lcd.fillRect(x + runStart, y + row, x + col - 1, y + row);
+          }
+          runStart = col;
+          runLevel = level;
+        }
+      }
+    }
+    x += w;
+  }
+}
+
+void lcd_drawText(String text, int x, int y, byte fr, byte fg, byte fb, byte br, byte bg, byte bb)
+{
+  lcd_drawText(text.c_str(), x, y, fr, fg, fb, br, bg, bb);
+}
+
+/** Tekst op de achtergrond, in de tekstkleur van het kleurenschema. */
+void lcd_drawTextOnBackground(String text, int x, int y)
+{
+  lcd_drawText(text, x, y, colorBrightRed, colorBrightGreen, colorBrightBlue, colorDarkRed, colorDarkGreen, colorDarkBlue);
+}
+
+/** Naam van het kleurenschema in de strook tussen de knoppen (-ab2). */
+void lcd_drawThemeName()
+{
+  char name[20];
+  strncpy_P(name, (const char *)pgm_read_ptr(&THEMES[lcdTheme].name[lcdLanguage == LANG_NL ? 1 : 0]), sizeof(name) - 1);
+  name[sizeof(name) - 1] = 0;
+  String msg = String(lcdLanguage == LANG_NL ? "Kleuren: " : "Colours: ") + name;
+  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
+  lcd.fillRect(0, buttonCoords[1][1] + 8, 319, buttonCoords[1][1] + 26);
+  lcd_drawTextOnBackground(msg, buttonCoords[0][0], buttonCoords[1][1] + 9);
+}
 
 /** Scherm leegmaken in de achtergrondkleur (in plaats van zwart). */
 void lcd_clear()
@@ -480,6 +594,14 @@ void lcd_processTouchCommand()
       lcd_clear();
       lcd_drawButtons();
       break;
+    case BUTTON_THEME:
+      // Volgend kleurenschema, en onthouden (-ab2).
+      lcd_applyTheme((lcdTheme + 1) % THEME_COUNT);
+      EEPROM.write(EEPROM_THEME, lcdTheme);
+      lcd_clear();
+      lcd_drawButtons();
+      lcd_drawThemeName();
+      break;
     case BUTTON_ADJUST_PENLIFT:
       currentMenu = MENU_ADJUST_PENLIFT;
       lcd.setColor(colorLightRed,colorLightGreen,colorLightBlue);
@@ -550,17 +672,13 @@ void lcd_drawNumberWithBackground(int x, int y, long value)
 {
   lcd.setColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
   lcd.fillRect(x, y, x+buttonSize, y+20);
-  lcd.setColor(colorBrightRed,colorBrightGreen,colorBrightBlue);
-  lcd.setBackColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
-  lcd.printNumI(value, x, y);
+  lcd_drawTextOnBackground(String(value), x, y);
 }
 void lcd_drawFloatWithBackground(int x, int y, float value)
 {
   lcd.setColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
   lcd.fillRect(x, y, x+buttonSize, y+20);
-  lcd.setColor(colorBrightRed,colorBrightGreen,colorBrightBlue);
-  lcd.setBackColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
-  lcd.printNumF(value, 2, x, y);
+  lcd_drawTextOnBackground(String(value, 2), x, y);
 }
 
 void lcd_runStartScript()
@@ -651,6 +769,7 @@ void lcd_initLCD()
   // Taal uit het geheugen (-ab1); een lege EEPROM (0xFF) geeft de standaardtaal.
   lcdLanguage = EEPROM.read(EEPROM_LANGUAGE);
   if (lcdLanguage >= LANG_COUNT) lcdLanguage = DEFAULT_LANGUAGE;
+  lcd_applyTheme(EEPROM.read(EEPROM_THEME));
 
   lcd_drawSplash();
   
@@ -698,7 +817,7 @@ void lcd_drawSplashCard(int top, int previousTop)
   lcd.fillRect(x2 + 1, max(top + SPLASH_SHADOW, 0), x2 + SPLASH_SHADOW, min(top + SPLASH_CARD_H + SPLASH_SHADOW - 1, 239));
   lcd.fillRect(x1 + SPLASH_SHADOW, max(top + SPLASH_CARD_H, 0), x2 + SPLASH_SHADOW, min(top + SPLASH_CARD_H + SPLASH_SHADOW - 1, 239));
   // papier
-  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
+  lcd.setColor(CARD_R, CARD_G, CARD_B);
   if (top + SPLASH_CARD_H > 0) lcd.fillRect(x1, max(top, 0), x2, min(top + SPLASH_CARD_H - 1, 239));
 }
 
@@ -735,7 +854,7 @@ void lcd_drawSplash()
       lcd.setColor(colorLightRed, colorLightGreen, colorLightBlue);
       lcd_drawLogoSpan(x0, y0, row, start - step, start);
       // nieuwe positie in het licht
-      lcd.setColor(228, 252, 244);
+      lcd.setColor(colorShineRed, colorShineGreen, colorShineBlue);
       lcd_drawLogoSpan(x0, y0, row, start, start + band);
     }
     delay(16);
@@ -750,39 +869,23 @@ void lcd_drawSplash()
     lcd.fillRect(x0, lineY, x0 + w, lineY + 3);
     delay(12);
   }
-  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
-  lcd.setBackColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
-  lcd.setFont((uint8_t *)AbButtonFont);
-  lcd.print("POLARGRAPH", x0, lineY + 12);
-  lcd.setFont(SmallFont);
-  lcd.print("v" + FIRMWARE_VERSION_NO, x0 + 168, lineY + 16);
+  lcd_drawText("POLARGRAPH", x0, lineY + 10, INK_R, INK_G, INK_B, CARD_R, CARD_G, CARD_B);
+  String version = "v" + FIRMWARE_VERSION_NO;
+  lcd_drawText(version, x0 + AbLogoWidth - lcd_textWidth(version.c_str()), lineY + 10, 110, 114, 116, CARD_R, CARD_G, CARD_B);
 
-  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
-  lcd.setBackColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
-  lcd.print("Gebaseerd op het werk van Sandy Noble", SPLASH_CARD_X, 222);
+  lcd_drawTextOnBackground(lcdLanguage == LANG_NL ? "Gebaseerd op het werk van Sandy Noble" : "Based on the work of Sandy Noble", SPLASH_CARD_X, 216);
 }
 
 void lcd_showSummary()
 {
-  // Status van de SD-kaart onder het logo, in de gekozen taal (-ab1).
+  // Status van de SD-kaart onder het blaadje, in de gekozen taal en kleuren (-ab2).
   boolean nl = lcdLanguage == LANG_NL;
-  int y = 190;
-  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
-  lcd.setBackColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
-  lcd.setFont(SmallFont);
-  int x = SPLASH_CARD_X;
-  if (!cardPresent) {
-    lcd.print(nl ? "Geen SD-kaart gevonden" : "No SD card found", x, y);
-  }
-  else if (!cardInit) {
-    lcd.print(nl ? "SD-kaart niet leesbaar" : "SD card could not be read", x, y);
-  }
-  else if (useAutoStartFromSD && autoStartFileFound) {
-    lcd.print((nl ? "Start automatisch: " : "Starting: ") + autoStartFilename, x, y);
-  }
-  else {
-    lcd.print(nl ? "SD-kaart klaar" : "SD card ready", x, y);
-  }
+  String msg;
+  if (!cardPresent) msg = nl ? "Geen SD-kaart gevonden" : "No SD card found";
+  else if (!cardInit) msg = nl ? "SD-kaart niet leesbaar" : "SD card could not be read";
+  else if (useAutoStartFromSD && autoStartFileFound) msg = (nl ? "Start automatisch: " : "Starting: ") + autoStartFilename;
+  else msg = nl ? "SD-kaart klaar" : "SD card ready";
+  lcd_drawTextOnBackground(msg, SPLASH_CARD_X, 192);
 }
 
 void lcd_drawButtons()
@@ -881,7 +984,9 @@ void lcd_drawButtons()
   {
     lcd_drawButton(BUTTON_ADJUST_PENLIFT);
     lcd_drawButton(BUTTON_LANGUAGE);
+    lcd_drawButton(BUTTON_THEME);
     lcd_drawButton(BUTTON_DONE);
+    lcd_drawThemeName();
   }
   else if (currentMenu == MENU_ADJUST_PENLIFT)
   {
@@ -926,90 +1031,94 @@ void lcd_outlinePressedButton(byte pressedButton, byte r, byte g, byte b)
     Positie: 0 = linksboven, 2 = midden boven, 4 = rechtsboven, 6/8/10 = onderste rij.
     Een regel per knop is maximaal 11 tekens; "\\n" begint een nieuwe regel.
     Nieuwe taal: LANG_COUNT ophogen en per knop een tekst toevoegen. */
-const char LBL_0_EN[] PROGMEM = "SET\nHOME";
-const char LBL_0_NL[] PROGMEM = "HOME\nZETTEN";
-const char LBL_1_EN[] PROGMEM = "MOTORS\nON";
-const char LBL_1_NL[] PROGMEM = "MOTOREN\nAAN";
-const char LBL_2_EN[] PROGMEM = "MOTORS\nOFF";
-const char LBL_2_NL[] PROGMEM = "MOTOREN\nUIT";
-const char LBL_3_EN[] PROGMEM = "SHOW\nCOMMANDS";
-const char LBL_3_NL[] PROGMEM = "TOON\nCOMMANDO'S";
-const char LBL_4_EN[] PROGMEM = "PEN LIFT";
-const char LBL_4_NL[] PROGMEM = "PENLIFT";
-const char LBL_5_EN[] PROGMEM = "DRAW\nFROM SD";
-const char LBL_5_NL[] PROGMEM = "TEKENEN\nVAN SD";
-const char LBL_6_EN[] PROGMEM = "MORE";
-const char LBL_6_NL[] PROGMEM = "MEER";
-const char LBL_7_EN[] PROGMEM = "CALIBRATE";
-const char LBL_7_NL[] PROGMEM = "KALIBREREN";
-const char LBL_8_EN[] PROGMEM = "PAUSE";
-const char LBL_8_NL[] PROGMEM = "PAUZE";
-const char LBL_9_EN[] PROGMEM = "RESUME";
-const char LBL_9_NL[] PROGMEM = "DOORGAAN";
-const char LBL_10_EN[] PROGMEM = "RESET";
-const char LBL_10_NL[] PROGMEM = "RESET";
-const char LBL_11_EN[] PROGMEM = "PEN\nUP";
-const char LBL_11_NL[] PROGMEM = "PEN\nOMHOOG";
-const char LBL_12_EN[] PROGMEM = "PEN\nDOWN";
-const char LBL_12_NL[] PROGMEM = "PEN\nOMLAAG";
-const char LBL_13_EN[] PROGMEM = "PREVIOUS\nFILE";
-const char LBL_13_NL[] PROGMEM = "VORIG\nBESTAND";
-const char LBL_14_EN[] PROGMEM = "NEXT\nFILE";
-const char LBL_14_NL[] PROGMEM = "VOLGEND\nBESTAND";
-const char LBL_15_EN[] PROGMEM = "BACK";
-const char LBL_15_NL[] PROGMEM = "TERUG";
-const char LBL_16_EN[] PROGMEM = "DRAW\nTHIS FILE";
-const char LBL_16_NL[] PROGMEM = "TEKEN\nDIT BESTAND";
-const char LBL_17_EN[] PROGMEM = "STOP\nDRAWING";
-const char LBL_17_NL[] PROGMEM = "STOP\nTEKENEN";
-const char LBL_18_EN[] PROGMEM = "SETTINGS";
-const char LBL_18_NL[] PROGMEM = "INSTEL-\nLINGEN";
-const char LBL_19_EN[] PROGMEM = "MORE\nSETTINGS";
-const char LBL_19_NL[] PROGMEM = "MEER\nINSTEL-\nLINGEN";
-const char LBL_20_EN[] PROGMEM = "SLOWER";
-const char LBL_20_NL[] PROGMEM = "LANGZAMER";
-const char LBL_21_EN[] PROGMEM = "FASTER";
-const char LBL_21_NL[] PROGMEM = "SNELLER";
-const char LBL_22_EN[] PROGMEM = "ACCEL.\nLOWER";
-const char LBL_22_NL[] PROGMEM = "ACCEL.\nLAGER";
-const char LBL_23_EN[] PROGMEM = "ACCEL.\nHIGHER";
-const char LBL_23_NL[] PROGMEM = "ACCEL.\nHOGER";
-const char LBL_24_EN[] PROGMEM = "STEP\nSMALLER";
-const char LBL_24_NL[] PROGMEM = "STAP\nKLEINER";
-const char LBL_25_EN[] PROGMEM = "STEP\nLARGER";
-const char LBL_25_NL[] PROGMEM = "STAP\nGROTER";
-const char LBL_26_EN[] PROGMEM = "PEN SIZE\nSMALLER";
-const char LBL_26_NL[] PROGMEM = "PENDIKTE\nKLEINER";
-const char LBL_27_EN[] PROGMEM = "PEN SIZE\nLARGER";
-const char LBL_27_NL[] PROGMEM = "PENDIKTE\nGROTER";
-const char LBL_28_EN[] PROGMEM = "DONE";
-const char LBL_28_NL[] PROGMEM = "KLAAR";
-const char LBL_29_EN[] PROGMEM = "PEN SIZE";
-const char LBL_29_NL[] PROGMEM = "PENDIKTE";
-const char LBL_30_EN[] PROGMEM = "SPEED";
-const char LBL_30_NL[] PROGMEM = "SNELHEID";
-const char LBL_31_EN[] PROGMEM = "POSITION";
-const char LBL_31_NL[] PROGMEM = "POSITIE";
-const char LBL_32_EN[] PROGMEM = "CORD A\nSHORTER";
-const char LBL_32_NL[] PROGMEM = "KOORD A\nKORTER";
-const char LBL_33_EN[] PROGMEM = "CORD A\nLONGER";
-const char LBL_33_NL[] PROGMEM = "KOORD A\nLANGER";
-const char LBL_34_EN[] PROGMEM = "CORD B\nSHORTER";
-const char LBL_34_NL[] PROGMEM = "KOORD B\nKORTER";
-const char LBL_35_EN[] PROGMEM = "CORD B\nLONGER";
-const char LBL_35_NL[] PROGMEM = "KOORD B\nLANGER";
-const char LBL_36_EN[] PROGMEM = "PEN DOWN\n-";
-const char LBL_36_NL[] PROGMEM = "PEN OMLAAG\n-";
-const char LBL_37_EN[] PROGMEM = "PEN DOWN\n+";
-const char LBL_37_NL[] PROGMEM = "PEN OMLAAG\n+";
-const char LBL_38_EN[] PROGMEM = "PEN UP\n-";
-const char LBL_38_NL[] PROGMEM = "PEN OMHOOG\n-";
-const char LBL_39_EN[] PROGMEM = "PEN UP\n+";
-const char LBL_39_NL[] PROGMEM = "PEN OMHOOG\n+";
-const char LBL_40_EN[] PROGMEM = "SAVE";
-const char LBL_40_NL[] PROGMEM = "OPSLAAN";
-const char LBL_41_EN[] PROGMEM = "LANGUAGE\nENGLISH";
-const char LBL_41_NL[] PROGMEM = "TAAL\nNEDERLANDS";
+// BEGIN KNOPTEKSTEN (gemaakt door tools/labels.py)
+const char LBL_0_EN[] PROGMEM = "Set\nhome";
+const char LBL_0_NL[] PROGMEM = "Home\nzetten";
+const char LBL_1_EN[] PROGMEM = "Motors\non";
+const char LBL_1_NL[] PROGMEM = "Motoren\naan";
+const char LBL_2_EN[] PROGMEM = "Motors\noff";
+const char LBL_2_NL[] PROGMEM = "Motoren\nuit";
+const char LBL_3_EN[] PROGMEM = "Show\nmessages";
+const char LBL_3_NL[] PROGMEM = "Toon\nberichten";
+const char LBL_4_EN[] PROGMEM = "Pen lift";
+const char LBL_4_NL[] PROGMEM = "Penlift";
+const char LBL_5_EN[] PROGMEM = "Draw\nfrom SD";
+const char LBL_5_NL[] PROGMEM = "Tekenen\nvan SD";
+const char LBL_6_EN[] PROGMEM = "More";
+const char LBL_6_NL[] PROGMEM = "Meer";
+const char LBL_7_EN[] PROGMEM = "Calibrate";
+const char LBL_7_NL[] PROGMEM = "Kalibreren";
+const char LBL_8_EN[] PROGMEM = "Pause";
+const char LBL_8_NL[] PROGMEM = "Pauze";
+const char LBL_9_EN[] PROGMEM = "Resume";
+const char LBL_9_NL[] PROGMEM = "Doorgaan";
+const char LBL_10_EN[] PROGMEM = "Reset";
+const char LBL_10_NL[] PROGMEM = "Reset";
+const char LBL_11_EN[] PROGMEM = "Pen\nup";
+const char LBL_11_NL[] PROGMEM = "Pen\nomhoog";
+const char LBL_12_EN[] PROGMEM = "Pen\ndown";
+const char LBL_12_NL[] PROGMEM = "Pen\nomlaag";
+const char LBL_13_EN[] PROGMEM = "Previous\nfile";
+const char LBL_13_NL[] PROGMEM = "Vorig\nbestand";
+const char LBL_14_EN[] PROGMEM = "Next\nfile";
+const char LBL_14_NL[] PROGMEM = "Volgend\nbestand";
+const char LBL_15_EN[] PROGMEM = "Back";
+const char LBL_15_NL[] PROGMEM = "Terug";
+const char LBL_16_EN[] PROGMEM = "Draw\nthis file";
+const char LBL_16_NL[] PROGMEM = "Teken dit\nbestand";
+const char LBL_17_EN[] PROGMEM = "Stop\ndrawing";
+const char LBL_17_NL[] PROGMEM = "Stop\ntekenen";
+const char LBL_18_EN[] PROGMEM = "Settings";
+const char LBL_18_NL[] PROGMEM = "Instellingen";
+const char LBL_19_EN[] PROGMEM = "More\nsettings";
+const char LBL_19_NL[] PROGMEM = "Meer\ninstellingen";
+const char LBL_20_EN[] PROGMEM = "Slower";
+const char LBL_20_NL[] PROGMEM = "Langzamer";
+const char LBL_21_EN[] PROGMEM = "Faster";
+const char LBL_21_NL[] PROGMEM = "Sneller";
+const char LBL_22_EN[] PROGMEM = "Accel.\nlower";
+const char LBL_22_NL[] PROGMEM = "Optrekken\nrustiger";
+const char LBL_23_EN[] PROGMEM = "Accel.\nhigher";
+const char LBL_23_NL[] PROGMEM = "Optrekken\nsneller";
+const char LBL_24_EN[] PROGMEM = "Step\nsmaller";
+const char LBL_24_NL[] PROGMEM = "Stap\nkleiner";
+const char LBL_25_EN[] PROGMEM = "Step\nlarger";
+const char LBL_25_NL[] PROGMEM = "Stap\ngroter";
+const char LBL_26_EN[] PROGMEM = "Pen size\nsmaller";
+const char LBL_26_NL[] PROGMEM = "Pendikte\nkleiner";
+const char LBL_27_EN[] PROGMEM = "Pen size\nlarger";
+const char LBL_27_NL[] PROGMEM = "Pendikte\ngroter";
+const char LBL_28_EN[] PROGMEM = "Done";
+const char LBL_28_NL[] PROGMEM = "Klaar";
+const char LBL_29_EN[] PROGMEM = "Pen size";
+const char LBL_29_NL[] PROGMEM = "Pendikte";
+const char LBL_30_EN[] PROGMEM = "Speed";
+const char LBL_30_NL[] PROGMEM = "Snelheid";
+const char LBL_31_EN[] PROGMEM = "Position";
+const char LBL_31_NL[] PROGMEM = "Positie";
+const char LBL_32_EN[] PROGMEM = "Cord A\nshorter";
+const char LBL_32_NL[] PROGMEM = "Koord A\nkorter";
+const char LBL_33_EN[] PROGMEM = "Cord A\nlonger";
+const char LBL_33_NL[] PROGMEM = "Koord A\nlanger";
+const char LBL_34_EN[] PROGMEM = "Cord B\nshorter";
+const char LBL_34_NL[] PROGMEM = "Koord B\nkorter";
+const char LBL_35_EN[] PROGMEM = "Cord B\nlonger";
+const char LBL_35_NL[] PROGMEM = "Koord B\nlanger";
+const char LBL_36_EN[] PROGMEM = "Pen down\n-";
+const char LBL_36_NL[] PROGMEM = "Omlaag\n-";
+const char LBL_37_EN[] PROGMEM = "Pen down\n+";
+const char LBL_37_NL[] PROGMEM = "Omlaag\n+";
+const char LBL_38_EN[] PROGMEM = "Pen up\n-";
+const char LBL_38_NL[] PROGMEM = "Omhoog\n-";
+const char LBL_39_EN[] PROGMEM = "Pen up\n+";
+const char LBL_39_NL[] PROGMEM = "Omhoog\n+";
+const char LBL_40_EN[] PROGMEM = "Save";
+const char LBL_40_NL[] PROGMEM = "Opslaan";
+const char LBL_41_EN[] PROGMEM = "Language\nEnglish";
+const char LBL_41_NL[] PROGMEM = "Taal\nNederlands";
+const char LBL_42_EN[] PROGMEM = "Colours";
+const char LBL_42_NL[] PROGMEM = "Kleuren";
+// EIND KNOPTEKSTEN
 
 struct ButtonLabel {
   byte id;
@@ -1018,6 +1127,7 @@ struct ButtonLabel {
 };
 
 const ButtonLabel BUTTON_LABELS[] PROGMEM = {
+// BEGIN KNOPTABEL (gemaakt door tools/labels.py)
   {BUTTON_SET_HOME, 0, {LBL_0_EN, LBL_0_NL}},
   {BUTTON_POWER_ON, 0, {LBL_1_EN, LBL_1_NL}},
   {BUTTON_POWER_OFF, 0, {LBL_2_EN, LBL_2_NL}},
@@ -1060,17 +1170,18 @@ const ButtonLabel BUTTON_LABELS[] PROGMEM = {
   {BUTTON_INC_PENLIFT_UP, 10, {LBL_39_EN, LBL_39_NL}},
   {BUTTON_PENLIFT_SAVE_TO_EEPROM, 0, {LBL_40_EN, LBL_40_NL}},
   {BUTTON_LANGUAGE, 2, {LBL_41_EN, LBL_41_NL}},
+  {BUTTON_THEME, 4, {LBL_42_EN, LBL_42_NL}},
+// EIND KNOPTABEL
 };
 
-/** Tekst in het midden van een knop, met regels onder elkaar. */
+/** Tekst in het midden van een knop, met regels onder elkaar (-ab2: Inter, zachte randen). */
 void lcd_drawButtonText(byte coordsIndex, const char *progmemText)
 {
   char buf[40];
   strncpy_P(buf, progmemText, sizeof(buf) - 1);
   buf[sizeof(buf) - 1] = 0;
 
-  const int charW = 8;
-  const int lineH = 18;
+  const int lineH = AbUiHeight + 1;
   byte lines = 1;
   for (byte i = 0; buf[i]; i++) if (buf[i] == '\n') lines++;
 
@@ -1078,16 +1189,16 @@ void lcd_drawButtonText(byte coordsIndex, const char *progmemText)
   int top = buttonCoords[coordsIndex][1];
   int y = top + (buttonSize - lines * lineH) / 2 + 1;
   char *line = buf;
-  lcd.setFont((uint8_t *)AbButtonFont);
   while (line) {
     char *next = strchr(line, '\n');
     if (next) *next = 0;
-    int width = strlen(line) * charW;
-    lcd.print(line, left + (buttonSize - width) / 2, y);
+    int width = lcd_textWidth(line);
+    lcd_drawText(line, left + (buttonSize - width) / 2, y,
+      colorButtonTextRed, colorButtonTextGreen, colorButtonTextBlue,
+      colorLightRed, colorLightGreen, colorLightBlue);
     y += lineH;
     line = next ? next + 1 : NULL;
   }
-  lcd.setFont(SmallFont);
 }
 
 void lcd_drawButton(byte but)
@@ -1163,12 +1274,10 @@ void lcd_drawCurrentSelectedFilename()
 {
   // erase the previous stuff
   lcd.setColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
-  lcd.fillRect(buttonCoords[0][0],buttonCoords[1][1]+10, screenWidth, buttonCoords[1][1]+24);
-  lcd.setColor(colorBrightRed,colorBrightGreen,colorBrightBlue);
-  lcd.setBackColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
+  lcd.fillRect(buttonCoords[0][0],buttonCoords[1][1]+8, screenWidth, buttonCoords[1][1]+26);
 
   // see if there's one already found
-  String msg = "No card found";
+  String msg = lcdLanguage == LANG_NL ? "Geen SD-kaart" : "No card found";
 
   if (commandFilename == "" || commandFilename == "            ")
   {
@@ -1182,7 +1291,8 @@ void lcd_drawCurrentSelectedFilename()
     msg = commandFilename;
   }
   
-  lcd.print(msg, buttonCoords[0][0],buttonCoords[1][1]+10);
+  if (msg == "None") msg = lcdLanguage == LANG_NL ? "Geen tekenbestanden" : "No drawing files";
+  lcd_drawTextOnBackground(msg, buttonCoords[0][0], buttonCoords[1][1]+9);
 }
 
 /** Hoort dit bestand in de lijst op het touchscreen? (-ab1)
@@ -1255,10 +1365,8 @@ void lcd_echoLastCommandToDisplay(String com, String prefix)
   if (currentMenu != MENU_INITIAL) return;
   
   lcd.setColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
-  lcd.fillRect(buttonCoords[0][0],buttonCoords[1][1]+10, screenWidth, buttonCoords[1][1]+24);
-  lcd.setColor(colorBrightRed,colorBrightGreen,colorBrightBlue);
-  lcd.setBackColor(colorDarkRed,colorDarkGreen,colorDarkBlue);
-  lcd.print(prefix + com, buttonCoords[0][0],buttonCoords[1][1]+10);
+  lcd.fillRect(buttonCoords[0][0],buttonCoords[1][1]+8, screenWidth, buttonCoords[1][1]+26);
+  lcd_drawTextOnBackground(prefix + com, buttonCoords[0][0], buttonCoords[1][1]+9);
 }
 
 byte lcd_getWhichButtonPressed(byte buttonNumber, byte menu)
@@ -1363,6 +1471,7 @@ byte lcd_getWhichButtonPressed(byte buttonNumber, byte menu)
     {
       case 1: return BUTTON_ADJUST_PENLIFT; break;
       case 2: return BUTTON_LANGUAGE; break;
+      case 3: return BUTTON_THEME; break;
       case 4: return BUTTON_DONE; break;
     }
   }

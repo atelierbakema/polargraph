@@ -9,10 +9,10 @@ Het touchscreen in de stijl van Atelier Bakema. Bekeken en getest in de emulator
 
 | Wijziging | Details |
 |---|---|
-| Opstartscherm | Animatie in de geest van een oude spelcomputer: een papieren blaadje valt op het scherm en veert na, "Atelier Bakema" wordt er regel voor regel op getekend, een lichtstreep glijdt over de letters, en daarna verschijnen "Polargraph", de versie, de status van de SD-kaart en een vermelding van Sandy Noble. Per beeld wordt alleen getekend wat verandert. Zie `../../docs/images/opstartscherm-1.4.3-ab2.gif` |
-| Kleuren | Achtergrond inkt `#1D2124`, knoppen diep groenblauw `#1F6F64`, tekst papier `#F4F2EC`, ingedrukte knop oranje `#E0732E`. Aan te passen bovenin `lcd.ino`. Voorheen kregen de knoppen een "willekeurige" kleur |
-| Lettertype | Knoppen in JetBrains Mono Bold (8×16), logo in Inter Display. Gemaakt met `tools/make_graphics.py` → `ab_graphics.c` (SIL Open Font License) |
-| Talen | Alle knopteksten in één tabel, in het Nederlands en Engels (UK). Duidelijkere teksten (bijv. "TEKENEN VAN SD", "INSTELLINGEN" in plaats van "MORE …"). Knop **TAAL** in het tweede instellingenmenu; de keuze wordt bewaard in de EEPROM (adres 46). Standaard: Nederlands |
+| Opstartscherm | Animatie in de geest van een oude spelcomputer: een papieren blaadje valt op het scherm en veert na, "Atelier Bakema" wordt er regel voor regel op getekend, een lichtstreep glijdt over de letters, en daarna verschijnen "Polargraph", de versie, de status van de SD-kaart en een vermelding van Sandy Noble. Per beeld wordt alleen getekend wat verandert. Zie `../../docs/images/opstartscherm-1.4.3-ab2.gif` en `opstartscherm-1.4.3-ab2-inktblauw.gif` |
+| Kleuren | Zes kleurenschema's: Zeegroen (standaard), Inktblauw, Grafiet, Oranje, Papier (licht) en Klassiek (zoals het origineel). Kiezen met de knop **KLEUREN** in het tweede instellingenmenu; de keuze wordt bewaard in de EEPROM (adres 47). Het opstartscherm gebruikt de kleuren van het gekozen schema. Voorheen kregen de knoppen een "willekeurige" kleur |
+| Lettertype | Inter SemiBold 14 px met zachte randen (2 bits per pixel, gemengd met de achtergrond) en proportionele breedtes, voor knoppen, bestandsnamen, getallen en het opstartscherm. Logo in Inter Display. Gemaakt met `tools/make_graphics.py` → `ab_graphics.c` (SIL Open Font License) |
+| Talen | Alle knopteksten in één tabel (`tools/labels.py` controleert of elke regel op de knop past en schrijft de tabel in `lcd.ino`), in het Nederlands en Engels (UK), met duidelijkere teksten (bijv. "Tekenen van SD", "Instellingen" in plaats van "MORE …"). Knop **TAAL** in het tweede instellingenmenu; de keuze wordt bewaard in de EEPROM (adres 46). Standaard: Nederlands |
 | Knoppen | Tekst automatisch gecentreerd, tot drie regels |
 
 ## Versie 1.4.3-ab1 (20 november 2026)

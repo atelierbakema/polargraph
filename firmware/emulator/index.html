@@ -46,6 +46,7 @@
         <p class="sub">De echte firmware van de machine, in je browser. Druk op het scherm zoals op de machine.</p>
         <div class="row" style="margin-top: 10px">
           <label for="fwChoice">Firmware</label>
+          <button type="button" id="reboot">Herstart machine</button>
           <select id="fwChoice">
             <option value="ab">Atelier Bakema 1.4.3-ab2 (nieuw)</option>
             <option value="origineel">Origineel van Sandy Noble 1.4.3</option>
@@ -135,6 +136,27 @@
           print: (t) => console.log(t),
           printErr: (t) => console.warn(t),
         });
+
+        // EEPROM (instellingen van de machine) bewaren in de browser, per firmware.
+        const eepromKey = 'polargraph-emulator:eeprom:' + (original ? 'origineel' : 'ab');
+        const eepromPtr = M._emu_eeprom();
+        const eepromView = () => new Uint8Array(M.HEAPU8.buffer, eepromPtr, 4096);
+        try {
+          const saved = localStorage.getItem(eepromKey);
+          if (saved) eepromView().set(Uint8Array.from(atob(saved), (c) => c.charCodeAt(0)));
+        } catch (e) { /* geen opslag beschikbaar */ }
+        let lastSaved = '';
+        setInterval(() => {
+          let bin = '';
+          for (const b of eepromView()) bin += String.fromCharCode(b);
+          const enc = btoa(bin);
+          if (enc !== lastSaved) {
+            lastSaved = enc;
+            try { localStorage.setItem(eepromKey, enc); } catch (e) { /* geen opslag beschikbaar */ }
+          }
+        }, 1000);
+        document.getElementById('reboot').addEventListener('click', () => location.reload());
+        M.callMain([]);
 
         // Scherm
         const screen = document.getElementById('screen');

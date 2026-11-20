@@ -288,6 +288,11 @@ extern AccelStepper motorB;
 
 extern "C" {
 EMSCRIPTEN_KEEPALIVE uint16_t *emu_framebuffer() { return fb; }
+/** De EEPROM, zodat de browser hem kan bewaren en terugzetten (instellingen blijven na herstart). */
+EMSCRIPTEN_KEEPALIVE uint8_t *emu_eeprom() {
+  if (!eepromInit) { memset(eeprom, 0xFF, sizeof eeprom); eepromInit = true; }
+  return eeprom;
+}
 EMSCRIPTEN_KEEPALIVE int emu_framebuffer_version() { return fbVersion; }
 EMSCRIPTEN_KEEPALIVE void emu_touch(int down, int x, int y) { touchDown = down != 0; touchX = x; touchY = y; }
 EMSCRIPTEN_KEEPALIVE void emu_serial_in(const char *text) { for (const char *p = text; *p; p++) serialIn.push_back((uint8_t)*p); }

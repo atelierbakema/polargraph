@@ -18,6 +18,7 @@ Open `index.html` via een lokale webserver (bijvoorbeeld `python3 -m http.server
 | EEPROM | Geheugen met dezelfde opslagmaten als de echte chip (`stubs/EEPROMAnything.h`) |
 | Seriële poort (USB) | Uitvoer in het venster "USB-verbinding"; je kunt commando's sturen |
 | Tijd | Instelbaar sneller dan echt (1× tot 100×) |
+| Herstarten | Knop "Herstart machine"; de EEPROM (instellingen, taal, kleuren) wordt in de browser bewaard, per firmware |
 
 De firmwarecode zelf wordt niet aangepast voor de emulator.
 
