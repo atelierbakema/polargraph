@@ -283,6 +283,19 @@ function setPlacement(scale: number, rotation: Placement['rotation'], left?: num
   recompute();
 }
 
+/** Tekening in het midden van het papier zetten, met dezelfde schaal en draaiing. */
+function center(): void {
+  const b = state.placedBounds;
+  if (!state.source || !b) return;
+  const paper = paperConfig();
+  setPlacement(
+    state.placement.scale,
+    state.placement.rotation,
+    (paper.widthMm - (b.maxX - b.minX)) / 2,
+    (paper.heightMm - (b.maxY - b.minY)) / 2,
+  );
+}
+
 function alertMessage(text: string): void {
   const list = $('warnings');
   const li = document.createElement('li');
@@ -405,6 +418,7 @@ for (const target of [drop, $('canvas')]) {
 }
 
 $('fit').addEventListener('click', fit);
+$('center').addEventListener('click', center);
 inputs.scale.addEventListener('change', () => {
   const v = numberValue(inputs.scale);
   if (v && v > 0) setPlacement(v / 100, state.placement.rotation);
