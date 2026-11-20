@@ -656,52 +656,121 @@ void lcd_initLCD()
   
 }
 
-/** Opstartscherm (-ab1): Atelier Bakema-logo op papierkleur, met de versie. */
-void lcd_drawSplash()
-{
-  // papier
-  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
-  lcd.fillRect(0, 0, 319, 239);
+/*  Opstartscherm (-ab2): een animatie in de geest van een oude spelcomputer.
+    Een papieren blaadje valt op het scherm en veert na, het logo wordt erop "getekend"
+    zoals de plotter dat doet, en een lichtstreep glijdt over de letters.
+    Per beeld wordt alleen getekend wat verandert, zodat het op de echte machine soepel loopt. */
 
-  // logo, regel voor regel als horizontale streepjes (snel op het echte scherm)
-  int x0 = (320 - (int)AbLogoWidth) / 2;
-  int y0 = 70;
+const int SPLASH_CARD_X = 20;
+const int SPLASH_CARD_W = 280;
+const int SPLASH_CARD_H = 130;
+const int SPLASH_CARD_Y = 40;     // eindpositie bovenkant
+const int SPLASH_SHADOW = 5;
+
+/** Tekent de "aan"-pixels van het logo binnen een kolombereik, als horizontale streepjes. */
+void lcd_drawLogoSpan(int x0, int y0, int row, int colFrom, int colTo)
+{
   int bytesPerRow = AbLogoWidth / 8;
-  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
-  for (int y = 0; y < (int)AbLogoHeight; y++) {
-    int runStart = -1;
-    for (int x = 0; x <= (int)AbLogoWidth; x++) {
-      boolean on = false;
-      if (x < (int)AbLogoWidth) on = pgm_read_byte(&AbLogo[y * bytesPerRow + x / 8]) & (0x80 >> (x % 8));
-      if (on && runStart < 0) runStart = x;
-      if (!on && runStart >= 0) {
-        lcd.fillRect(x0 + runStart, y0 + y, x0 + x - 1, y0 + y);
-        runStart = -1;
-      }
+  if (colFrom < 0) colFrom = 0;
+  if (colTo > (int)AbLogoWidth) colTo = AbLogoWidth;
+  int runStart = -1;
+  for (int x = colFrom; x <= colTo; x++) {
+    boolean on = false;
+    if (x < colTo) on = pgm_read_byte(&AbLogo[row * bytesPerRow + x / 8]) & (0x80 >> (x % 8));
+    if (on && runStart < 0) runStart = x;
+    if (!on && runStart >= 0) {
+      lcd.fillRect(x0 + runStart, y0 + row, x0 + x - 1, y0 + row);
+      runStart = -1;
     }
   }
+}
 
-  // streep in de knopkleur, en "POLARGRAPH" eronder
+/** Het blaadje (met schaduw) op hoogte top; wist het stuk waar het vorige beeld stond. */
+void lcd_drawSplashCard(int top, int previousTop)
+{
+  int x1 = SPLASH_CARD_X, x2 = SPLASH_CARD_X + SPLASH_CARD_W - 1;
+  // vrijgekomen stuk boven (bij vallen) of onder (bij terugveren) wissen
+  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
+  if (top > previousTop) lcd.fillRect(x1, max(previousTop, 0), x2 + SPLASH_SHADOW, min(top, 239));
+  else if (top < previousTop) lcd.fillRect(x1, max(top + SPLASH_CARD_H, 0), x2 + SPLASH_SHADOW, min(previousTop + SPLASH_CARD_H + SPLASH_SHADOW, 239));
+  // schaduw
+  lcd.setColor(12, 14, 16);
+  lcd.fillRect(x2 + 1, max(top + SPLASH_SHADOW, 0), x2 + SPLASH_SHADOW, min(top + SPLASH_CARD_H + SPLASH_SHADOW - 1, 239));
+  lcd.fillRect(x1 + SPLASH_SHADOW, max(top + SPLASH_CARD_H, 0), x2 + SPLASH_SHADOW, min(top + SPLASH_CARD_H + SPLASH_SHADOW - 1, 239));
+  // papier
+  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
+  if (top + SPLASH_CARD_H > 0) lcd.fillRect(x1, max(top, 0), x2, min(top + SPLASH_CARD_H - 1, 239));
+}
+
+void lcd_drawSplash()
+{
+  lcd_clear();
+
+  // 1. Het blaadje valt naar beneden (versnellend), en veert twee keer na.
+  const int frames[] = { -130, -110, -84, -52, -14, 30, 40, 31, 40, 36, 40 };
+  int previous = -SPLASH_CARD_H - SPLASH_SHADOW;
+  for (byte i = 0; i < sizeof(frames) / sizeof(frames[0]); i++) {
+    lcd_drawSplashCard(frames[i], previous);
+    previous = frames[i];
+    delay(45);
+  }
+
+  // 2. Het logo wordt "getekend", regel voor regel.
+  int x0 = (320 - (int)AbLogoWidth) / 2;
+  int y0 = SPLASH_CARD_Y + 30;
   lcd.setColor(colorLightRed, colorLightGreen, colorLightBlue);
-  lcd.fillRect(x0, y0 + AbLogoHeight + 12, x0 + 40, y0 + AbLogoHeight + 15);
+  for (int row = 0; row < (int)AbLogoHeight; row++) {
+    lcd_drawLogoSpan(x0, y0, row, 0, AbLogoWidth);
+    delay(24);
+  }
+
+  // 3. Lichtstreep schuin over de letters.
+  delay(250);
+  const int band = 24;
+  const int step = 5;
+  for (int s = -band; s < (int)AbLogoWidth + (int)AbLogoHeight; s += step) {
+    for (int row = 0; row < (int)AbLogoHeight; row++) {
+      int start = s - row / 2;
+      // vorige positie terug naar de logokleur
+      lcd.setColor(colorLightRed, colorLightGreen, colorLightBlue);
+      lcd_drawLogoSpan(x0, y0, row, start - step, start);
+      // nieuwe positie in het licht
+      lcd.setColor(228, 252, 244);
+      lcd_drawLogoSpan(x0, y0, row, start, start + band);
+    }
+    delay(16);
+  }
+  lcd.setColor(colorLightRed, colorLightGreen, colorLightBlue);
+  for (int row = 0; row < (int)AbLogoHeight; row++) lcd_drawLogoSpan(x0, y0, row, 0, AbLogoWidth);
+
+  // 4. Streep, naam en versie.
+  int lineY = y0 + AbLogoHeight + 10;
+  lcd.setColor(colorAccentRed, colorAccentGreen, colorAccentBlue);
+  for (int w = 4; w <= 40; w += 6) {
+    lcd.fillRect(x0, lineY, x0 + w, lineY + 3);
+    delay(12);
+  }
   lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
   lcd.setBackColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
   lcd.setFont((uint8_t *)AbButtonFont);
-  lcd.print("POLARGRAPH", x0, y0 + AbLogoHeight + 24);
+  lcd.print("POLARGRAPH", x0, lineY + 12);
   lcd.setFont(SmallFont);
-  lcd.print("v" + FIRMWARE_VERSION_NO, x0, y0 + AbLogoHeight + 44);
-  lcd.print("Gebaseerd op het werk van Sandy Noble", x0, 222);
+  lcd.print("v" + FIRMWARE_VERSION_NO, x0 + 168, lineY + 16);
+
+  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
+  lcd.setBackColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
+  lcd.print("Gebaseerd op het werk van Sandy Noble", SPLASH_CARD_X, 222);
 }
 
 void lcd_showSummary()
 {
   // Status van de SD-kaart onder het logo, in de gekozen taal (-ab1).
   boolean nl = lcdLanguage == LANG_NL;
-  int y = 196;
-  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
-  lcd.setBackColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
+  int y = 190;
+  lcd.setColor(colorBrightRed, colorBrightGreen, colorBrightBlue);
+  lcd.setBackColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
   lcd.setFont(SmallFont);
-  int x = (320 - (int)AbLogoWidth) / 2;
+  int x = SPLASH_CARD_X;
   if (!cardPresent) {
     lcd.print(nl ? "Geen SD-kaart gevonden" : "No SD card found", x, y);
   }
