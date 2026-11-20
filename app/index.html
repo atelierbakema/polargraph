@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Polargraph Studio</title>
+    <meta name="description" content="Zet je SVG-tekeningen om naar een tekenbestand voor je Polargraph." />
+    <link rel="stylesheet" href="./src/ui/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="panel" aria-label="Instellingen">
+        <header class="brand">
+          <h1>Polargraph Studio</h1>
+          <p class="sub">Versie 0.1, in ontwikkeling</p>
+        </header>
+
+        <section class="step" id="step-drawing">
+          <h2><span class="num">1</span> Tekening</h2>
+          <label class="drop" id="drop">
+            <input type="file" id="file" accept=".svg,image/svg+xml" />
+            <strong>Kies een SVG</strong>
+            <span>of sleep hem hierheen</span>
+          </label>
+          <p class="filename" id="filename">Voorbeeldtekening geladen</p>
+          <div class="row">
+            <button type="button" id="fit">Passend op papier</button>
+            <label class="inline">Marge <input type="number" id="margin" value="15" min="0" step="1" /> mm</label>
+          </div>
+          <div class="grid2">
+            <label>Schaal (%) <input type="number" id="scale" min="1" step="1" /></label>
+            <label>Draaien
+              <select id="rotation">
+                <option value="0">0°</option>
+                <option value="90">90°</option>
+                <option value="180">180°</option>
+                <option value="270">270°</option>
+              </select>
+            </label>
+            <label>Links (mm) <input type="number" id="offsetX" step="1" /></label>
+            <label>Boven (mm) <input type="number" id="offsetY" step="1" /></label>
+          </div>
+          <label class="check"><input type="checkbox" id="optimize" checked /> Slimme volgorde (minder heen en weer)</label>
+        </section>
+
+        <section class="step" id="step-paper">
+          <h2><span class="num">2</span> Papier</h2>
+          <div class="grid2">
+            <label>Formaat
+              <select id="paperSize">
+                <option>A5</option><option>A4</option><option selected>A3</option><option>A2</option><option>A1</option><option>A0</option>
+                <option value="custom">Eigen maat</option>
+              </select>
+            </label>
+            <label>Richting
+              <select id="orientation">
+                <option value="portrait">Staand</option>
+                <option value="landscape">Liggend</option>
+              </select>
+            </label>
+            <label class="custom-size">Breedte (mm) <input type="number" id="paperW" min="10" step="1" /></label>
+            <label class="custom-size">Hoogte (mm) <input type="number" id="paperH" min="10" step="1" /></label>
+            <label>Onder motoren (mm) <input type="number" id="paperTop" min="0" step="1" /></label>
+            <label>Vanaf links (mm) <input type="number" id="paperLeft" min="0" step="1" placeholder="midden" /></label>
+          </div>
+          <p class="hint">"Onder motoren" is de afstand van de lijn tussen de twee motoren tot de bovenrand van het papier. Laat "vanaf links" leeg om het papier in het midden te hangen.</p>
+        </section>
+
+        <section class="step" id="step-machine">
+          <details id="machineDetails">
+            <summary><h2><span class="num">3</span> Machine</h2><span class="summary" id="machineSummary"></span></summary>
+            <div class="grid2">
+              <label>Breedte tussen motoren (mm) <input type="number" id="machineW" min="100" step="1" /></label>
+              <label>Hoogte motoren tot vloer (mm) <input type="number" id="machineH" min="100" step="1" /></label>
+            </div>
+            <details class="advanced">
+              <summary>Motorinstellingen</summary>
+              <div class="grid2">
+                <label>mm per omwenteling <input type="number" id="mmPerRev" step="0.1" /></label>
+                <label>Stappen per omwenteling <input type="number" id="stepsPerRev" step="1" /></label>
+                <label>Microstappen <input type="number" id="stepMultiplier" step="1" /></label>
+              </div>
+              <p class="hint">Standaard voor de PolargraphSD: 95 mm, 200 stappen, 8 microstappen.</p>
+            </details>
+            <div class="row">
+              <button type="button" id="saveSettings">Instellingen downloaden</button>
+              <label class="button">Instellingen laden<input type="file" id="loadSettings" accept=".json,application/json" hidden /></label>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-export">
+          <h2><span class="num">4</span> Naar de machine</h2>
+          <dl class="stats" id="stats"></dl>
+          <ul class="warnings" id="warnings"></ul>
+          <button type="button" class="primary" id="exportSd">Bewaar voor SD-kaart</button>
+          <button type="button" id="exportGcode">Bewaar als G-code</button>
+          <p class="hint">Het SD-bestand werkt met de huidige firmware van de PolargraphSD. G-code is voor de nieuwe firmware en voor andere plotters.</p>
+        </section>
+      </aside>
+
+      <main class="stage">
+        <canvas id="canvas" aria-label="Voorbeeld van de tekening op de machine"></canvas>
+        <div class="toolbar" role="toolbar" aria-label="Weergave">
+          <button type="button" id="viewFit" title="Alles in beeld">Alles in beeld</button>
+          <button type="button" id="viewPaper" title="Papier in beeld">Papier</button>
+          <label class="toggle"><input type="checkbox" id="showDraw" checked /><span class="swatch draw"></span>Tekenlijnen</label>
+          <label class="toggle"><input type="checkbox" id="showTravel" checked /><span class="swatch travel"></span>Beweeglijnen</label>
+          <label class="toggle"><input type="checkbox" id="showCords" checked /><span class="swatch cords"></span>Koorden</label>
+        </div>
+        <div class="player">
+          <button type="button" id="play" aria-label="Afspelen">▶</button>
+          <input type="range" id="progress" min="0" max="1000" value="1000" aria-label="Voortgang van de tekening" />
+          <span id="progressLabel">100%</span>
+        </div>
+      </main>
+    </div>
+
+    <dialog id="checklist">
+      <form method="dialog">
+        <h2>Zo teken je het</h2>
+        <ol>
+          <li>Zet <strong id="sdName">TEKENING.TXT</strong> in de hoofdmap van de SD-kaart.</li>
+          <li>Zet de motoren uit (knop <em>MOTORS OFF</em>).</li>
+          <li>Trek de gondel met de hand zodat de pen precies op de <strong>linkerbovenhoek van het papier</strong> staat.</li>
+          <li>Kies het bestand op het touchscreen en start. Het bestand vertelt de machine dat de pen linksboven staat.</li>
+          <li>Na afloop staat de pen weer linksboven, klaar voor de volgende tekening.</li>
+        </ol>
+        <p class="hint">Op een Mac zet Finder verborgen bestanden op de SD-kaart (beginnend met <code>._</code>). Kies die niet op het touchscreen.</p>
+        <details>
+          <summary>Download werkt niet? Toon de inhoud</summary>
+          <textarea id="fileText" readonly rows="8"></textarea>
+          <button type="button" id="copyText">Kopieer</button>
+        </details>
+        <button class="primary" value="close">Begrepen</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="./src/ui/main.ts"></script>
+  </body>
+</html>
