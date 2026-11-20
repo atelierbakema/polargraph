@@ -217,7 +217,14 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 ### Stand van zaken
 
-- **20 november 2026:** de kern van de app is gebouwd en getest (`app/src/core/`, 32 tests). Het gaat om de meetkunde van de machine, SVG inlezen, plaatsen op het papier, slimme lijnvolgorde, en export naar Sandy's SD-formaat en naar G-code. Er is ook een commandoregelprogramma (`app/src/cli.ts`). Nog niet getest op de echte machine. Volgende stap: de webinterface voor versie 0.1.
+- **20 november 2026:** de kern van de app is gebouwd en getest (`app/src/core/`, 32 tests). Het gaat om de meetkunde van de machine, SVG inlezen, plaatsen op het papier, slimme lijnvolgorde, en export naar Sandy's SD-formaat en naar G-code. Er is ook een commandoregelprogramma (`app/src/cli.ts`). Nog niet getest op de echte machine. 
+- **20 november 2026 (later):** eerste versie van de webinterface (`app/index.html`, `app/src/ui/`). SVG laden of slepen, op het papier plaatsen (passend, schaal, draaien, positie), voorbeeld met tekenlijnen, beweeglijnen en koorden die je aan en uit zet, afspelen, rustig zoomen en schuiven met knoppen "Alles in beeld" en "Papier", instellingen bewaren in de browser en als bestand, en exporteren naar SD-bestand (met checklist) of G-code. Starten met `npm run dev` in `app/`.
+
+### Ideeën om op te nemen in de planning
+
+- **Drie manieren om te tekenen:** SD-kaart (machines met scherm), USB direct vanuit de browser (machines zonder scherm, versie 0.3), en een **Raspberry Pi** als netwerkplotter, zoals OctoPrint bij 3D-printers: de Pi hangt met USB aan de machine en je stuurt tekeningen via wifi vanaf je telefoon of laptop.
+- **Oude 3D-printerbordjes:** Marlin (vanaf 2.1) heeft een polargraph-stand, toegevoegd door de makers van Makelangelo. FluidNC (ESP32) heeft een WallPlotter-stand. Daarmee kan vrijwel elk oud 3D-printerbord een polargraph aansturen. Eerst testen op Mark's bordjes.
+- **Bouwpakket:** naar het voorbeeld van "print your own speakers": een lijst met te bestellen onderdelen (bord, 2 motoren, servo, schakelaars), STL-bestanden om zelf te printen, een duidelijke bouwbeschrijving, en de app op atelierbakema.com. Geschikt voor een ouder met kind en een 3D-printer.
 
 ## Techniek (eerste keuze, ter bespreking)
 

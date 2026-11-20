@@ -136,6 +136,19 @@
       </form>
     </dialog>
 
+    <dialog id="gcodeDone">
+      <form method="dialog">
+        <h2>G-code opgeslagen</h2>
+        <p><strong id="gcodeName">tekening.gcode</strong> staat in je downloads. Je kunt het op een SD-kaart zetten of naar een plotter sturen die G-code begrijpt.</p>
+        <details>
+          <summary>Download werkt niet? Toon de inhoud</summary>
+          <textarea id="gcodeText" readonly rows="8"></textarea>
+          <button type="button" id="copyGcode">Kopieer</button>
+        </details>
+        <button class="primary" value="close">Sluiten</button>
+      </form>
+    </dialog>
+
     <script type="module" src="./src/ui/main.ts"></script>
   </body>
 </html>

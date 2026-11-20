@@ -323,7 +323,11 @@ function exportSd(): void {
 function exportG(): void {
   if (!state.plan) return;
   const text = exportGcode(state.plan, paperConfig(), { title: state.fileName });
-  download(state.fileName.replace(/\.svg$/i, '') + '.gcode', text, 'text/plain');
+  const name = state.fileName.replace(/\.svg$/i, '') + '.gcode';
+  download(name, text, 'text/plain');
+  $('gcodeName').textContent = name;
+  $<HTMLTextAreaElement>('gcodeText').value = text;
+  $<HTMLDialogElement>('gcodeDone').showModal();
 }
 
 // ---------- Afspelen ----------
@@ -464,14 +468,17 @@ $<HTMLInputElement>('loadSettings').addEventListener('change', async (e) => {
 
 $('exportSd').addEventListener('click', exportSd);
 $('exportGcode').addEventListener('click', exportG);
-$('copyText').addEventListener('click', async () => {
-  const ta = $<HTMLTextAreaElement>('fileText');
-  try {
-    await navigator.clipboard.writeText(ta.value);
-  } catch {
-    ta.select();
-  }
-});
+for (const [buttonId, textId] of [['copyText', 'fileText'], ['copyGcode', 'gcodeText']]) {
+  $(buttonId).addEventListener('click', async () => {
+    const ta = $<HTMLTextAreaElement>(textId);
+    try {
+      await navigator.clipboard.writeText(ta.value);
+      $(buttonId).textContent = 'Gekopieerd';
+    } catch {
+      ta.select();
+    }
+  });
+}
 
 $('viewFit').addEventListener('click', () => viewer.fitAll());
 $('viewPaper').addEventListener('click', () => viewer.fitPaper());
