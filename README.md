@@ -13,6 +13,7 @@ hier verder onderhouden en verbeteren.
 | [`app/`](app/) | **De nieuwe app** (in aanbouw): SVG naar tekenbestand, met slimme lijnvolgorde |
 | [`controller/`](controller/) | De oude desktop-app van Sandy (Processing) waarmee je tekeningen maakt en naar de machine stuurt |
 | [`firmware/polarshield-ab/`](firmware/polarshield-ab/) | **Aangepaste firmware** voor de PolargraphSD (1.4.3-ab1): bugfixes en een wachtcommando. Zie `WIJZIGINGEN.md` en `INSTALLEREN.md` |
+| [`firmware/emulator/`](firmware/emulator/) | **Emulator:** de echte firmware met touchscreen in de browser |
 | [`firmware/polarshield/`](firmware/polarshield/) | Firmware voor Arduino Mega + Polarshield met touchscreen (Polargraph SD) |
 | [`firmware/polarshield-esp32/`](firmware/polarshield-esp32/) | Firmware voor de ESP32-versie van de Polarshield (PlatformIO) |
 | [`firmware/a1-uno/`](firmware/a1-uno/) | Firmware voor Arduino Uno + Adafruit Motorshield (de eerste machines) |

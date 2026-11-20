@@ -12,6 +12,7 @@ Gebaseerd op **Sandy Noble's Polargraph Server 1.4.3** voor de Arduino Mega + Po
 | F3 | Meldingen over aanrakingen van het touchscreen staan standaard uit (`DEBUG_TOUCH`) | Ze gingen over dezelfde kabel als de commando's en verstoorden de communicatie (bijv. `DONE.READY`) |
 | F4 | Na een aanraking wacht de firmware tot de vinger los is (`lcd_waitForRelease`) | Eén aanraking telde soms meerdere keren |
 | SD | De bestandenlijst op het touchscreen toont alleen `.TXT`-bestanden, zonder mappen en verborgen bestanden | Een Mac zet `._naam`-bestanden op de SD-kaart; die "uitvoeren" gaf onzin of een crash |
+| F5 | Na "DRAW THIS FILE" wacht de firmware tot je vinger los is voordat hij begint (`lcd.ino`) | De STOP-knop verschijnt op dezelfde plek. Een vinger die nog op het scherm lag, telde als STOP, waardoor de tekening meteen werd afgebroken. Gevonden met de emulator |
 | C51 | Nieuw commando: wachten. `C51,<milliseconden>,END` (max. 10 minuten per commando). Het touchscreen blijft werken, zodat je kunt stoppen | Voor de inktdroogtijd uit de nieuwe app |
 
 Niet veranderd: de commandotaal, de motorbesturing, de instellingen in het geheugen van de machine en
@@ -30,7 +31,7 @@ Het bestand `polarshield-ab-1.4.3-ab1.hex` is kant-en-klaar. Zelf bouwen gaat me
 | SD | 1.2.4 | |
 | Servo | 1.1.8 | |
 
-Gecompileerd met avr-gcc 7.3 en Arduino AVR-core 1.8.6: 86.972 bytes programma (34%), 5.268 bytes RAM (64%).
+Gecompileerd met avr-gcc 7.3 en Arduino AVR-core 1.8.6: zie de uitvoer van de compiler; rond 87.000 bytes programma (34%) en 5.270 bytes RAM (64%).
 Het origineel gaf met dezelfde gereedschappen 87.172 bytes en 5.392 bytes RAM.
 
 **Let op het schermtype.** De firmware is gebouwd voor het 2,4"-scherm dat vanaf augustus 2014 werd

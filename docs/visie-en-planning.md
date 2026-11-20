@@ -222,7 +222,12 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 - **20 november 2026 (avond):** aangepaste firmware **1.4.3-ab1** voor de PolargraphSD (`firmware/polarshield-ab/`), met bugfixes F1 t/m F4, een bestandenlijst zonder verborgen Mac-bestanden en een wachtcommando (`C51`) voor de inktdroogtijd. Compileert; nog niet op de machine getest. In de app: keuze welke firmware er op de machine staat, en **proefdraaien**: een SD-bestand regel voor regel uitvoeren zoals de firmware dat doet, ook voor oude bestanden.
 
+- **20 november 2026 (nacht):** **firmware-emulator** (`firmware/emulator/`): de echte firmware draait als WebAssembly in de browser, met touchscreen, SD-kaart, motoren en penlift nagebootst. Daarmee meteen een bug gevonden en opgelost (F5: tekening stopte als je vinger na "DRAW THIS FILE" nog op het scherm lag).
+
 ### Ideeën om op te nemen in de planning
+
+- **Talen (na de beta):** de app en het touchscreen in meerdere talen. Voorstel: Nederlands, Engels (UK), Duits, Frans, Spaans, Chinees (vereenvoudigd) en Bahasa Indonesia. Geen Russisch en geen Amerikaans Engels. Lijst nog te bevestigen.
+- **Touchscreen opnieuw ontwerpen:** met de emulator kunnen de schermen van de firmware worden aangepast en meteen in de browser bekeken, voordat iets op de machine gaat.
 
 - **Tekenvolgorde zoals een kunstenaar** (20 nov, gebouwd): kies tussen slim (kortste weg), rechtshandig (linksboven naar rechtsonder) en linkshandig (rechtsboven naar linksonder). Alle drie werken van boven naar onder, omdat de penlift van de PolargraphSD onder de pen zit en anders over verse inkt schuurt. De keuze wordt onthouden.
 - **Inktdroogtijd** (idee van Mark, 20 nov gebouwd): kruist een lijn een net getekende lijn, dan tekent de app eerst ergens anders verder en wacht zo nodig tot de inkt droog is. Instelbaar in seconden (0 = uit). In G-code wordt gewacht met `G4`; Sandy's firmware heeft geen wachtcommando, dus in het SD-bestand werkt alleen het aanpassen van de volgorde.

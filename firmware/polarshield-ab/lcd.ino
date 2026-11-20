@@ -213,11 +213,11 @@ byte colorBrightRed = 255;
 byte colorBrightGreen = 255;
 byte colorBrightBlue = 255;
 
-/** Wacht (maximaal 2 seconden) tot het scherm niet meer wordt aangeraakt (-ab1). */
+/** Wacht (maximaal 5 seconden) tot het scherm niet meer wordt aangeraakt (-ab1). */
 void lcd_waitForRelease()
 {
   unsigned long start = millis();
-  while (touch.dataAvailable() && millis() - start < 2000)
+  while (touch.dataAvailable() && millis() - start < 5000)
   {
     touch.read();
     delay(10);
@@ -337,7 +337,10 @@ void lcd_processTouchCommand()
         Serial.println(commandFilename);
         currentlyDrawingFromFile = true;
         lcd_drawButton(BUTTON_STOP_FILE);
-        displayTouched = false;      
+        // Eerst wachten tot de vinger los is. Anders zag de firmware dezelfde aanraking
+        // meteen als een druk op STOP (op dezelfde plek) en brak hij de tekening af (-ab1).
+        lcd_waitForRelease();
+        displayTouched = false;
         impl_exec_execFromStore(commandFilename);
         lcd_drawButton(pressedButton);
       }
