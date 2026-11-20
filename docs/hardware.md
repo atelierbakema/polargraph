@@ -18,18 +18,21 @@ Vastgesteld aan de hand van foto's, 20 november 2026.
 
 Linksboven op de achterkant van de Polarshield zit een blokje van 6 pinnen met het opschrift **limits**, met de labels `+U`, `GND`, `X+`, `X−`, `Y+`, `Y−`. Dit is de aansluiting voor eindschakelaars.
 
-Wat de firmware verwacht (`firmware/polarshield/polargraph_server_polarshield.ino:357–363` en `configuration.ino:111–114`):
+**Bevestigd** uit Sandy's originele printontwerp van precies dit bord (`Polarshield v2.0d.sch` in `archive/polarshield_hardware.bundle`, bestand `Polarshield_2.0d-SandyNoble_2014-07-30.zip`). Het blokje heet daar `JP15`:
 
-| Firmware-naam | Arduino-pin | Vermoedelijk label | Functie in de kalibratie |
-|---|---|---|---|
-| `ENDSTOP_X_MIN` | 16 | `X−` | Schakelaar bij **motor A** (links) |
-| `ENDSTOP_X_MAX` | 17 | `X+` | Niet gebruikt in de kalibratie |
-| `ENDSTOP_Y_MIN` | 14 | `Y−` | Schakelaar bij **motor B** (rechts) |
-| `ENDSTOP_Y_MAX` | 15 | `Y+` | Niet gebruikt in de kalibratie |
+| Pin JP15 | Label op het bord | Signaal | Arduino-pin | Gebruik in de firmware |
+|---|---|---|---|---|
+| 1 | `X−` | X-MIN | D16 | Schakelaar bij **motor A** (links), `ENDSTOP_X_MIN` |
+| 2 | `Y−` | Y-MIN | D14 | Schakelaar bij **motor B** (rechts), `ENDSTOP_Y_MIN` |
+| 3 | `X+` | X-MAX | D17 | `ENDSTOP_X_MAX`, niet gebruikt in de kalibratie |
+| 4 | `Y+` | Y-MAX | D15 | `ENDSTOP_Y_MAX`, niet gebruikt in de kalibratie |
+| 5 | `+U` | VCC (5 V) | – | Voeding voor optische of elektronische sensoren |
+| 6 | `GND` | GND | – | Massa |
 
-- De pinnen staan op `INPUT_PULLUP`. Een eenvoudige microschakelaar (normaal open) komt tussen de pin en `GND`. Ingedrukt betekent dat de firmware `0` leest, en zo verwacht de kalibratiecode het ook.
-- `+U` is waarschijnlijk 5 V, voor optische of elektronische eindschakelaars. Voor gewone microschakelaars is die niet nodig.
-- **Nog niet bevestigd:** welk label bij welke Arduino-pin hoort. Er is geen schema van de Polarshield v2.0d gevonden, niet in de repo's van Sandy en niet online. Controleer het met een multimeter op doorgang: meet tussen de `X−`-pin en Arduino-pin 16 (op de Mega gemarkeerd als `TX2`), en tussen `Y−` en pin 14 (`TX3`). Doe dit met de stroom eraf.
+- De firmware zet deze pinnen op `INPUT_PULLUP` (`configuration.ino:111–114`). Een gewone microschakelaar (normaal open) komt tussen `X−` en `GND` (links) en tussen `Y−` en `GND` (rechts). Ingedrukt betekent dat de firmware `0` leest, en zo verwacht de kalibratiecode het ook.
+- Er hoeft niets gesoldeerd te worden: de header zit er al op. Een stekkertje met twee schakelaars is genoeg.
+
+De servo-aansluitingen in hetzelfde schema: `SER1`/`SER2`, met pin 1 GND, pin 2 VCC en pin 3 het signaal (`SERV1`/`SERV2`).
 
 ## Historie
 
