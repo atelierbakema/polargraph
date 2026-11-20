@@ -32,6 +32,19 @@ Ernst: **hoog** = veroorzaakt vastlopers of verkeerde tekeningen; **middel** = k
 | C5 | Middel | **Geen controle op transmissiefouten.** Er was een checksum (CRC) gepland, maar die staat uitgeschakeld. Een verminkt commando wordt zonder controle uitgevoerd of overgeslagen. | `controller/polargraphcontroller.pde:2586` (uitgecommentarieerd) |
 | C6 | Middel | **Verouderd platform.** De app is gebouwd op Processing 2.2.1 met oude versies van ControlP5 en Geomerative. Op moderne computers, vooral Macs met Apple Silicon en recente macOS, is dat lastig of niet meer te starten. Dat moet ik nog testen. | hele app |
 
+### Controller: tekenvlak, zoomen en SVG's
+
+Mark merkt dat de app na het laden van een SVG en het vergroten of verkleinen raar gaat doen, dat je "de weg kwijtraakt" zonder terug te kunnen naar het begin, en dat de app soms helemaal vastloopt. Dit zijn de oorzaken die ik in de code vond:
+
+| # | Ernst | Wat | Waar |
+|---|---|---|---|
+| Z1 | Hoog | **De SVG wordt elk beeld opnieuw uitgerekend.** Bij elke keer tekenen vraagt de app de bibliotheek (Geomerative) om de hele SVG opnieuw om te zetten in punten, en maakt hij voor elk punt nieuwe objecten aan. Bij een gedetailleerde SVG gaat de app daardoor kruipen of lijkt hij vast te lopen, vooral tijdens zoomen en slepen, want dan wordt er continu getekend. De oplossing is de punten één keer berekenen en bewaren. | `controller/DisplayMachine.pde:517` (en `:457`) |
+| Z2 | Hoog | **Geen "terug naar begin".** Er is geen knop of toets om het beeld te resetten. De functie die de machine netjes in beeld zet (`fitDisplayMachineToWindow`) wordt alleen bij het starten of na het vergroten van het venster aangeroepen. Ben je eenmaal uit beeld geschoven of ver in- of uitgezoomd, dan kom je niet makkelijk terug. | `controller/polargraphcontroller.pde:634, 831` |
+| Z3 | Hoog | **Schuiven kan alleen met de middelste muisknop.** Een trackpad of Magic Mouse heeft geen middelste knop, dus op een Mac kun je het beeld met de muis niet verschuiven. De sneltoetsen zijn ook geen alternatief: Ctrl+pijltjes zijn op macOS gereserveerd voor Mission Control, en Ctrl+PageUp/PageDown voor zoomen bestaan niet op een Mac-laptop. | `controller/polargraphcontroller.pde:1318–1328, 1381, 1467` |
+| Z4 | Middel | **Zoomen springt.** Elke tik van het scrollwiel zoomt 10%, met een bereik van 1% tot 3000%. Een trackpad stuurt tientallen scroll-gebeurtenissen per veeg, dus het beeld schiet in een fractie van een seconde naar extreem in- of uitgezoomd. | `controller/polargraphcontroller.pde:500–501, 1280` |
+| Z5 | Middel | **Zoomen loopt door het tekenen heen.** Scroll-gebeurtenissen worden op een andere thread verwerkt dan het tekenen (een eigen Java-listener). Zoom en positie veranderen dus soms terwijl er half getekend is. Dat geeft rare tussenbeelden en af en toe een fout. | `controller/polargraphcontroller.pde:675–681, 1555` |
+| Z6 | Laag | **Het middelpunt van de SVG klopt soms niet.** De functie die SVG's tekent gebruikt voor het middelpunt de globale schaal in plaats van de schaal die hij meekrijgt, waardoor de rode stip bij een tweede vorm (de "capture"-vorm) op de verkeerde plek kan staan. | `controller/DisplayMachine.pde:513` |
+
 ### Firmware Polarshield (Arduino Mega, met touchscreen)
 
 | # | Ernst | Wat | Waar |
@@ -63,23 +76,38 @@ Dezelfde basis als de Polarshield-firmware, met dezelfde problemen F1, F2, F5 en
 
 Gerichte reparaties zonder het ontwerp te veranderen:
 
-1. **Controller:** C1 (geen regels meer weggooien), C2 (regeleinde bij herhaling), C3 (foutafhandeling in `serialEvent`) en C4 (thread-safe status en wachtrij).
-2. **Firmware van jouw machine:** F1, F2 en F5 (buffer en commando-afhandeling), F3 (debugtekst achter een debug-schakelaar) en F4 (wachten tot loslaten).
-3. **Testen** met een simulator van de machine op de computer, zodat de communicatie getest kan worden zonder de echte machine. Daarna een test op de machine zelf.
+1. **Controller, communicatie:** C1 (geen regels meer weggooien), C2 (regeleinde bij herhaling), C3 (foutafhandeling in `serialEvent`) en C4 (thread-safe status en wachtrij).
+2. **Controller, tekenvlak:** Z1 (SVG-punten één keer berekenen), Z2 (knop en toets "beeld resetten"), Z3 (schuiven met spatie + slepen of met de linkermuisknop, en Mac-vriendelijke sneltoetsen), Z4 (rustiger zoomen met grenzen) en Z5 (zoomen op de teken-thread verwerken).
+3. **Firmware van jouw machine:** F1, F2 en F5 (buffer en commando-afhandeling), F3 (debugtekst achter een debug-schakelaar) en F4 (wachten tot loslaten).
+4. **Testen** met een simulator van de machine op de computer, zodat de communicatie getest kan worden zonder de echte machine. Daarna een test op de machine zelf.
 
 Dit alleen al zou het meeste haperen moeten oplossen.
 
-### Fase 2: moderniseren (groter, apart besluit)
+### Fase 2: moderniseren tot webapp op atelierbakema.com
 
-- **Controller:** overzetten naar een modern platform. Opties:
-  - Processing 4: kleinste stap, zelfde code.
-  - Een nieuwe app, bijvoorbeeld een webapp die via Web Serial met de machine praat en in de browser draait, zonder installatie.
-- **Protocol:** een checksum per commando (C5), zodat transmissiefouten altijd worden gezien en herhaald.
-- **Firmware:** reproduceerbare build met vaste versies, en waar het kan dezelfde verbeteringen in alle varianten.
-- **Tests:** automatische tests voor het protocol, zodat toekomstige wijzigingen niets breken.
+Mark kiest voor een **webapp**, gehost op atelierbakema.com, zodat ook anderen hun Polargraph er weer mee kunnen gebruiken. Het voorbeeld is [Spokeit](https://spokeit.fr): een online tool waarmee je zonder installatie wielen ontwerpt en je instellingen kunt downloaden.
+
+Hoe dat er technisch uitziet:
+
+- **De app draait in de browser.** Je opent atelierbakema.com, sluit de machine met USB aan en klikt op "Verbinden". De browser praat dan direct met de machine via **Web Serial**. Er is geen server nodig die de machine bestuurt en je hoeft niets te installeren.
+  - Let op: Web Serial werkt in Chrome, Edge en andere Chromium-browsers, op Mac, Windows, Linux en ChromeOS. Safari en Firefox ondersteunen het (nog) niet. De app moet dat netjes melden.
+- **Bestanden blijven op je eigen computer.** Afbeeldingen en SVG's worden in de browser verwerkt en niet geüpload.
+- **Instellingen als download.** Machinematen, penbreedte, snelheden en tekenstijlen kun je opslaan als bestand en later weer laden, net als bij Spokeit. Het bestaande `.properties`-formaat kunnen we blijven inlezen, zodat oude instellingen bruikbaar blijven.
+- **Modern tekenvlak.** Zoomen en schuiven zoals in een kaart- of tekenapp, met trackpad, muis en touch, en altijd een knop "passend maken". SVG's worden één keer omgezet en bewaard, zodat ook grote bestanden vloeiend blijven.
+- **Tekenen zonder computer.** Werkt de firmware met een SD-kaart, dan kan de webapp ook een commandobestand voor de SD-kaart maken.
+- **Betrouwbaar protocol.** Een checksum per commando (C5), automatisch opnieuw versturen, en een duidelijke status: verbonden, bezig, klaar, fout.
+- **Open source.** De app blijft onder dezelfde GPL-3.0-licentie als Sandy's code, met naamsvermelding.
+
+Ook nodig:
+
+- **Firmware:** een reproduceerbare build met vaste versies, en waar het kan dezelfde verbeteringen in alle varianten.
+- **Tests:** automatische tests voor het protocol en een nagebootste machine, zodat de webapp ontwikkeld en getest kan worden zonder dat de echte machine aan hoeft.
+
+**Volgorde:** eerst fase 1, zodat je nu al stabieler kunt tekenen met de bestaande app. Daarna de webapp stap voor stap: eerst verbinden en handmatig bewegen, dan SVG's tekenen, dan afbeeldingen en tekenstijlen. De oude app blijft werken tot de webapp alles kan.
 
 ## Open vragen
 
 1. Welke machine/welk bord heb je? Een foto van de elektronica is genoeg.
 2. Op welke computer draai je de controller (Mac/Windows, welke versie)? Start de huidige versie daar nog?
-3. Welke problemen zie je het vaakst? Bijvoorbeeld: blijft hangen op BUSY, stukken ontbreken in tekeningen, touchscreen reageert dubbel of niet, verbinding valt weg.
+3. Welke tekenstijlen en functies uit de oude app gebruik je echt? Die komen als eerste in de webapp.
+4. Welke problemen zie je het vaakst? Bijvoorbeeld: blijft hangen op BUSY, stukken ontbreken in tekeningen, touchscreen reageert dubbel of niet, verbinding valt weg.
