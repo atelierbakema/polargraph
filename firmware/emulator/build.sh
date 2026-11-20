@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # Bouwt de firmware-emulator voor de browser.
 # Vereist: arduino-builder (voor de Arduino-voorbewerking) en Emscripten (em++).
-#   ./build.sh [schetsmap]   standaard: ../polarshield-ab
+#   ./build.sh [schetsmap] [uitvoernaam] [exportnaam]
+#   standaard: ../polarshield-ab  firmware.js  PolargraphFirmware
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SKETCH="$(cd "${1:-$HERE/../polarshield-ab}" && pwd)"
-NAME="$(basename "$SKETCH")"
+# De schets heet naar het .ino-bestand met setup() erin (de Arduino IDE eist dat de map zo heet).
+NAME="$(basename "$(grep -l "void setup" "$SKETCH"/*.ino | head -1)" .ino)"
 OUT="$HERE/dist"
+OUTFILE="${2:-firmware.js}"
+EXPORT="${3:-PolargraphFirmware}"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$OUT" "$WORK/sketch/$NAME" "$WORK/build"
@@ -42,11 +46,11 @@ cp "$WORK/build/sketch/$NAME.ino.cpp" "$WORK/sketch.cpp"
 em++ -O2 -std=gnu++11 -w -DARDUINO=10806 -DPOLARGRAPH_EMULATOR \
   -I"$WORK/sketch/$NAME" -I"$HERE/stubs" -I"$HERE/vendor" \
   -s ASYNCIFY=1 -s ASYNCIFY_STACK_SIZE=65536 \
-  -s ALLOW_MEMORY_GROWTH=1 -s SINGLE_FILE=1 -s MODULARIZE=1 -s EXPORT_NAME=PolargraphFirmware \
+  -s ALLOW_MEMORY_GROWTH=1 -s SINGLE_FILE=1 -s MODULARIZE=1 -s EXPORT_NAME="$EXPORT" \
   -s EXPORTED_FUNCTIONS='["_main","_malloc","_free","_emu_framebuffer","_emu_framebuffer_version","_emu_touch","_emu_serial_in","_emu_sd_add","_emu_set_speed","_emu_motor_a","_emu_motor_b","_emu_servo_angle","_emu_servo_on"]' \
   -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU16","HEAPU8","UTF8ToString","stringToUTF8","lengthBytesUTF8"]' \
   "$WORK/sketch.cpp" \
   "$HERE/emu.cpp" "$HERE/vendor/WString.cpp" "$HERE/vendor/Print.cpp" "$HERE/vendor/AccelStepper.cpp" \
   "$HERE/vendor/DefaultFonts.c" \
-  -o "$OUT/firmware.js"
-echo "Klaar: $OUT/firmware.js"
+  -o "$OUT/$OUTFILE"
+echo "Klaar: $OUT/$OUTFILE"

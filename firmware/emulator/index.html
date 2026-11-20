@@ -44,6 +44,13 @@
       <header>
         <h1>PolargraphSD-emulator</h1>
         <p class="sub">De echte firmware van de machine, in je browser. Druk op het scherm zoals op de machine.</p>
+        <div class="row" style="margin-top: 10px">
+          <label for="fwChoice">Firmware</label>
+          <select id="fwChoice">
+            <option value="ab">Atelier Bakema 1.4.3-ab1 (nieuw)</option>
+            <option value="origineel">Origineel van Sandy Noble 1.4.3</option>
+          </select>
+        </div>
       </header>
 
       <div class="device">
@@ -82,6 +89,7 @@
       </div>
     </main>
     <script src="dist/firmware.js"></script>
+    <script src="dist/firmware-original.js"></script>
     <script>
       (async () => {
         const logEl = document.getElementById('log');
@@ -109,7 +117,16 @@
         let W = 1000; // machinebreedte (mm), uit de meldingen van de firmware
         let H = 1500;
         let last = null;
-        const M = await PolargraphFirmware({
+        // Welke firmware: uit het #-deel van het adres, zodat wisselen een schone herstart is.
+        const original = location.hash === '#origineel';
+        const choice = document.getElementById('fwChoice');
+        choice.value = original ? 'origineel' : 'ab';
+        choice.addEventListener('change', () => {
+          location.hash = choice.value === 'origineel' ? 'origineel' : 'nieuw';
+          location.reload();
+        });
+        const factory = original ? PolargraphFirmwareOriginal : PolargraphFirmware;
+        const M = await factory({
           onSerial: (t) => {
             log(t);
             const v = /^v?(\d+\.\d+\.\d+[\w-]*)$/.exec(t.trim());
