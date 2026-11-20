@@ -68,6 +68,56 @@ Uitgezocht in de firmware `firmware/polarshield/` (Arduino Mega + Polarshield). 
 - **Na 10 minuten zonder activiteit schakelt de machine de motoren automatisch uit** en vergeet hij de positie. De gondel kan dan zakken. Wacht je na het homen te lang met starten, dan klopt home niet meer.
 - De nieuwe app legt dit uit met een plaatje, en de checklist zet de stappen in de goede volgorde: pen naar home, MOTORS ON, binnen 10 minuten bestand starten. Later kunnen we in de firmware de automatische uitschakeling instelbaar maken en duidelijk op het scherm laten zien of de machine "gehomed" is.
 
+## Homen zonder schakelaars: "start vanaf linksboven"
+
+De machine heeft nu nog geen schakelaars. Toch moet homen snel en betrouwbaar zijn, want daar ging het altijd mis: zet je de motoren uit (of gaan ze na 10 minuten vanzelf uit), dan vergeet de machine waar hij is. Je kunt de gondel dan met de hand verplaatsen, en daarna tekent hij verder vanaf de verkeerde plek.
+
+**Idee:** je zet de pen met de hand op een vast, zichtbaar punt (de linkerbovenhoek van het papier) en het tekenbestand vertelt de machine zelf dat hij daar staat. Er is dan geen apart home-punt meer en geen volgorde om te onthouden.
+
+### Stap 1: werkt met de huidige firmware (versie 0.1)
+
+Uitgezocht in `firmware/polarshield/exec.ino`: de firmware heeft een commando `C09` dat zegt "de pen staat nu hier" (beide koordlengtes) en daarbij meteen de motoren aanzet. Er zijn ook commando's om de machinematen vast te leggen (`C24` breedte/hoogte, `C29` mm per omwenteling, `C30` stappen per omwenteling). Die schrijven alleen naar het geheugen van de machine als de waarde echt verandert, dus ze kunnen veilig in elk bestand staan.
+
+De app zet daarom **bovenaan elk SD-bestand**:
+
+1. de machinematen (breedte tussen de motoren, hoogte, motorinstellingen);
+2. `C09` met de koordlengtes voor de linkerbovenhoek van het papier. Die rekent de app uit uit de breedte en de papierpositie;
+3. pen omhoog.
+
+Daarna volgt de tekening, en aan het eind pen omhoog en terug naar de linkerbovenhoek.
+
+**Zo gebruik je het:**
+
+1. Zet een klein kruisje op de linkerbovenhoek van je papier (of gebruik de hoek zelf).
+2. Motoren uit, en trek de gondel met de hand zodat de pen precies op die hoek staat.
+3. Kies het bestand op het touchscreen en start. De machine weet nu waar hij is, zet de motoren vast en begint.
+
+Na de tekening staat de pen weer op linksboven, dus de volgende tekening kan meteen.
+
+De app laat dit zien met een plaatje en een korte checklist bij "Bewaar voor SD-kaart". Via de computer (USB) werkt het precies hetzelfde: de app stuurt dezelfde startregels.
+
+**Instellingen die de app hiervoor nodig heeft** (eenmalig, opgeslagen in je machine-instellingen):
+
+- breedte tussen de motoren;
+- hoogte van de motoren tot de vloer (veiligheidsgrens);
+- positie van het papier: afstand van de motoren tot de bovenrand, en de linkerrand (standaard gecentreerd);
+- papierformaat (breedte × hoogte), zodat de app ook rechtsboven, linksonder en rechtsonder kent en kan waarschuwen als een tekening buiten het papier valt.
+
+Nog te testen op de echte machine: of `C09` vanuit een SD-bestand precies zo werkt als via USB, en hoe nauwkeurig je de pen met de hand op de hoek krijgt.
+
+### Stap 2: home-wizard op het touchscreen (versie 0.4, firmware)
+
+Met een kleine aanpassing van de firmware wordt het nog prettiger:
+
+- **Begeleid homen op het touchscreen.** Bij het starten van een bestand vraagt het scherm: "Zet de pen op linksboven". Met pijltjesknoppen beweeg je de pen nauwkeurig naar de hoek, zonder met je hand aan de gondel te trekken, en bevestig je met "Hier".
+- **"Niet gehomed" duidelijk tonen.** Gaan de motoren uit, dan toont het scherm dat de positie onbekend is, en moet je opnieuw homen voordat er getekend wordt. Zo kan het niet meer stilletjes misgaan.
+- **Automatisch uitschakelen instelbaar.** Nu gaan de motoren na 10 minuten altijd uit, en dat is niet aan te passen. Dat wordt een instelling, inclusief "nooit".
+- **De knop MOTORS ON** gaat niet meer stilletjes uit van een home-positie. Die aanname is nu de bron van veel verwarring.
+
+### Stap 3: automatisch homen met schakelaars (versie 0.5, hardware)
+
+Zie hieronder. Daarmee verdwijnt het handmatige deel helemaal.
+
 ## Automatisch homen met eindschakelaars
 
 Mark's idee: een schakelaar links bij motor A en een rechts bij motor B, waar de gondel tegenaan komt. De machine kan zijn positie dan zelf vinden, zonder handmatig homen.
@@ -124,10 +174,10 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 | Versie | Doel | Wat je kunt |
 |---|---|---|
-| **0.1** | Jouw belangrijkste werkwijze vervangen | SVG laden, op het papier plaatsen en schalen, tekenlijnen en beweeglijnen zien en aan/uit zetten, SD-bestand maken met checklist. Machinematen handmatig invullen. |
+| **0.1** | Jouw belangrijkste werkwijze vervangen | SVG laden, op het papier plaatsen en schalen, tekenlijnen en beweeglijnen zien en aan/uit zetten, SD-bestand maken met checklist. Machinematen en papierpositie invullen. Homen via "start vanaf linksboven" (werkt met de huidige firmware). |
 | **0.2** | Comfort | Instellingen opslaan en laden (inclusief import uit de oude app), tijdsinschatting, slimmere lijnvolgorde (minder beweeglijnen), voorbeeldweergave afspelen. |
 | **0.3** | Tekenen via USB | Verbinden in Chrome/Edge, pen handmatig bewegen, live tekenen met voortgang, pauze en stop. |
-| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen, home-status op het scherm, instelbare auto-uitschakeling. |
+| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen. Home-wizard op het touchscreen, "niet gehomed"-status, instelbare auto-uitschakeling. |
 | **0.5** | Automatisch homen | Eindschakelaars monteren, kalibratie (`C48`) testen en verbeteren, knop "Kalibreer machine" in de app en op het touchscreen. |
 | **0.6+** | Meer creatieve mogelijkheden | Penbreedte en vulpatronen, meerdere kleuren of lagen (pen wisselen), tekst, foto's en rastereffecten. |
 | **1.0** | Openbaar | Stabiel en gedocumenteerd, gepubliceerd op atelierbakema.com voor iedereen met een Polargraph. |
