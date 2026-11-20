@@ -1,0 +1,26 @@
+{
+  "name": "polargraph-studio",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nieuwe app voor de Polargraph-tekenmachine: SVG naar tekenbestand (werktitel).",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "convert": "node src/cli.ts"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "svgpath": "2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.1.0"
+  }
+}

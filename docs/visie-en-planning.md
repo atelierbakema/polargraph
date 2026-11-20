@@ -205,6 +205,20 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 | **0.6+** | Meer creatieve mogelijkheden | Penbreedte en vulpatronen, meerdere kleuren of lagen (pen wisselen), tekst, foto's en rastereffecten. |
 | **1.0** | Openbaar | Stabiel en gedocumenteerd, gepubliceerd op atelierbakema.com voor iedereen met een Polargraph. |
 
+## Richting (besloten op 20 november 2026)
+
+| Onderdeel | Besluit |
+|---|---|
+| **App** | Nieuwe webapp, op termijn op atelierbakema.com. Maakt G-code, en zolang nodig ook bestanden voor Sandy's firmware. Map `app/`. |
+| **Firmware** | Nieuwe firmware voor de Arduino Mega + Polarshield (iedereen met een PolargraphSD heeft dit bord). G-code in millimeters op het papier, homen, kalibratiewizard en eindschakelaars vanaf het begin. Te installeren via de browser. Sandy's originele firmware blijft in de repo als terugvaloptie. Eerst onderzoeken of een bestaande open-source polargraph-firmware (bijv. die van Makelangelo) een goede basis is. |
+| **Hardware** | Open ontwerpen (STL, DXF en bronbestanden) voor houders van eindschakelaars, tandwielen, gondel en behuizing. |
+| **Licenties** | Sandy's software is GPL-3.0 en mag dus worden aangepast en verspreid, met naamsvermelding. In zijn hardware-repo's staat geen licentie: die ontwerpen bewaren en zelf gebruiken mag, verspreiden of verkopen niet zonder zijn toestemming. Mark overweegt Sandy te mailen. Anders maken we eigen ontwerpen. |
+| **Naam** | Het project krijgt een eigen naam, met naamsvermelding van Sandy Noble. "Polargraph" is zijn merk. Werktitel van de app: Polargraph Studio. |
+
+### Stand van zaken
+
+- **20 november 2026:** de kern van de app is gebouwd en getest (`app/src/core/`, 32 tests). Het gaat om de meetkunde van de machine, SVG inlezen, plaatsen op het papier, slimme lijnvolgorde, en export naar Sandy's SD-formaat en naar G-code. Er is ook een commandoregelprogramma (`app/src/cli.ts`). Nog niet getest op de echte machine. Volgende stap: de webinterface voor versie 0.1.
+
 ## Techniek (eerste keuze, ter bespreking)
 
 - **Webapp** in TypeScript, die volledig in de browser draait. Er is geen server nodig, dus hij kan als statische site op atelierbakema.com.
