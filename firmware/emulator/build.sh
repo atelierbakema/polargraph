@@ -14,7 +14,7 @@ EXPORT="${3:-PolargraphFirmware}"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$OUT" "$WORK/sketch/$NAME" "$WORK/build"
-cp "$SKETCH"/*.ino "$SKETCH"/*.h "$WORK/sketch/$NAME/" 2>/dev/null || true
+cp "$SKETCH"/*.ino "$SKETCH"/*.h "$SKETCH"/*.c "$WORK/sketch/$NAME/" 2>/dev/null || true
 # EEPROM-opslag met AVR-maten (int = 2 bytes), zie stubs/EEPROMAnything.h.
 cp "$HERE/stubs/EEPROMAnything.h" "$WORK/sketch/$NAME/EEPROMAnything.h"
 # Bibliotheken voor de voorbewerking: alleen de headers, zodat de includes gevonden worden.
@@ -51,6 +51,6 @@ em++ -O2 -std=gnu++11 -w -DARDUINO=10806 -DPOLARGRAPH_EMULATOR \
   -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU16","HEAPU8","UTF8ToString","stringToUTF8","lengthBytesUTF8"]' \
   "$WORK/sketch.cpp" \
   "$HERE/emu.cpp" "$HERE/vendor/WString.cpp" "$HERE/vendor/Print.cpp" "$HERE/vendor/AccelStepper.cpp" \
-  "$HERE/vendor/DefaultFonts.c" \
+  "$HERE/vendor/DefaultFonts.c" $(ls "$WORK/sketch/$NAME"/*.c 2>/dev/null) \
   -o "$OUT/$OUTFILE"
 echo "Klaar: $OUT/$OUTFILE"

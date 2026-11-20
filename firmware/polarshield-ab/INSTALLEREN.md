@@ -1,6 +1,6 @@
 # Firmware installeren op de PolargraphSD
 
-Dit zet de Atelier Bakema-versie (`polarshield-ab-1.4.3-ab1.hex`) op de machine. **Eerst maak je een
+Dit zet de Atelier Bakema-versie (`polarshield-ab-1.4.3-ab2.hex`) op de machine. **Eerst maak je een
 reservekopie van de firmware die er nu op staat**, zodat je altijd terug kunt.
 
 Je hebt nodig: een computer, de USB-kabel van de machine, en het programma **avrdude**.
@@ -38,10 +38,10 @@ Bewaar `polargraph-reservekopie.hex` goed, bijvoorbeeld ook in deze repo.
 ## 4. De nieuwe firmware installeren
 
 ```bash
-avrdude -p atmega2560 -c wiring -P POORT -b 115200 -D -U flash:w:polarshield-ab-1.4.3-ab1.hex:i
+avrdude -p atmega2560 -c wiring -P POORT -b 115200 -D -U flash:w:polarshield-ab-1.4.3-ab2.hex:i
 ```
 
-De machine herstart. Linksonder op het touchscreen hoort nu **v1.4.3-ab1** te staan.
+De machine herstart. Op het opstartscherm (Atelier Bakema) hoort nu **v1.4.3-ab2** te staan.
 
 Je machine-instellingen (breedte, penlift enzovoort) staan in een ander deel van het geheugen
 (EEPROM) en blijven bewaard.

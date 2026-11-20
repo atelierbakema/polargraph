@@ -100,7 +100,7 @@ Put them in libraries/UTouch/UTouchCD.h
 =========================================================== */    
 
 // Atelier Bakema-versie, gebaseerd op Sandy Noble's 1.4.3. Zie WIJZIGINGEN.md.
-const String FIRMWARE_VERSION_NO = "1.4.3-ab1";
+const String FIRMWARE_VERSION_NO = "1.4.3-ab2";
 #if MOTHERBOARD == RAMPS14
   const String MB_NAME = "RAMPS14";
 #elif MOTHERBOARD == POLARSHIELD
@@ -127,6 +127,7 @@ const long EEPROM_MACHINE_HOME_B = 38; // 4 bytes
 
 const int EEPROM_PENLIFT_DOWN = 42; // 2 bytes
 const int EEPROM_PENLIFT_UP = 44; // 2 bytes
+const int EEPROM_LANGUAGE = 46; // 1 byte, taal van het touchscreen (-ab1)
 
 // Pen raising servo
 Servo penHeight;

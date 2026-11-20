@@ -32,3 +32,4 @@ char *dtostrf(double val, signed char width, unsigned char prec, char *s);
 #ifdef __cplusplus
 }
 #endif
+#define pgm_read_ptr(addr) (*(void *const *)(addr))

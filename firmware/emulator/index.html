@@ -47,7 +47,7 @@
         <div class="row" style="margin-top: 10px">
           <label for="fwChoice">Firmware</label>
           <select id="fwChoice">
-            <option value="ab">Atelier Bakema 1.4.3-ab1 (nieuw)</option>
+            <option value="ab">Atelier Bakema 1.4.3-ab2 (nieuw)</option>
             <option value="origineel">Origineel van Sandy Noble 1.4.3</option>
           </select>
         </div>
@@ -72,7 +72,7 @@
           <canvas id="paper" width="600" height="450"></canvas>
           <div class="row">
             <label>Snelheid
-              <select id="speed"><option value="1">1×</option><option value="5">5×</option><option value="20" selected>20×</option><option value="100">100×</option></select>
+              <select id="speed"><option value="1" selected>1× (echte tijd)</option><option value="5">5×</option><option value="20">20×</option><option value="100">100×</option></select>
             </label>
             <button type="button" id="clearPaper">Papier leegmaken</button>
           </div>
@@ -249,7 +249,6 @@
         document.getElementById('clearPaper').addEventListener('click', () => { pctx.clearRect(0, 0, paper.width, paper.height); drawFrame(); });
         drawFrame();
         document.getElementById('speed').addEventListener('change', (e) => M._emu_set_speed(Number(e.target.value)));
-        M._emu_set_speed(20);
 
         (function frame() { drawScreen(); track(); requestAnimationFrame(frame); })();
       })();

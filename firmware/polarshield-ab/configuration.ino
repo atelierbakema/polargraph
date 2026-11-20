@@ -102,7 +102,7 @@ void configuration_setup()
   sd_initSD();
   lcd_initLCD();
   lcd_showSummary();
-  delay(1000);
+  delay(2000); // opstartscherm even laten zien (-ab1)
   pinMode(2, INPUT);
   touch.InitTouch();
   touch.setPrecision(PREC_MEDIUM);  

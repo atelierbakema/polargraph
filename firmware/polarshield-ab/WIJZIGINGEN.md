@@ -3,6 +3,18 @@
 Gebaseerd op **Sandy Noble's Polargraph Server 1.4.3** voor de Arduino Mega + Polarshield v2.x
 (map `../polarshield/`, ongewijzigd bewaard als terugvaloptie). Licentie: GPL-3.0, net als het origineel.
 
+## Versie 1.4.3-ab2 (20 november 2026)
+
+Het touchscreen in de stijl van Atelier Bakema. Bekeken en getest in de emulator (`../emulator/`).
+
+| Wijziging | Details |
+|---|---|
+| Opstartscherm | "Atelier Bakema" op papierkleur, met "Polargraph", de versie, de status van de SD-kaart en een vermelding van Sandy Noble. Blijft 2 seconden staan |
+| Kleuren | Achtergrond inkt `#1D2124`, knoppen diep groenblauw `#1F6F64`, tekst papier `#F4F2EC`, ingedrukte knop oranje `#E0732E`. Aan te passen bovenin `lcd.ino`. Voorheen kregen de knoppen een "willekeurige" kleur |
+| Lettertype | Knoppen in JetBrains Mono Bold (8×16), logo in Inter Display. Gemaakt met `tools/make_graphics.py` → `ab_graphics.c` (SIL Open Font License) |
+| Talen | Alle knopteksten in één tabel, in het Nederlands en Engels (UK). Duidelijkere teksten (bijv. "TEKENEN VAN SD", "INSTELLINGEN" in plaats van "MORE …"). Knop **TAAL** in het tweede instellingenmenu; de keuze wordt bewaard in de EEPROM (adres 46). Standaard: Nederlands |
+| Knoppen | Tekst automatisch gecentreerd, tot drie regels |
+
 ## Versie 1.4.3-ab1 (20 november 2026)
 
 | # | Wijziging | Waarom |
@@ -20,7 +32,7 @@ de werking van het touchscreen. Bestanden die met de oude app gemaakt zijn, werk
 
 ## Bouwen
 
-Het bestand `polarshield-ab-1.4.3-ab1.hex` is kant-en-klaar. Zelf bouwen gaat met de Arduino-omgeving
+Het bestand `polarshield-ab-1.4.3-ab2.hex` is kant-en-klaar. Zelf bouwen gaat met de Arduino-omgeving
 (bord: *Arduino Mega 2560*) en deze bibliotheken:
 
 | Bibliotheek | Versie | Opmerking |
