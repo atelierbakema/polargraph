@@ -116,3 +116,51 @@ describe('van boven naar onder', () => {
     expect(plain.strokes.map((s) => s[0].y)).toEqual([100, 92, 110]);
   });
 });
+
+describe('inktdroogtijd', () => {
+  const A: Polyline = [{ x: 10, y: 50 }, { x: 110, y: 50 }];
+  const B: Polyline = [{ x: 60, y: 20 }, { x: 60, y: 80 }]; // kruist A
+  const C: Polyline = [{ x: 150, y: 200 }, { x: 180, y: 200 }]; // ver weg
+
+  it('tekent eerst ergens anders verder en wacht daarna alleen de resterende tijd', () => {
+    const plan = buildPlan([A, B, C], paper, { order: 'original', inkDryingSec: 20 });
+    expect(plan.strokes.map((s) => s[0].x)).toEqual([10, 150, 60]);
+    expect(plan.pauses[0]).toBe(0);
+    expect(plan.pauses[1]).toBe(0);
+    expect(plan.pauses[2]).toBeGreaterThan(0);
+    expect(plan.pauses[2]).toBeLessThan(20);
+    expect(plan.stats.pauseSec).toBe(plan.pauses[2]);
+  });
+
+  it('doet niets als de lijnen elkaar niet kruisen', () => {
+    const plan = buildPlan([A, C], paper, { order: 'original', inkDryingSec: 20 });
+    expect(plan.pauses).toEqual([0, 0]);
+  });
+
+  it('staat standaard uit', () => {
+    const plan = buildPlan([A, B], paper, { order: 'original' });
+    expect(plan.pauses).toEqual([0, 0]);
+    expect(plan.strokes.map((s) => s[0].x)).toEqual([10, 60]);
+  });
+});
+
+describe('geen zigzag bij rechts- en linkshandig', () => {
+  // Golven over de hele breedte, zoals in de voorbeeldtekening.
+  const waves: Polyline[] = [0, 1, 2, 3].map((k) => [
+    { x: 20, y: 200 + k * 7 },
+    { x: 100, y: 196 + k * 7 },
+    { x: 180, y: 200 + k * 7 },
+  ]);
+  it('rechtshandig: elke golf van links naar rechts', () => {
+    const plan = buildPlan(waves, paper, { order: 'right-handed' });
+    for (const s of plan.strokes) expect(s[0].x).toBeLessThan(s[s.length - 1].x);
+  });
+  it('linkshandig: elke golf van rechts naar links', () => {
+    const plan = buildPlan(waves, paper, { order: 'left-handed' });
+    for (const s of plan.strokes) expect(s[0].x).toBeGreaterThan(s[s.length - 1].x);
+  });
+  it('verticale lijnen van boven naar onder', () => {
+    const plan = buildPlan([[{ x: 50, y: 150 }, { x: 50, y: 50 }]], paper, { order: 'right-handed' });
+    expect(plan.strokes[0][0].y).toBe(50);
+  });
+});

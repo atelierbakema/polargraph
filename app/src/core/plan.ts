@@ -29,6 +29,8 @@ export interface Placement {
 /** Een tekenopdracht: lijnen in papiercoördinaten (mm), in de volgorde waarin ze getekend worden. */
 export interface DrawingPlan {
   strokes: Polyline[];
+  /** Wachttijd in seconden vóór elke lijn (inktdroogtijd). Even lang als `strokes`. */
+  pauses: number[];
   stats: PlanStats;
   warnings: string[];
 }
@@ -41,6 +43,8 @@ export interface PlanStats {
   travelLengthMm: number;
   penLifts: number;
   bounds: Bounds | null;
+  /** Totale wachttijd voor het drogen van de inkt, in seconden. */
+  pauseSec: number;
 }
 
 /**
@@ -67,6 +71,14 @@ export interface PlanOptions {
   bandHeightMm?: number;
   /** Lijnen die op minder dan deze afstand op elkaar aansluiten, worden zonder pen op te tillen getekend. */
   joinToleranceMm?: number;
+  /**
+   * Inktdroogtijd: een lijn die een net getekende lijn kruist, wordt pas getekend als die
+   * lijn minstens zoveel seconden droog is. De app tekent eerst ergens anders verder en
+   * wacht alleen als het niet anders kan. 0 of weglaten = uit.
+   */
+  inkDryingSec?: number;
+  /** Snelheden voor de tijdsinschatting (en dus voor de inktdroogtijd). */
+  speeds?: SpeedSettings;
   /** Stukjes korter dan dit worden weggelaten (mm). */
   minSegmentMm?: number;
   /** Lijnen afknippen op de papierrand min deze marge (mm). Standaard 0. */
@@ -165,7 +177,7 @@ export function orderNearest(lines: Polyline[], start: Point, upwardPenalty = 0)
  * maar teruggaan tegen de tekenrichting in telt zwaarder.
  */
 export function orderByHand(lines: Polyline[], hand: 'right' | 'left', bandHeightMm: number): Polyline[] {
-  const dir = hand === 'right' ? 1 : -1;
+  const dir: 1 | -1 = hand === 'right' ? 1 : -1;
   const band = (line: Polyline) => Math.floor(Math.min(...line.map((p) => p.y)) / bandHeightMm);
   const bands = new Map<number, Polyline[]>();
   for (const line of lines) {
@@ -188,15 +200,15 @@ export function orderByHand(lines: Polyline[], hand: 'right' | 'left', bandHeigh
       let bestReverse = false;
       let bestCost = Infinity;
       remaining.forEach((line, i) => {
-        for (const reverse of [false, true]) {
-          const start = reverse ? line[line.length - 1] : line[0];
-          const backwards = Math.max(0, (pos.x - start.x) * dir);
-          const cost = distance(pos, start) + 2 * backwards;
-          if (cost < bestCost) {
-            bestCost = cost;
-            best = i;
-            bestReverse = reverse;
-          }
+        // Elke lijn gaat in de richting van de hand: geen zigzag.
+        const reverse = shouldReverseForHand(line, dir);
+        const start = reverse ? line[line.length - 1] : line[0];
+        const backwards = Math.max(0, (pos.x - start.x) * dir);
+        const cost = distance(pos, start) + 2 * backwards;
+        if (cost < bestCost) {
+          bestCost = cost;
+          best = i;
+          bestReverse = reverse;
         }
       });
       const [chosen] = remaining.splice(best, 1);
@@ -206,6 +218,21 @@ export function orderByHand(lines: Polyline[], hand: 'right' | 'left', bandHeigh
     }
   }
   return result;
+}
+
+/**
+ * Moet deze lijn achterstevoren om in de richting van de hand te lopen?
+ * Rechtshandig (dir 1): van links naar rechts. Linkshandig (dir -1): van rechts naar links.
+ * (Bijna) verticale lijnen: van boven naar beneden. Gesloten vormen blijven zoals ze zijn.
+ */
+function shouldReverseForHand(line: Polyline, dir: 1 | -1): boolean {
+  const a = line[0];
+  const b = line[line.length - 1];
+  if (distance(a, b) < 0.05) return false;
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  if (Math.abs(dx) < Math.abs(dy) * 0.25) return dy < 0;
+  return dx * dir < 0;
 }
 
 /** Plakt lijnen aan elkaar als de volgende begint waar de vorige eindigt. */
@@ -222,7 +249,7 @@ export function joinStrokes(lines: Polyline[], toleranceMm: number): Polyline[] 
   return result;
 }
 
-export function computeStats(strokes: Polyline[], start: Point): PlanStats {
+export function computeStats(strokes: Polyline[], start: Point, pauses: number[] = []): PlanStats {
   let drawLengthMm = 0;
   let travelLengthMm = 0;
   let pos = start;
@@ -232,7 +259,8 @@ export function computeStats(strokes: Polyline[], start: Point): PlanStats {
     pos = s[s.length - 1];
   }
   travelLengthMm += distance(pos, start);
-  return { strokeCount: strokes.length, drawLengthMm, travelLengthMm, penLifts: strokes.length, bounds: boundsOf(strokes) };
+  const pauseSec = pauses.reduce((a, b) => a + b, 0);
+  return { strokeCount: strokes.length, drawLengthMm, travelLengthMm, penLifts: strokes.length, bounds: boundsOf(strokes), pauseSec };
 }
 
 /** Maakt een tekenplan van geplaatste lijnen (in papiercoördinaten). */
@@ -259,8 +287,12 @@ export function buildPlan(placedLines: Polyline[], paper: PaperConfig, options: 
     const band = options.bandHeightMm ?? Math.max(10, b ? (b.maxY - b.minY) / 10 : 10);
     ordered = orderByHand(lines, order === 'right-handed' ? 'right' : 'left', band);
   } else ordered = lines;
-  const strokes = joinStrokes(ordered, options.joinToleranceMm ?? 0.05);
-  return { strokes, stats: computeStats(strokes, start), warnings };
+  let strokes = joinStrokes(ordered, options.joinToleranceMm ?? 0.05);
+  let pauses = strokes.map(() => 0);
+  if (options.inkDryingSec && options.inkDryingSec > 0) {
+    ({ strokes, pauses } = applyInkDrying(strokes, start, options.inkDryingSec, options.speeds ?? DEFAULT_SPEEDS));
+  }
+  return { strokes, pauses, stats: computeStats(strokes, start, pauses), warnings };
 }
 
 export interface SpeedSettings {
@@ -272,7 +304,113 @@ export interface SpeedSettings {
   penLiftSec: number;
 }
 
-/** Ruwe schatting van de tekentijd in seconden. Moet nog worden afgesteld op de echte machine. */
+/** Voorlopige snelheden; moeten nog worden afgesteld op de echte machine. */
+export const DEFAULT_SPEEDS: SpeedSettings = { drawMmPerSec: 30, travelMmPerSec: 60, penLiftSec: 1 };
+
+/** Ruwe schatting van de tekentijd in seconden, inclusief wachten op droge inkt. */
 export function estimateSeconds(stats: PlanStats, speeds: SpeedSettings): number {
-  return stats.drawLengthMm / speeds.drawMmPerSec + stats.travelLengthMm / speeds.travelMmPerSec + stats.penLifts * speeds.penLiftSec;
+  return (
+    stats.drawLengthMm / speeds.drawMmPerSec +
+    stats.travelLengthMm / speeds.travelMmPerSec +
+    stats.penLifts * speeds.penLiftSec +
+    stats.pauseSec
+  );
+}
+
+// ---------- Inktdroogtijd ----------
+
+interface DrawnStroke {
+  line: Polyline;
+  bounds: Bounds;
+  /** Tijdstip (s) waarop deze lijn klaar was. */
+  doneAt: number;
+}
+
+function boundsOverlap(a: Bounds, b: Bounds, margin: number): boolean {
+  return a.minX - margin <= b.maxX && b.minX - margin <= a.maxX && a.minY - margin <= b.maxY && b.minY - margin <= a.maxY;
+}
+
+/** Snijpunt van twee lijnstukken, of null. Raken telt ook als snijden. */
+function segmentIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point | null {
+  const d = (p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x);
+  if (Math.abs(d) < 1e-12) return null; // evenwijdig; overlappende lijnen vangen we via de eindpunten niet op, dat is acceptabel
+  const t = ((p3.x - p1.x) * (p4.y - p3.y) - (p3.y - p1.y) * (p4.x - p3.x)) / d;
+  const u = ((p3.x - p1.x) * (p2.y - p1.y) - (p3.y - p1.y) * (p2.x - p1.x)) / d;
+  if (t < -1e-9 || t > 1 + 1e-9 || u < -1e-9 || u > 1 + 1e-9) return null;
+  return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
+}
+
+/** Kruist lijn `a` lijn `b`? Doorlopen vanaf het eindpunt van `b` telt niet als kruisen. */
+function strokesCross(a: Polyline, b: Polyline): boolean {
+  const bEnd = b[b.length - 1];
+  for (let i = 1; i < a.length; i++) {
+    for (let j = 1; j < b.length; j++) {
+      const hit = segmentIntersection(a[i - 1], a[i], b[j - 1], b[j]);
+      if (hit && !(distance(hit, a[0]) < 0.01 && distance(hit, bEnd) < 0.01)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Zorgt dat een lijn die een natte lijn kruist, later getekend wordt. Kijkt een stukje
+ * vooruit in de volgorde naar een lijn die wel kan; lukt dat niet, dan wordt er gewacht.
+ */
+export function applyInkDrying(
+  strokes: Polyline[],
+  start: Point,
+  dryingSec: number,
+  speeds: SpeedSettings,
+  lookahead = 40,
+): { strokes: Polyline[]; pauses: number[] } {
+  const remaining = strokes.slice();
+  const result: Polyline[] = [];
+  const pauses: number[] = [];
+  const recent: DrawnStroke[] = [];
+  let t = 0;
+  let pos = start;
+
+  const waitNeeded = (line: Polyline, arrival: number): number => {
+    const b = boundsOf([line])!;
+    let wait = 0;
+    for (const d of recent) {
+      const age = arrival - d.doneAt;
+      if (age >= dryingSec) continue;
+      if (!boundsOverlap(b, d.bounds, 0.01)) continue;
+      if (strokesCross(line, d.line)) wait = Math.max(wait, dryingSec - age);
+    }
+    return wait;
+  };
+
+  while (remaining.length > 0) {
+    // Lijnen die al lang genoeg droog zijn, hoeven we niet meer te bekijken.
+    for (let i = recent.length - 1; i >= 0; i--) if (t - recent[i].doneAt >= dryingSec) recent.splice(i, 1);
+
+    let chosen = -1;
+    let pause = 0;
+    const limit = Math.min(remaining.length, lookahead);
+    let firstWait = 0;
+    for (let i = 0; i < limit; i++) {
+      const line = remaining[i];
+      const arrival = t + distance(pos, line[0]) / speeds.travelMmPerSec + speeds.penLiftSec;
+      const wait = waitNeeded(line, arrival);
+      if (i === 0) firstWait = wait;
+      if (wait === 0) {
+        chosen = i;
+        break;
+      }
+    }
+    if (chosen === -1) {
+      chosen = 0;
+      pause = firstWait;
+    }
+    const [line] = remaining.splice(chosen, 1);
+    t += distance(pos, line[0]) / speeds.travelMmPerSec + speeds.penLiftSec + pause;
+    t += polylineLength(line) / speeds.drawMmPerSec;
+    result.push(line);
+    pauses.push(Math.round(pause * 10) / 10);
+    recent.push({ line, bounds: boundsOf([line])!, doneAt: t });
+    pos = line[line.length - 1];
+  }
+  return { strokes: result, pauses };
 }

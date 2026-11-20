@@ -11,7 +11,7 @@ import {
   type MachineConfig,
   type PaperConfig,
 } from '../core/machine.ts';
-import { buildPlan, estimateSeconds, fitToPaper, place, type DrawingPlan, type OrderStrategy, type Placement } from '../core/plan.ts';
+import { buildPlan, DEFAULT_SPEEDS, estimateSeconds, fitToPaper, place, type DrawingPlan, type OrderStrategy, type Placement } from '../core/plan.ts';
 import { importSvg, type SvgImportResult } from '../core/svg.ts';
 import { exportLegacy, sdFileName, validateLegacy } from '../core/export/legacy.ts';
 import { exportGcode } from '../core/export/gcode.ts';
@@ -36,6 +36,8 @@ interface Settings {
   paper: PaperSettings;
   /** Persoonlijke voorkeur voor de tekenvolgorde. */
   order: OrderStrategy;
+  /** Inktdroogtijd in seconden; 0 = uit. */
+  inkDryingSec: number;
 }
 
 const ORDERS: OrderStrategy[] = ['nearest', 'right-handed', 'left-handed', 'original'];
@@ -47,6 +49,7 @@ const DEFAULT_SETTINGS: Settings = {
   machine: { widthMm: 1000, heightMm: 1500, ...POLARGRAPH_SD_DEFAULTS },
   paper: { size: 'A3', orientation: 'portrait', customWidthMm: 500, customHeightMm: 700, topMm: 250, leftMm: null },
   order: 'nearest',
+  inkDryingSec: 0,
 };
 
 function loadSettings(): { settings: Settings; fromStorage: boolean } {
@@ -80,6 +83,7 @@ function mergeSettings(input: unknown): Settings {
     d.paper.leftMm = typeof i.paper.leftMm === 'number' && Number.isFinite(i.paper.leftMm) ? i.paper.leftMm : null;
   }
   if (ORDERS.includes(i.order as OrderStrategy)) d.order = i.order as OrderStrategy;
+  d.inkDryingSec = Math.max(0, num(i.inkDryingSec, d.inkDryingSec));
   return d;
 }
 
@@ -131,6 +135,7 @@ const inputs = {
   offsetX: $<HTMLInputElement>('offsetX'),
   offsetY: $<HTMLInputElement>('offsetY'),
   order: $<HTMLSelectElement>('order'),
+  inkDrying: $<HTMLInputElement>('inkDrying'),
   paperSize: $<HTMLSelectElement>('paperSize'),
   orientation: $<HTMLSelectElement>('orientation'),
   paperW: $<HTMLInputElement>('paperW'),
@@ -163,7 +168,7 @@ function recompute(): void {
   const paper = paperConfig();
   const placed = placedLines();
   state.placedBounds = boundsOf(placed);
-  state.plan = buildPlan(placed, paper, { order: state.settings.order });
+  state.plan = buildPlan(placed, paper, { order: state.settings.order, inkDryingSec: state.settings.inkDryingSec, speeds: DEFAULT_SPEEDS });
   viewer.setScene({ machine, paper, strokes: state.plan.strokes });
   renderStats();
   renderWarnings(paper);
@@ -180,13 +185,14 @@ function renderStats(): void {
   }
   const s = plan.stats;
   const b = state.placedBounds;
-  const sec = estimateSeconds(s, { drawMmPerSec: 30, travelMmPerSec: 60, penLiftSec: 1 });
+  const sec = estimateSeconds(s, DEFAULT_SPEEDS);
   const minutes = Math.max(1, Math.round(sec / 60));
   const rows: Array<[string, string]> = [
     ['Formaat tekening', `${fmtNum(b.maxX - b.minX)} × ${fmtNum(b.maxY - b.minY)} mm`],
     ['Lijnen', fmtNum(s.strokeCount)],
     ['Tekenen', `${fmtNum(s.drawLengthMm / 1000, 1)} m`],
     ['Verplaatsen', `${fmtNum(s.travelLengthMm / 1000, 1)} m`],
+    ...(s.pauseSec > 0 ? ([['Wachten op inkt', `± ${fmtNum(Math.max(1, s.pauseSec / 60), 0)} min`]] as Array<[string, string]>) : []),
     ['Geschatte tijd', minutes < 60 ? `± ${minutes} min` : `± ${fmtNum(minutes / 60, 1)} uur`],
   ];
   el.innerHTML = '';
@@ -206,6 +212,11 @@ function renderWarnings(paper: PaperConfig): void {
   for (const p of checkSetup(state.settings.machine, paper)) items.push({ text: p.message, error: p.level === 'error' });
   for (const w of state.source?.warnings ?? []) items.push({ text: w });
   for (const w of state.plan?.warnings ?? []) items.push({ text: w });
+  if ((state.plan?.stats.pauseSec ?? 0) > 0) {
+    items.push({
+      text: 'Wachten op droge inkt kan de huidige firmware (SD-bestand) nog niet. De volgorde houdt er wel rekening mee. In G-code wacht de machine wel.',
+    });
+  }
   for (const item of items) {
     const li = document.createElement('li');
     li.textContent = item.text;
@@ -242,6 +253,7 @@ function syncSettingsInputs(): void {
   inputs.stepsPerRev.value = String(machine.stepsPerRev);
   inputs.stepMultiplier.value = String(machine.stepMultiplier);
   inputs.order.value = state.settings.order;
+  inputs.inkDrying.value = String(state.settings.inkDryingSec);
   inputs.paperSize.value = paper.size;
   inputs.orientation.value = paper.orientation;
   inputs.paperW.value = String(paper.customWidthMm);
@@ -453,6 +465,7 @@ inputs.orientation.addEventListener('change', () => {
   onSettingsChanged();
 });
 const settingInputs: Array<[HTMLInputElement, (v: number | null) => void]> = [
+  [inputs.inkDrying, (v) => (state.settings.inkDryingSec = v !== null && v > 0 ? v : 0)],
   [inputs.paperW, (v) => v && (state.settings.paper.customWidthMm = v)],
   [inputs.paperH, (v) => v && (state.settings.paper.customHeightMm = v)],
   [inputs.paperTop, (v) => v !== null && (state.settings.paper.topMm = v)],

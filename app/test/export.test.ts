@@ -84,3 +84,18 @@ describe('G-code', () => {
     expect(g).toContain(`G0 X20 Y${PAPER_SIZES.A4.heightMm - 20}`);
   });
 });
+
+describe('G-code met inktdroogtijd', () => {
+  it('zet een pauze (G4) vóór het neerzetten van de pen', () => {
+    const crossing = buildPlan(
+      [[{ x: 10, y: 50 }, { x: 110, y: 50 }], [{ x: 60, y: 20 }, { x: 60, y: 80 }]],
+      paper,
+      { order: 'original', inkDryingSec: 15 },
+    );
+    const g = exportGcode(crossing, paper).split('\n');
+    const i = g.findIndex((l) => l.startsWith('G4 P'));
+    expect(i).toBeGreaterThan(0);
+    expect(g[i - 1]).toBe('G0 X60 Y20');
+    expect(g[i + 1]).toBe('G1 Z0');
+  });
+});

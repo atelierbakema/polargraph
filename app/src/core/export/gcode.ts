@@ -41,13 +41,15 @@ export function exportGcode(plan: DrawingPlan, paper: PaperConfig, options: Gcod
   out.push('G21');
   out.push('G90');
   out.push(penUp);
-  for (const stroke of plan.strokes) {
+  plan.strokes.forEach((stroke, index) => {
     out.push(`G0 ${xy(stroke[0])}`);
+    const pause = plan.pauses[index] ?? 0;
+    if (pause > 0) out.push(`G4 P${Math.round(pause * 1000)} ; inkt laten drogen`);
     out.push(penDown);
     const feed = options.drawFeed ? ` F${Math.round(options.drawFeed)}` : '';
     for (let i = 1; i < stroke.length; i++) out.push(`G1 ${xy(stroke[i])}${i === 1 ? feed : ''}`);
     out.push(penUp);
-  }
+  });
   out.push(`G0 ${xy({ x: 0, y: 0 })}`);
   return out.join('\n') + '\n';
 }

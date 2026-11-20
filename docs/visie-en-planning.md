@@ -223,7 +223,8 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 ### Ideeën om op te nemen in de planning
 
 - **Tekenvolgorde zoals een kunstenaar** (20 nov, gebouwd): kies tussen slim (kortste weg), rechtshandig (linksboven naar rechtsonder) en linkshandig (rechtsboven naar linksonder). Alle drie werken van boven naar onder, omdat de penlift van de PolargraphSD onder de pen zit en anders over verse inkt schuurt. De keuze wordt onthouden.
-- **Droogtijd bij kruisende lijnen** (idee van Mark): als een lijn een net getekende lijn kruist, eerst ergens anders verder tekenen, of even wachten tot de inkt droog is. De droogtijd hangt af van pen en papier, dus dat wordt een instelling. Wachten kan in G-code met `G4` (pauze). Voor Sandy's firmware moet dat nog worden uitgezocht.
+- **Inktdroogtijd** (idee van Mark, 20 nov gebouwd): kruist een lijn een net getekende lijn, dan tekent de app eerst ergens anders verder en wacht zo nodig tot de inkt droog is. Instelbaar in seconden (0 = uit). In G-code wordt gewacht met `G4`; Sandy's firmware heeft geen wachtcommando, dus in het SD-bestand werkt alleen het aanpassen van de volgorde.
+- **Rechts- en linkshandig zonder zigzag** (20 nov): in deze standen loopt elke lijn in de richting van de hand, ook als omkeren korter zou zijn. Verticale lijnen gaan van boven naar onder.
 
 - **Drie manieren om te tekenen:** SD-kaart (machines met scherm), USB direct vanuit de browser (machines zonder scherm, versie 0.3), en een **Raspberry Pi** als netwerkplotter, zoals OctoPrint bij 3D-printers: de Pi hangt met USB aan de machine en je stuurt tekeningen via wifi vanaf je telefoon of laptop.
 - **Oude 3D-printerbordjes:** Marlin (vanaf 2.1) heeft een polargraph-stand, toegevoegd door de makers van Makelangelo. FluidNC (ESP32) heeft een WallPlotter-stand. Daarmee kan vrijwel elk oud 3D-printerbord een polargraph aansturen. Eerst testen op Mark's bordjes.
