@@ -114,9 +114,9 @@ Met een kleine aanpassing van de firmware wordt het nog prettiger:
 - **Automatisch uitschakelen instelbaar.** Nu gaan de motoren na 10 minuten altijd uit, en dat is niet aan te passen. Dat wordt een instelling, inclusief "nooit".
 - **De knop MOTORS ON** gaat niet meer stilletjes uit van een home-positie. Die aanname is nu de bron van veel verwarring.
 
-#### Installatiewizard op de machine
+#### Kalibratiewizard op de machine
 
-Mark's idee: een **installatiewizard** op het touchscreen, zoals bij een 3D-printer of een nieuwe telefoon. Je doorloopt hem alleen als je de machine opnieuw opstelt ("ik heb mijn machine veranderd"):
+Mark's idee: een **kalibratiewizard** (calibration wizard) op het touchscreen, zoals bij een 3D-printer of een nieuwe telefoon. Je doorloopt hem alleen als je de machine opnieuw opstelt ("ik heb mijn machine veranderd"):
 
 1. "Hoe breed is je machine?" Meet de afstand tussen de motoren en vul die in met +/− knoppen.
 2. "Hoe hoog hangen de motoren boven de vloer?" Meet en vul in.
@@ -200,7 +200,7 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 | **0.1** | Jouw belangrijkste werkwijze vervangen | SVG laden, op het papier plaatsen en schalen, tekenlijnen en beweeglijnen zien en aan/uit zetten, SD-bestand maken met checklist. Machinematen en papierpositie invullen. Homen via "start vanaf linksboven" (werkt met de huidige firmware). |
 | **0.2** | Comfort | Instellingen opslaan en laden (inclusief import uit de oude app), tijdsinschatting, slimmere lijnvolgorde (minder beweeglijnen), voorbeeldweergave afspelen. |
 | **0.3** | Tekenen via USB | Verbinden in Chrome/Edge, pen handmatig bewegen, live tekenen met voortgang, pauze en stop. |
-| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen. Installatiewizard en home-wizard op het touchscreen, "niet gehomed"-status, instelbare auto-uitschakeling, tekenbestanden in millimeters op het papier. |
+| **0.4** | Machine betrouwbaarder | Firmware-reparaties: communicatie, touchscreen, crash bij lege regels, alleen `.TXT`-bestanden tonen. Kalibratiewizard en home-wizard op het touchscreen, "niet gehomed"-status, instelbare auto-uitschakeling, tekenbestanden in millimeters op het papier. |
 | **0.5** | Automatisch homen | Eindschakelaars monteren, kalibratie (`C48`) testen en verbeteren, knop "Kalibreer machine" in de app en op het touchscreen. |
 | **0.6+** | Meer creatieve mogelijkheden | Penbreedte en vulpatronen, meerdere kleuren of lagen (pen wisselen), tekst, foto's en rastereffecten. |
 | **1.0** | Openbaar | Stabiel en gedocumenteerd, gepubliceerd op atelierbakema.com voor iedereen met een Polargraph. |
