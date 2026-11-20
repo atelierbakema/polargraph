@@ -217,7 +217,7 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 ## Open vragen
 
-1. **Welke machine/firmware heb je precies?** Een foto van het bord, of de tekst op het touchscreen bij het opstarten.
+1. ~~Welke machine/firmware heb je precies?~~ **Beantwoord (20 nov 2026):** PolargraphSD met **Polarshield v2.0d** op een Arduino Mega 2560, twee A4988-motordrivers (motor A en B), touchscreen en SD-kaartlezer. De bijbehorende firmware is `firmware/polarshield/`. Zie [hardware.md](hardware.md).
 2. **Kun je één SD-bestand delen** dat met de oude app is gemaakt en goed werkte? Dan weten we zeker welk formaat de machine verwacht.
 3. **Machinematen:** afstand tussen de motoren, papierformaat dat je meestal gebruikt, en waar het home-punt zit.
 4. **Welke functies uit de oude app gebruik je echt?** Bijvoorbeeld bepaalde vulstijlen.
