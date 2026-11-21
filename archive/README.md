@@ -16,8 +16,6 @@ Elk `.bundle`-bestand is een volledige kopie van één git-repository van Sandy 
 | `polargraph_server_polarshield_esp32.wiki.bundle` | 4 | 1 | 0 |
 | `polargraph_server_a1.bundle` | 63 | 1 | 1 |
 | `polargraph_server_a1.wiki.bundle` | 1 | 1 | 0 |
-| `polarshield_hardware.bundle` | 34 | 1 | 4 | Printontwerpen (Eagle-schema's, gerbers) van de Polarshield v2.0d t/m v2.6 |
-| `polarshieldv3_hardware.bundle` | 20 | 1 | 0 | Printontwerp Polarshield v3 (ESP32) |
 | `polarweb.bundle` | 119 | 1 | 1 | Sandy's eerdere experiment met een web-controller (2015) |
 | `polargraph_server_mega.bundle` | 21 | 1 | 0 | Oudere Mega-firmware (tot 2014) |
 | `polargraph_server_esf.bundle` | 32 | 1 | 0 | Firmware voor de "ESF edition" |
@@ -38,6 +36,8 @@ git clone --mirror polargraphcontroller.bundle polargraphcontroller.git
 cd polargraphcontroller.git
 git push --mirror https://github.com/atelierbakema/<nieuwe-repo>.git
 ```
+
+**Tijdelijk niet openbaar:** de printontwerpen van de Polarshield (`polarshield_hardware`, `polarshieldv3_hardware`) staan niet in deze openbare map, omdat Sandy er geen licentie bij heeft gezet. Ze worden bewaard in een privé-archief tot Sandy toestemming geeft. Het origineel staat op `github.com/euphy`.
 
 **Nog niet in dit archief:** `euphy/polargraph_models` (behuizing, tandwielen en andere 3D- en lasersnijbestanden, ±95 MB). Die is te groot om als één bestand in git te zetten, en wordt veiliggesteld door hem op GitHub te forken naar `atelierbakema`.
 
