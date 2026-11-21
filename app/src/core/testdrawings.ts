@@ -19,7 +19,64 @@ const svgDoc = (w: number, h: number, body: string) =>
 const square = (x: number, y: number, s: number) =>
   `<rect x="${x}" y="${y}" width="${s}" height="${s}"/>`;
 
+/** Arcering: evenwijdige lijnen in een driehoek, om stapverlies en penlift te zien. */
+function hatchTriangle(ax: number, ay: number, bx: number, by: number, cx: number, cy: number, spacing: number): string {
+  // horizontale lijnen tussen de schuine zijden a-c en b-c (a en b onderaan, c bovenaan)
+  let out = '';
+  for (let y = Math.min(ay, by) - spacing; y > cy + spacing / 2; y -= spacing) {
+    const t1 = (y - ay) / (cy - ay);
+    const t2 = (y - by) / (cy - by);
+    const x1 = ax + (cx - ax) * t1;
+    const x2 = bx + (cx - bx) * t2;
+    out += `<line x1="${x1.toFixed(2)}" y1="${y.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y.toFixed(2)}"/>`;
+  }
+  return out;
+}
+
 export const TEST_DRAWINGS: TestDrawing[] = [
+  {
+    id: 'bootje',
+    name: 'Bakema-bootje (alles-in-één test)',
+    howTo:
+      'Een eigen testbootje, zoals de "Benchy" bij 3D-printers. Meet na het tekenen: de liniaal onderaan hoort 100 mm te zijn; de kajuit 50 × 30 mm; de patrijspoorten 20 en 10 mm rond (niet ovaal); de mast loodrecht op de romp. In het zeil liggen de arceringslijnen om de 2 mm: schuiven ze op of zitten er sleepsporen tussen, dan verliest de machine stappen of komt de pen niet goed omhoog. Het vlaggetje en de golfjes laten zien hoe fijn de machine kleine details tekent.',
+    svg: (p) => {
+      const cx = p.widthMm / 2;
+      const base = Math.min(p.heightMm - 60, 200); // waterlijn
+      const x0 = cx - 75; // romp 150 mm breed
+      let b = '';
+      // romp: rechte dek-lijn, schuine voor- en achterkant, ronde onderkant
+      b += `<path d="M ${x0} ${base - 30} L ${x0 + 150} ${base - 30} L ${x0 + 135} ${base} Q ${cx} ${base + 18} ${x0 + 15} ${base} Z"/>`;
+      // patrijspoorten 20 mm en 10 mm
+      b += `<circle cx="${cx - 35}" cy="${base - 15}" r="10"/><circle cx="${cx + 35}" cy="${base - 15}" r="5"/>`;
+      // kajuit 50 x 30 mm op het dek, met raampjes
+      b += `<rect x="${cx - 25}" y="${base - 60}" width="50" height="30"/>`;
+      b += `<rect x="${cx - 18}" y="${base - 53}" width="12" height="10"/><rect x="${cx + 6}" y="${base - 53}" width="12" height="10"/>`;
+      // mast 110 mm
+      const mastTop = base - 170;
+      b += `<line x1="${cx + 30}" y1="${base - 30}" x2="${cx + 30}" y2="${mastTop}"/>`;
+      // zeil met arcering om de 2 mm
+      const sa = [cx + 30, base - 42];
+      const sb = [cx + 95, base - 42];
+      const sc = [cx + 30, mastTop + 8];
+      b += `<path d="M ${sa[0]} ${sa[1]} L ${sb[0]} ${sb[1]} L ${sc[0]} ${sc[1]} Z"/>`;
+      b += hatchTriangle(sa[0], sa[1], sb[0], sb[1], sc[0], sc[1], 2);
+      // vlaggetje met fijne details
+      b += `<path d="M ${cx + 30} ${mastTop} L ${cx + 18} ${mastTop + 4} L ${cx + 30} ${mastTop + 8}"/>`;
+      b += `<line x1="${cx + 22}" y1="${mastTop + 4}" x2="${cx + 26}" y2="${mastTop + 4}"/>`;
+      // golfjes
+      for (let row = 0; row < 3; row++) {
+        const y = base + 22 + row * 8;
+        let d = `M ${x0 - 20 + row * 6} ${y}`;
+        for (let i = 0; i < 9; i++) d += ` q 5 -4 10 0 q 5 4 10 0`;
+        b += `<path d="${d}"/>`;
+      }
+      // liniaal 100 mm met streepjes om de 10 mm
+      const ry = base + 52;
+      b += `<line x1="${cx - 50}" y1="${ry}" x2="${cx + 50}" y2="${ry}"/>`;
+      for (let i = 0; i <= 10; i++) b += `<line x1="${cx - 50 + i * 10}" y1="${ry}" x2="${cx - 50 + i * 10}" y2="${ry + (i % 5 === 0 ? 6 : 3)}"/>`;
+      return svgDoc(p.widthMm, p.heightMm, b);
+    },
+  },
   {
     id: 'vierkant',
     name: 'Maatvierkant 100 mm',

@@ -18,6 +18,7 @@ import { exportGcode } from '../core/export/gcode.ts';
 import { simulateLegacy, type FirmwareVariant, type SimResult } from '../core/simulate/legacy.ts';
 import { Viewer } from './view.ts';
 import exampleSvg from './example.svg?raw';
+import { TEST_DRAWINGS } from '../core/testdrawings.ts';
 
 // ---------- Instellingen (blijven bewaard in de browser) ----------
 
@@ -279,7 +280,7 @@ function syncSettingsInputs(): void {
 
 // ---------- Tekening laden en plaatsen ----------
 
-function loadSvgText(text: string, name: string): void {
+function loadSvgText(text: string, name: string, trueSize = false): void {
   try {
     state.source = importSvg(text);
     state.fileName = name;
@@ -289,7 +290,15 @@ function loadSvgText(text: string, name: string): void {
       $('canvas').parentElement!.classList.remove('simulating');
     }
     $('filename').textContent = name;
-    fit();
+    if (!trueSize) $('testHint').hidden = true;
+    if (trueSize) {
+      // Testtekeningen: ware grootte, want de maten moeten kloppen.
+      state.placement = { scale: 1, offsetX: 0, offsetY: 0, rotation: 0 };
+      recompute();
+      viewer.fitPaper();
+    } else {
+      fit();
+    }
   } catch (e) {
     alertMessage(e instanceof Error ? e.message : 'Dit bestand kon niet gelezen worden.');
   }
@@ -511,6 +520,22 @@ for (const target of [drop, $('canvas')]) {
 }
 
 $('fit').addEventListener('click', fit);
+const testSelect = $<HTMLSelectElement>('testDrawing');
+for (const t of TEST_DRAWINGS) {
+  const o = document.createElement('option');
+  o.value = t.id;
+  o.textContent = t.name;
+  testSelect.append(o);
+}
+testSelect.addEventListener('change', () => {
+  const t = TEST_DRAWINGS.find((d) => d.id === testSelect.value);
+  if (!t) return;
+  const paper = paperConfig();
+  loadSvgText(t.svg({ widthMm: paper.widthMm, heightMm: paper.heightMm }), `test-${t.id}.svg`, true);
+  $('testHint').textContent = t.howTo;
+  $('testHint').hidden = false;
+  testSelect.value = '';
+});
 $('center').addEventListener('click', center);
 inputs.scale.addEventListener('change', () => {
   const v = numberValue(inputs.scale);

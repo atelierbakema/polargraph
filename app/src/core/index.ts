@@ -5,3 +5,4 @@ export * from './plan.ts';
 export * from './export/legacy.ts';
 export * from './export/gcode.ts';
 export * from './simulate/legacy.ts';
+export * from './testdrawings.ts';

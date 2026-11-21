@@ -341,6 +341,8 @@ void lcd_drawText(String text, int x, int y, byte fr, byte fg, byte fb, byte br,
 }
 
 /** Tekst op de achtergrond, in de tekstkleur van het kleurenschema. */
+void lcd_drawTextOnBackground(String text, int x, int y);
+void lcd_drawTextOnBackground(const __FlashStringHelper *text, int x, int y) { lcd_drawTextOnBackground(String(text), x, y); }
 void lcd_drawTextOnBackground(String text, int x, int y)
 {
   lcd_drawText(text, x, y, colorBrightRed, colorBrightGreen, colorBrightBlue, colorDarkRed, colorDarkGreen, colorDarkBlue);
@@ -382,12 +384,13 @@ void cal_change(int direction)
   if (*value < 300) *value = 300;
   if (*value > 6000) *value = 6000;
   // knoppen opnieuw tekenen, zodat het oranje "ingedrukt"-randje verdwijnt
-  cal_drawRamButton(6, "-");
-  cal_drawRamButton(10, "+");
+  cal_drawRamButton(6, F("-"));
+  cal_drawRamButton(10, F("+"));
   cal_drawValue();
 }
 
 /** Tekstregels in het vlak linksboven (waar geen knoppen staan). */
+void cal_text(byte line, const __FlashStringHelper *text) { cal_text(line, String(text)); }
 void cal_text(byte line, String text)
 {
   lcd_drawTextOnBackground(text, buttonCoords[0][0], buttonCoords[0][1] + 2 + line * 19);
@@ -399,11 +402,13 @@ void cal_drawValue()
   int value = calStep == CAL_WIDTH ? calWidth : calHeight;
   lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
   lcd.fillRect(0, buttonCoords[1][1] + 4, 319, buttonCoords[1][1] + 30);
-  String label = calStep == CAL_WIDTH ? (nl ? "Breedte: " : "Width: ") : (nl ? "Hoogte: " : "Height: ");
+  String label = calStep == CAL_WIDTH ? String(nl ? F("Breedte: ") : F("Width: ")) : String(nl ? F("Hoogte: ") : F("Height: "));
   lcd_drawTextOnBackground(label + String(value) + " mm", buttonCoords[0][0], buttonCoords[1][1] + 9);
 }
 
 /** Knop met een tekst uit het werkgeheugen (bijv. met een getal erin). */
+void cal_drawRamButton(byte coordsIndex, String text);
+void cal_drawRamButton(byte coordsIndex, const __FlashStringHelper *text) { cal_drawRamButton(coordsIndex, String(text)); }
 void cal_drawRamButton(byte coordsIndex, String text)
 {
   lcd_drawButtonBackground(coordsIndex);
@@ -430,39 +435,39 @@ void cal_draw()
   boolean nl = lcdLanguage == LANG_NL;
   lcd_clear();
   if (calStep == CAL_INTRO) {
-    cal_text(0, nl ? "Kalibratie" : "Calibration");
-    cal_text(1, nl ? "Meet de machine op met een rolmaat." : "Measure the machine with a tape.");
-    cal_text(2, nl ? "Alleen nodig als je de machine" : "Only needed when you hang the");
-    cal_text(3, nl ? "anders hebt opgehangen." : "machine differently.");
-    cal_drawRamButton(6, nl ? "Annuleren" : "Cancel");
-    cal_drawRamButton(10, nl ? "Start" : "Start");
+    cal_text(0, nl ? F("Kalibratie") : F("Calibration"));
+    cal_text(1, nl ? F("Meet de machine op met een rolmaat.") : F("Measure the machine with a tape."));
+    cal_text(2, nl ? F("Alleen nodig als je de machine") : F("Only needed when you hang the"));
+    cal_text(3, nl ? F("anders hebt opgehangen.") : F("machine differently."));
+    cal_drawRamButton(6, nl ? F("Annuleren") : F("Cancel"));
+    cal_drawRamButton(10, F("Start"));
   }
   else if (calStep == CAL_WIDTH || calStep == CAL_HEIGHT) {
     if (calStep == CAL_WIDTH) {
-      cal_text(0, nl ? "1. Breedte" : "1. Width");
-      cal_text(1, nl ? "Afstand tussen de" : "Distance between");
-      cal_text(2, nl ? "twee tandwielen," : "the two sprockets,");
-      cal_text(3, nl ? "hart op hart." : "centre to centre.");
+      cal_text(0, nl ? F("1. Breedte") : F("1. Width"));
+      cal_text(1, nl ? F("Afstand tussen de") : F("Distance between"));
+      cal_text(2, nl ? F("twee tandwielen,") : F("the two sprockets,"));
+      cal_text(3, nl ? F("hart op hart.") : F("centre to centre."));
     } else {
-      cal_text(0, nl ? "2. Hoogte" : "2. Height");
-      cal_text(1, nl ? "Van de tandwielen" : "From the sprockets");
-      cal_text(2, nl ? "tot de vloer of de" : "down to the floor or");
-      cal_text(3, nl ? "onderkant van de wand." : "the bottom of the wall.");
+      cal_text(0, nl ? F("2. Hoogte") : F("2. Height"));
+      cal_text(1, nl ? F("Van de tandwielen") : F("From the sprockets"));
+      cal_text(2, nl ? F("tot de vloer of de") : F("down to the floor or"));
+      cal_text(3, nl ? F("onderkant van de wand.") : F("the bottom of the wall."));
     }
-    cal_drawRamButton(4, nl ? "Volgende" : "Next");
-    cal_drawRamButton(6, "-");
-    cal_drawRamButton(8, (nl ? "Stap\n" : "Step\n") + String(calStepSize) + " mm");
-    cal_drawRamButton(10, "+");
+    cal_drawRamButton(4, nl ? F("Volgende") : F("Next"));
+    cal_drawRamButton(6, F("-"));
+    cal_drawRamButton(8, String(nl ? F("Stap\n") : F("Step\n")) + String(calStepSize) + " mm");
+    cal_drawRamButton(10, F("+"));
     cal_drawValue();
   }
   else {
-    cal_text(0, nl ? "Klopt dit?" : "Is this right?");
-    cal_text(1, (nl ? "Breedte: " : "Width: ") + String(calWidth) + " mm");
-    cal_text(2, (nl ? "Hoogte: " : "Height: ") + String(calHeight) + " mm");
-    cal_text(3, nl ? "Opslaan bewaart het in de machine." : "Save stores it in the machine.");
-    cal_drawRamButton(6, nl ? "Opnieuw" : "Again");
-    cal_drawRamButton(8, nl ? "Annuleren" : "Cancel");
-    cal_drawRamButton(10, nl ? "Opslaan" : "Save");
+    cal_text(0, nl ? F("Klopt dit?") : F("Is this right?"));
+    cal_text(1, String(nl ? F("Breedte: ") : F("Width: ")) + String(calWidth) + " mm");
+    cal_text(2, String(nl ? F("Hoogte: ") : F("Height: ")) + String(calHeight) + " mm");
+    cal_text(3, nl ? F("Opslaan bewaart het in de machine.") : F("Save stores it in the machine."));
+    cal_drawRamButton(6, nl ? F("Opnieuw") : F("Again"));
+    cal_drawRamButton(8, nl ? F("Annuleren") : F("Cancel"));
+    cal_drawRamButton(10, nl ? F("Opslaan") : F("Save"));
   }
 }
 
@@ -478,8 +483,8 @@ void cal_save()
   Serial.println(machineHeight);
   boolean nl = lcdLanguage == LANG_NL;
   lcd_clear();
-  cal_text(0, nl ? "Opgeslagen." : "Saved.");
-  cal_text(1, (nl ? "Machine: " : "Machine: ") + String(machineWidth) + " x " + String(machineHeight) + " mm");
+  cal_text(0, nl ? F("Opgeslagen.") : F("Saved."));
+  cal_text(1, String(F("Machine: ")) + String(machineWidth) + " x " + String(machineHeight) + " mm");
   delay(1500);
   lcd_displayFirstMenu();
 }
@@ -509,7 +514,7 @@ void lcd_drawThemeName()
   char name[20];
   strncpy_P(name, (const char *)pgm_read_ptr(&THEMES[lcdTheme].name[lcdLanguage == LANG_NL ? 1 : 0]), sizeof(name) - 1);
   name[sizeof(name) - 1] = 0;
-  String msg = String(lcdLanguage == LANG_NL ? "Kleuren: " : "Colours: ") + name;
+  String msg = String(lcdLanguage == LANG_NL ? F("Kleuren: ") : F("Colours: ")) + name;
   lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
   lcd.fillRect(0, buttonCoords[1][1] + 8, 319, buttonCoords[1][1] + 26);
   lcd_drawTextOnBackground(msg, buttonCoords[0][0], buttonCoords[1][1] + 9);
@@ -1067,7 +1072,7 @@ void lcd_drawSplash()
   String version = "v" + FIRMWARE_VERSION_NO;
   lcd_drawText(version, x0 + AbLogoWidth - lcd_textWidth(version.c_str()), lineY + 10, 110, 114, 116, CARD_R, CARD_G, CARD_B);
 
-  lcd_drawTextOnBackground(lcdLanguage == LANG_NL ? "Gebaseerd op het werk van Sandy Noble" : "Based on the work of Sandy Noble", SPLASH_CARD_X, 216);
+  lcd_drawTextOnBackground(lcdLanguage == LANG_NL ? F("Gebaseerd op het werk van Sandy Noble") : F("Based on the work of Sandy Noble"), SPLASH_CARD_X, 216);
 }
 
 void lcd_showSummary()
@@ -1075,10 +1080,10 @@ void lcd_showSummary()
   // Status van de SD-kaart onder het blaadje, in de gekozen taal en kleuren (-ab2).
   boolean nl = lcdLanguage == LANG_NL;
   String msg;
-  if (!cardPresent) msg = nl ? "Geen SD-kaart gevonden" : "No SD card found";
-  else if (!cardInit) msg = nl ? "SD-kaart niet leesbaar" : "SD card could not be read";
-  else if (useAutoStartFromSD && autoStartFileFound) msg = (nl ? "Start automatisch: " : "Starting: ") + autoStartFilename;
-  else msg = nl ? "SD-kaart klaar" : "SD card ready";
+  if (!cardPresent) msg = nl ? F("Geen SD-kaart gevonden") : F("No SD card found");
+  else if (!cardInit) msg = nl ? F("SD-kaart niet leesbaar") : F("SD card could not be read");
+  else if (useAutoStartFromSD && autoStartFileFound) msg = String(nl ? F("Start automatisch: ") : F("Starting: ")) + autoStartFilename;
+  else msg = nl ? F("SD-kaart klaar") : F("SD card ready");
   lcd_drawTextOnBackground(msg, SPLASH_CARD_X, 192);
 }
 
@@ -1477,7 +1482,7 @@ void lcd_drawCurrentSelectedFilename()
   lcd.fillRect(buttonCoords[0][0],buttonCoords[1][1]+8, screenWidth, buttonCoords[1][1]+26);
 
   // see if there's one already found
-  String msg = lcdLanguage == LANG_NL ? "Geen SD-kaart" : "No card found";
+  String msg = lcdLanguage == LANG_NL ? F("Geen SD-kaart") : F("No card found");
 
   if (commandFilename == "" || commandFilename == "            ")
   {
@@ -1491,7 +1496,7 @@ void lcd_drawCurrentSelectedFilename()
     msg = commandFilename;
   }
   
-  if (msg == "None") msg = lcdLanguage == LANG_NL ? "Geen tekenbestanden" : "No drawing files";
+  if (msg == "None") msg = lcdLanguage == LANG_NL ? F("Geen tekenbestanden") : F("No drawing files");
   lcd_drawTextOnBackground(msg, buttonCoords[0][0], buttonCoords[1][1]+9);
 }
 
