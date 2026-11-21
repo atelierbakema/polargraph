@@ -18,7 +18,7 @@ Vastgesteld aan de hand van foto's, 20 november 2026.
 
 Linksboven op de achterkant van de Polarshield zit een blokje van 6 pinnen met het opschrift **limits**, met de labels `+U`, `GND`, `X+`, `X−`, `Y+`, `Y−`. Dit is de aansluiting voor eindschakelaars.
 
-**Bevestigd** uit Sandy's originele printontwerp van precies dit bord (`Polarshield v2.0d.sch` in `archive/polarshield_hardware.bundle`, bestand `Polarshield_2.0d-SandyNoble_2014-07-30.zip`). Het blokje heet daar `JP15`:
+**Bevestigd** uit Sandy's originele printontwerp van precies dit bord (`Polarshield v2.0d.sch` in Sandy's repo `github.com/euphy/polarshield_hardware`, bestand `Polarshield_2.0d-SandyNoble_2014-07-30.zip`). Het blokje heet daar `JP15`:
 
 | Pin JP15 | Label op het bord | Signaal | Arduino-pin | Gebruik in de firmware |
 |---|---|---|---|---|
