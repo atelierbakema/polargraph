@@ -62,10 +62,12 @@ function makeCommand() {
   const stats = { ok: 0, slow: 0, hang: 0, invalidAnswered: 0 };
   let expected = [a0, b0];
   const started = Date.now();
+  let crashed = null;
   for (let i = 0; i < commands.length; i++) {
     const c = commands[i];
-    const t0 = Date.now();
-    const answered = await page.evaluate(async ({ text }) => {
+    let answered;
+    try {
+    answered = await page.evaluate(async ({ text }) => {
       window.emuLines = [];
       window.emuSend(text + '\n');
       const t0 = performance.now();
@@ -76,11 +78,15 @@ function makeCommand() {
       }
       return -1;
     }, c);
+    } catch (e) {
+      const recent = commands.slice(Math.max(0, i - 3), i + 1).map((x) => JSON.stringify(x.text.length > 60 ? x.text.slice(0, 60) + '…' : x.text));
+      crashed = `bij commando ${i} van ${commands.length}: ${e.message.split('\n')[0]}. Laatste commando's: ${recent.join(', ')}`;
+      break;
+    }
     if (answered < 0) {
       stats.hang++;
     } else {
       // Een READY die pas komt na de "nog steeds wakker"-herhaling (elke 5 s) telt als haperen.
-      const repeated = await page.evaluate(() => window.emuLines.filter((l) => l.startsWith('READY')).length);
       if (answered > 200 && !c.valid) stats.slow++;
       else stats.ok++;
       if (!c.valid) stats.invalidAnswered++;
@@ -89,15 +95,14 @@ function makeCommand() {
     if (c.setPos) expected = c.setPos;
   }
 
+  if (crashed) {
+    console.log(`Firmware: ${firmware}`);
+    console.log(`GECRASHT ${crashed}`);
+    console.log(`Tot dan: netjes ${stats.ok}, haperend ${stats.slow}, vastgelopen ${stats.hang}`);
+    await browser.close().catch(() => {});
+    process.exit(1);
+  }
   // Waar staat de machine nu? Vraag de motorposities op via de emulator.
-  const pos = await page.evaluate(() => [window.emuMotorA ? window.emuMotorA() : null]);
-  const finalSync = await page.evaluate(async () => {
-    window.emuLines = [];
-    window.emuSend('C26,END\n'); // vraag machinegegevens (antwoordt ook met READY)
-    await new Promise((r) => setTimeout(r, 500));
-    return window.emuLines.slice();
-  });
-  const motor = await page.evaluate(() => ({ a: window.__motorA, b: window.__motorB }));
 
   console.log(`Firmware: ${firmware}`);
   console.log(`Commando's: ${commands.length} (waarvan rommel: ${commands.filter((c) => !c.valid).length})`);

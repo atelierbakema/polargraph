@@ -40,8 +40,28 @@ Dit maakt `dist/firmware.js` (met de WebAssembly erin). Een losse pagina om onli
 python3 make-standalone.py polargraph-emulator.html
 ```
 
+## Stabiliteitstest
+
+`tests/stabiliteit.cjs` stuurt de firmware honderden commando's via de "USB-poort", afgewisseld met
+rommel (lege regels, regels zonder `,END`, veel te lange regels, willekeurige tekens, onbekende
+commando's), en meet of hij steeds netjes READY antwoordt en aan het eind op de goede plek staat.
+
+```bash
+python3 -m http.server 8765 &
+node tests/stabiliteit.cjs nieuw 500
+node tests/stabiliteit.cjs origineel 500
+```
+
+Uitslag (21 november 2026, 500 commando's):
+
+| Firmware | Uitslag |
+|---|---|
+| Atelier Bakema 1.4.3-ab2 | 501 van 501 netjes beantwoord (192 rommelregels), 0 keer gehaperd, 0 keer vastgelopen, eindpositie klopt op 1 microstap |
+| Origineel 1.4.3 | Crasht bij commando 5: een regel van 126 tekens loopt over de buffer van 50 tekens heen (F1) |
+
 ## Gevonden met de emulator
 
+- Na een onleesbare regel duurde het 5 seconden voor de firmware weer READY zei (F6, opgelost).
 - Na "DRAW THIS FILE" werd een vinger die nog op het scherm lag gezien als een druk op STOP
   (dezelfde plek), waardoor de tekening meteen stopte. Opgelost in 1.4.3-ab1 (F5).
 
