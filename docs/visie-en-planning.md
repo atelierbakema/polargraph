@@ -226,6 +226,10 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 ### Ideeën om op te nemen in de planning
 
+- **Sprites en "rove" uit de firmware** (idee van Mark): Sandy's functies om tekst, krullen en de "Norwegian"-stijl op de machine zelf te laten tekenen, later uit de firmware halen en als bestanden voor de SD-kaart meeleveren, of door de webapp laten maken. Dat geeft ruimte in de firmware, en mensen houden de functies.
+- **Foto-opties / pendikte**: in de webapp komen pendikte en vullingen onder de opties voor een tekening (arceringen hebben de pendikte nodig). Op het touchscreen alleen als er afbeeldingen op de kaart staan.
+- **Instellingen via een AI-agent**: de machine luistert via USB naar commando's, ook voor instellingen. Een AI-agent (bijv. Claude Code op de Mac met de machine eraan) kan die lezen en aanpassen ("mijn machine is nu 2 meter breed").
+
 - **Talen (na de beta):** de app en het touchscreen in meerdere talen. Voorstel: Nederlands, Engels (UK), Duits, Frans, Spaans, Chinees (vereenvoudigd) en Bahasa Indonesia. Geen Russisch en geen Amerikaans Engels. Lijst nog te bevestigen.
 - **Touchscreen opnieuw ontwerpen:** met de emulator kunnen de schermen van de firmware worden aangepast en meteen in de browser bekeken, voordat iets op de machine gaat.
 

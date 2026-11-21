@@ -152,6 +152,7 @@ const byte MENU_ADJUST_SPEED = 6;
 const byte MENU_SETTINGS = 7;
 const byte MENU_SETTINGS_2 = 8;
 const byte MENU_ADJUST_PENLIFT = 9;
+const byte MENU_CAL_WIZARD = 10; // -ab2
 volatile byte currentMenu = MENU_INITIAL;
 
 byte numberOfMenuButtons = 3;
@@ -202,6 +203,16 @@ const byte BUTTON_ADJUST_PENLIFT = 44;
 const byte BUTTON_PENLIFT_SAVE_TO_EEPROM = 45;
 const byte BUTTON_LANGUAGE = 46; // -ab1
 const byte BUTTON_THEME = 47; // -ab2
+// Kalibratiewizard (-ab2)
+const byte BUTTON_CAL_WIZARD = 48;
+const byte BUTTON_CAL_START = 49;
+const byte BUTTON_CAL_NEXT = 50;
+const byte BUTTON_CAL_MINUS = 51;
+const byte BUTTON_CAL_PLUS = 52;
+const byte BUTTON_CAL_STEP = 53;
+const byte BUTTON_CAL_SAVE = 54;
+const byte BUTTON_CAL_AGAIN = 55;
+const byte BUTTON_CAL_CANCEL = 56;
 
 /*  Kleuren van het touchscreen (-ab2). Er zijn een paar kleurenschema's; de keuze
     staat in de EEPROM (adres 47) en is te wijzigen met de knop KLEUREN in de instellingen.
@@ -333,6 +344,163 @@ void lcd_drawText(String text, int x, int y, byte fr, byte fg, byte fb, byte br,
 void lcd_drawTextOnBackground(String text, int x, int y)
 {
   lcd_drawText(text, x, y, colorBrightRed, colorBrightGreen, colorBrightBlue, colorDarkRed, colorDarkGreen, colorDarkBlue);
+}
+
+/*  Kalibratiewizard (-ab2): de machinematen invullen op het touchscreen.
+    Stap 1 breedte tussen de tandwielen, stap 2 hoogte van de motoren tot de vloer,
+    dan een overzicht en opslaan in de EEPROM (dezelfde plek als het commando C24). */
+const byte CAL_INTRO = 0;
+const byte CAL_WIDTH = 1;
+const byte CAL_HEIGHT = 2;
+const byte CAL_SUMMARY = 3;
+byte calStep = CAL_INTRO;
+int calWidth = 0;
+int calHeight = 0;
+int calStepSize = 10;
+
+void cal_begin()
+{
+  calWidth = machineWidth;
+  calHeight = machineHeight;
+  calStepSize = 10;
+  calStep = CAL_INTRO;
+  currentMenu = MENU_CAL_WIZARD;
+  cal_draw();
+}
+
+void cal_next()
+{
+  calStep++;
+  if (calStep > CAL_SUMMARY) calStep = CAL_SUMMARY;
+  cal_draw();
+}
+
+void cal_change(int direction)
+{
+  int *value = calStep == CAL_WIDTH ? &calWidth : &calHeight;
+  *value += direction * calStepSize;
+  if (*value < 300) *value = 300;
+  if (*value > 6000) *value = 6000;
+  // knoppen opnieuw tekenen, zodat het oranje "ingedrukt"-randje verdwijnt
+  cal_drawRamButton(6, "-");
+  cal_drawRamButton(10, "+");
+  cal_drawValue();
+}
+
+/** Tekstregels in het vlak linksboven (waar geen knoppen staan). */
+void cal_text(byte line, String text)
+{
+  lcd_drawTextOnBackground(text, buttonCoords[0][0], buttonCoords[0][1] + 2 + line * 19);
+}
+
+void cal_drawValue()
+{
+  boolean nl = lcdLanguage == LANG_NL;
+  int value = calStep == CAL_WIDTH ? calWidth : calHeight;
+  lcd.setColor(colorDarkRed, colorDarkGreen, colorDarkBlue);
+  lcd.fillRect(0, buttonCoords[1][1] + 4, 319, buttonCoords[1][1] + 30);
+  String label = calStep == CAL_WIDTH ? (nl ? "Breedte: " : "Width: ") : (nl ? "Hoogte: " : "Height: ");
+  lcd_drawTextOnBackground(label + String(value) + " mm", buttonCoords[0][0], buttonCoords[1][1] + 9);
+}
+
+/** Knop met een tekst uit het werkgeheugen (bijv. met een getal erin). */
+void cal_drawRamButton(byte coordsIndex, String text)
+{
+  lcd_drawButtonBackground(coordsIndex);
+  int left = buttonCoords[coordsIndex][0];
+  int top = buttonCoords[coordsIndex][1];
+  int lineH = AbUiHeight + 1;
+  byte lines = 1;
+  for (unsigned int i = 0; i < text.length(); i++) if (text[i] == '\n') lines++;
+  int y = top + (buttonSize - lines * lineH) / 2 + 1;
+  int start = 0;
+  while (start <= (int)text.length()) {
+    int end = text.indexOf('\n', start);
+    if (end < 0) end = text.length();
+    String line = text.substring(start, end);
+    lcd_drawText(line, left + (buttonSize - lcd_textWidth(line.c_str())) / 2, y,
+      colorButtonTextRed, colorButtonTextGreen, colorButtonTextBlue, colorLightRed, colorLightGreen, colorLightBlue);
+    y += lineH;
+    start = end + 1;
+  }
+}
+
+void cal_draw()
+{
+  boolean nl = lcdLanguage == LANG_NL;
+  lcd_clear();
+  if (calStep == CAL_INTRO) {
+    cal_text(0, nl ? "Kalibratie" : "Calibration");
+    cal_text(1, nl ? "Meet de machine op met een rolmaat." : "Measure the machine with a tape.");
+    cal_text(2, nl ? "Alleen nodig als je de machine" : "Only needed when you hang the");
+    cal_text(3, nl ? "anders hebt opgehangen." : "machine differently.");
+    cal_drawRamButton(6, nl ? "Annuleren" : "Cancel");
+    cal_drawRamButton(10, nl ? "Start" : "Start");
+  }
+  else if (calStep == CAL_WIDTH || calStep == CAL_HEIGHT) {
+    if (calStep == CAL_WIDTH) {
+      cal_text(0, nl ? "1. Breedte" : "1. Width");
+      cal_text(1, nl ? "Afstand tussen de" : "Distance between");
+      cal_text(2, nl ? "twee tandwielen," : "the two sprockets,");
+      cal_text(3, nl ? "hart op hart." : "centre to centre.");
+    } else {
+      cal_text(0, nl ? "2. Hoogte" : "2. Height");
+      cal_text(1, nl ? "Van de tandwielen" : "From the sprockets");
+      cal_text(2, nl ? "tot de vloer of de" : "down to the floor or");
+      cal_text(3, nl ? "onderkant van de wand." : "the bottom of the wall.");
+    }
+    cal_drawRamButton(4, nl ? "Volgende" : "Next");
+    cal_drawRamButton(6, "-");
+    cal_drawRamButton(8, (nl ? "Stap\n" : "Step\n") + String(calStepSize) + " mm");
+    cal_drawRamButton(10, "+");
+    cal_drawValue();
+  }
+  else {
+    cal_text(0, nl ? "Klopt dit?" : "Is this right?");
+    cal_text(1, (nl ? "Breedte: " : "Width: ") + String(calWidth) + " mm");
+    cal_text(2, (nl ? "Hoogte: " : "Height: ") + String(calHeight) + " mm");
+    cal_text(3, nl ? "Opslaan bewaart het in de machine." : "Save stores it in the machine.");
+    cal_drawRamButton(6, nl ? "Opnieuw" : "Again");
+    cal_drawRamButton(8, nl ? "Annuleren" : "Cancel");
+    cal_drawRamButton(10, nl ? "Opslaan" : "Save");
+  }
+}
+
+void cal_save()
+{
+  EEPROM_writeAnything(EEPROM_MACHINE_WIDTH, calWidth);
+  EEPROM_writeAnything(EEPROM_MACHINE_HEIGHT, calHeight);
+  eeprom_loadMachineSize();
+  Serial.print(MSG_I_STR);
+  Serial.print(F("Kalibratie opgeslagen: "));
+  Serial.print(machineWidth);
+  Serial.print(F(" x "));
+  Serial.println(machineHeight);
+  boolean nl = lcdLanguage == LANG_NL;
+  lcd_clear();
+  cal_text(0, nl ? "Opgeslagen." : "Saved.");
+  cal_text(1, (nl ? "Machine: " : "Machine: ") + String(machineWidth) + " x " + String(machineHeight) + " mm");
+  delay(1500);
+  lcd_displayFirstMenu();
+}
+
+/** Staat er een afbeelding (.PBM) op de SD-kaart? Alleen dan zijn de foto-opties zinvol (-ab2). */
+boolean sdHasImages = false;
+boolean sd_hasImageFiles()
+{
+  if (!cardInit) return false;
+  root.rewindDirectory();
+  boolean found = false;
+  while (true) {
+    File entry = root.openNextFile();
+    if (!entry) break;
+    String name = entry.name();
+    entry.close();
+    name.toUpperCase();
+    if (name.endsWith(".PBM") && name.charAt(0) != '_' && name.charAt(0) != '.') { found = true; break; }
+  }
+  root.rewindDirectory();
+  return found;
 }
 
 /** Naam van het kleurenschema in de strook tussen de knoppen (-ab2). */
@@ -593,6 +761,32 @@ void lcd_processTouchCommand()
       EEPROM.write(EEPROM_LANGUAGE, lcdLanguage);
       lcd_clear();
       lcd_drawButtons();
+      break;
+    case BUTTON_CAL_WIZARD:
+      cal_begin();
+      break;
+    case BUTTON_CAL_START:
+    case BUTTON_CAL_NEXT:
+      cal_next();
+      break;
+    case BUTTON_CAL_MINUS:
+      cal_change(-1);
+      break;
+    case BUTTON_CAL_PLUS:
+      cal_change(1);
+      break;
+    case BUTTON_CAL_STEP:
+      calStepSize = calStepSize == 1 ? 10 : (calStepSize == 10 ? 100 : 1);
+      cal_draw();
+      break;
+    case BUTTON_CAL_SAVE:
+      cal_save();
+      break;
+    case BUTTON_CAL_AGAIN:
+      cal_begin();
+      break;
+    case BUTTON_CAL_CANCEL:
+      lcd_displayFirstMenu();
       break;
     case BUTTON_THEME:
       // Volgend kleurenschema, en onthouden (-ab2).
@@ -905,6 +1099,8 @@ void lcd_drawButtons()
       
     if (canCalibrate)  
       lcd_drawButton(BUTTON_CALIBRATE);
+    else
+      lcd_drawButton(BUTTON_CAL_WIZARD);
       
     if (isPenUp)
       lcd_drawButton(BUTTON_PEN_DOWN);
@@ -976,13 +1172,14 @@ void lcd_drawButtons()
     lcd_drawButton(BUTTON_ADJUST_POSITION_MENU);
     lcd_drawButton(BUTTON_DONE);
     lcd_drawButton(BUTTON_ADJUST_SPEED_MENU);
-    lcd_drawButton(BUTTON_ADJUST_PENSIZE_MENU);
+    lcd_drawButton(BUTTON_ADJUST_PENLIFT);
     lcd_drawButton(BUTTON_TOGGLE_ECHO);
     lcd_drawButton(BUTTON_SETTINGS_MENU_2);
   }
   else if (currentMenu == MENU_SETTINGS_2)
   {
-    lcd_drawButton(BUTTON_ADJUST_PENLIFT);
+    sdHasImages = sd_hasImageFiles();
+    if (sdHasImages) lcd_drawButton(BUTTON_ADJUST_PENSIZE_MENU);
     lcd_drawButton(BUTTON_LANGUAGE);
     lcd_drawButton(BUTTON_THEME);
     lcd_drawButton(BUTTON_DONE);
@@ -1090,8 +1287,8 @@ const char LBL_27_EN[] PROGMEM = "Pen size\nlarger";
 const char LBL_27_NL[] PROGMEM = "Pendikte\ngroter";
 const char LBL_28_EN[] PROGMEM = "Done";
 const char LBL_28_NL[] PROGMEM = "Klaar";
-const char LBL_29_EN[] PROGMEM = "Pen size";
-const char LBL_29_NL[] PROGMEM = "Pendikte";
+const char LBL_29_EN[] PROGMEM = "Photo\noptions";
+const char LBL_29_NL[] PROGMEM = "Foto-\nopties";
 const char LBL_30_EN[] PROGMEM = "Speed";
 const char LBL_30_NL[] PROGMEM = "Snelheid";
 const char LBL_31_EN[] PROGMEM = "Position";
@@ -1118,6 +1315,8 @@ const char LBL_41_EN[] PROGMEM = "Language\nEnglish";
 const char LBL_41_NL[] PROGMEM = "Taal\nNederlands";
 const char LBL_42_EN[] PROGMEM = "Colours";
 const char LBL_42_NL[] PROGMEM = "Kleuren";
+const char LBL_43_EN[] PROGMEM = "Calibrate";
+const char LBL_43_NL[] PROGMEM = "Kalibratie";
 // EIND KNOPTEKSTEN
 
 struct ButtonLabel {
@@ -1132,15 +1331,15 @@ const ButtonLabel BUTTON_LABELS[] PROGMEM = {
   {BUTTON_POWER_ON, 0, {LBL_1_EN, LBL_1_NL}},
   {BUTTON_POWER_OFF, 0, {LBL_2_EN, LBL_2_NL}},
   {BUTTON_TOGGLE_ECHO, 0, {LBL_3_EN, LBL_3_NL}},
-  {BUTTON_ADJUST_PENLIFT, 0, {LBL_4_EN, LBL_4_NL}},
-  {BUTTON_DRAW_FROM_SD, 2, {LBL_5_EN, LBL_5_NL}},
+  {BUTTON_ADJUST_PENLIFT, 4, {LBL_4_EN, LBL_4_NL}},
+  {BUTTON_DRAW_FROM_SD, 8, {LBL_5_EN, LBL_5_NL}},
   {BUTTON_MORE_RIGHT, 4, {LBL_6_EN, LBL_6_NL}},
-  {BUTTON_CALIBRATE, 4, {LBL_7_EN, LBL_7_NL}},
-  {BUTTON_PAUSE_RUNNING, 6, {LBL_8_EN, LBL_8_NL}},
-  {BUTTON_RESUME_RUNNING, 6, {LBL_9_EN, LBL_9_NL}},
+  {BUTTON_CALIBRATE, 6, {LBL_7_EN, LBL_7_NL}},
+  {BUTTON_PAUSE_RUNNING, 4, {LBL_8_EN, LBL_8_NL}},
+  {BUTTON_RESUME_RUNNING, 4, {LBL_9_EN, LBL_9_NL}},
   {BUTTON_RESET, 4, {LBL_10_EN, LBL_10_NL}},
-  {BUTTON_PEN_UP, 8, {LBL_11_EN, LBL_11_NL}},
-  {BUTTON_PEN_DOWN, 8, {LBL_12_EN, LBL_12_NL}},
+  {BUTTON_PEN_UP, 2, {LBL_11_EN, LBL_11_NL}},
+  {BUTTON_PEN_DOWN, 2, {LBL_12_EN, LBL_12_NL}},
   {BUTTON_PREV_FILE, 2, {LBL_13_EN, LBL_13_NL}},
   {BUTTON_NEXT_FILE, 8, {LBL_14_EN, LBL_14_NL}},
   {BUTTON_CANCEL_FILE, 6, {LBL_15_EN, LBL_15_NL}},
@@ -1157,7 +1356,7 @@ const ButtonLabel BUTTON_LABELS[] PROGMEM = {
   {BUTTON_DEC_PENSIZE, 4, {LBL_26_EN, LBL_26_NL}},
   {BUTTON_INC_PENSIZE, 10, {LBL_27_EN, LBL_27_NL}},
   {BUTTON_DONE, 6, {LBL_28_EN, LBL_28_NL}},
-  {BUTTON_ADJUST_PENSIZE_MENU, 4, {LBL_29_EN, LBL_29_NL}},
+  {BUTTON_ADJUST_PENSIZE_MENU, 0, {LBL_29_EN, LBL_29_NL}},
   {BUTTON_ADJUST_SPEED_MENU, 8, {LBL_30_EN, LBL_30_NL}},
   {BUTTON_ADJUST_POSITION_MENU, 2, {LBL_31_EN, LBL_31_NL}},
   {BUTTON_MOVE_DEC_A, 2, {LBL_32_EN, LBL_32_NL}},
@@ -1171,6 +1370,7 @@ const ButtonLabel BUTTON_LABELS[] PROGMEM = {
   {BUTTON_PENLIFT_SAVE_TO_EEPROM, 0, {LBL_40_EN, LBL_40_NL}},
   {BUTTON_LANGUAGE, 2, {LBL_41_EN, LBL_41_NL}},
   {BUTTON_THEME, 4, {LBL_42_EN, LBL_42_NL}},
+  {BUTTON_CAL_WIZARD, 6, {LBL_43_EN, LBL_43_NL}},
 // EIND KNOPTABEL
 };
 
@@ -1380,15 +1580,15 @@ byte lcd_getWhichButtonPressed(byte buttonNumber, byte menu)
         else return BUTTON_POWER_ON; 
         break;
       case 2: 
-        if (cardInit) return BUTTON_DRAW_FROM_SD;
-        break;
-      case 3: if (canCalibrate) { return BUTTON_CALIBRATE; } break;
-      case 4:
-        if (currentlyRunning) return BUTTON_PAUSE_RUNNING;
-        else return BUTTON_RESUME_RUNNING;
-      case 5: 
         if (isPenUp) return BUTTON_PEN_DOWN;
         else return BUTTON_PEN_UP; 
+        break;
+      case 3:
+        if (currentlyRunning) return BUTTON_PAUSE_RUNNING;
+        else return BUTTON_RESUME_RUNNING;
+      case 4: if (canCalibrate) { return BUTTON_CALIBRATE; } else { return BUTTON_CAL_WIZARD; } break;
+      case 5: 
+        if (cardInit) return BUTTON_DRAW_FROM_SD;
         break;
       case 6:
         return BUTTON_SETTINGS_MENU;
@@ -1453,13 +1653,37 @@ byte lcd_getWhichButtonPressed(byte buttonNumber, byte menu)
         break;
     }
   }
+  else if (currentMenu == MENU_CAL_WIZARD)
+  {
+    if (calStep == CAL_INTRO) {
+      switch (buttonNumber) {
+        case 4: return BUTTON_CAL_CANCEL; break;
+        case 6: return BUTTON_CAL_START; break;
+      }
+    }
+    else if (calStep == CAL_SUMMARY) {
+      switch (buttonNumber) {
+        case 4: return BUTTON_CAL_AGAIN; break;
+        case 5: return BUTTON_CAL_CANCEL; break;
+        case 6: return BUTTON_CAL_SAVE; break;
+      }
+    }
+    else {
+      switch (buttonNumber) {
+        case 3: return BUTTON_CAL_NEXT; break;
+        case 4: return BUTTON_CAL_MINUS; break;
+        case 5: return BUTTON_CAL_STEP; break;
+        case 6: return BUTTON_CAL_PLUS; break;
+      }
+    }
+  }
   else if (currentMenu == MENU_SETTINGS)
   {
     switch (buttonNumber)
     {
       case 1: return BUTTON_TOGGLE_ECHO; break;
       case 2: return BUTTON_ADJUST_POSITION_MENU; break;
-      case 3: return BUTTON_ADJUST_PENSIZE_MENU; break;
+      case 3: return BUTTON_ADJUST_PENLIFT; break;
       case 4: return BUTTON_DONE; break;
       case 5: return BUTTON_ADJUST_SPEED_MENU; break;
       case 6: return BUTTON_SETTINGS_MENU_2; break;
@@ -1469,7 +1693,7 @@ byte lcd_getWhichButtonPressed(byte buttonNumber, byte menu)
   {
     switch (buttonNumber)
     {
-      case 1: return BUTTON_ADJUST_PENLIFT; break;
+      case 1: if (sdHasImages) return BUTTON_ADJUST_PENSIZE_MENU; break;
       case 2: return BUTTON_LANGUAGE; break;
       case 3: return BUTTON_THEME; break;
       case 4: return BUTTON_DONE; break;

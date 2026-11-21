@@ -148,6 +148,8 @@ void comms_parseAndExecuteCommand(char *inS)
     Serial.print(F("Comm ("));
     Serial.print(inS);
     Serial.println(F(") not parsed."));
+    // Meteen weer klaar melden, zodat de computer niet 5 seconden hoeft te wachten (-ab2).
+    comms_ready();
   }
   inNoOfParams = 0;
   

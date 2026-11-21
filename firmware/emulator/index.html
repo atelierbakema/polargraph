@@ -130,6 +130,7 @@
         const M = await factory({
           onSerial: (t) => {
             log(t);
+            if (window.emuOnLine) window.emuOnLine(t);
             const v = /^v?(\d+\.\d+\.\d+[\w-]*)$/.exec(t.trim());
             if (v) document.getElementById('fw').textContent = 'Firmware ' + v[1];
           },
@@ -190,6 +191,9 @@
 
         // Seriële invoer
         const sendText = (t) => { const n = M.lengthBytesUTF8(t) + 1; const p = M._malloc(n); M.stringToUTF8(t, p, n); M._emu_serial_in(p); M._free(p); };
+        // Voor automatische tests: tekst naar de seriële poort sturen.
+        window.emuSend = sendText;
+        window.emuSpeed = (v) => M._emu_set_speed(v);
         document.getElementById('sendForm').addEventListener('submit', (e) => {
           e.preventDefault();
           const input = document.getElementById('cmd');

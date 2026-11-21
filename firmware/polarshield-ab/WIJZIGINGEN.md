@@ -14,6 +14,10 @@ Het touchscreen in de stijl van Atelier Bakema. Bekeken en getest in de emulator
 | Lettertype | Inter SemiBold 14 px met zachte randen (2 bits per pixel, gemengd met de achtergrond) en proportionele breedtes, voor knoppen, bestandsnamen, getallen en het opstartscherm. Logo in Inter Display. Gemaakt met `tools/make_graphics.py` → `ab_graphics.c` (SIL Open Font License) |
 | Talen | Alle knopteksten in één tabel (`tools/labels.py` controleert of elke regel op de knop past en schrijft de tabel in `lcd.ino`), in het Nederlands en Engels (UK), met duidelijkere teksten (bijv. "Tekenen van SD", "Instellingen" in plaats van "MORE …"). Knop **TAAL** in het tweede instellingenmenu; de keuze wordt bewaard in de EEPROM (adres 46). Standaard: Nederlands |
 | Knoppen | Tekst automatisch gecentreerd, tot drie regels |
+| Kalibratiewizard | Knop **Kalibratie** op het startscherm: breedte tussen de tandwielen en hoogte tot de vloer invullen met −/+ (stap 1, 10 of 100 mm), overzicht, opslaan in de EEPROM (zelfde plek als `C24`). Meldt `MSG,I,Kalibratie opgeslagen: …` via USB |
+| Startscherm | Boven: Motoren, Pen, Pauze. Onder: Kalibratie, Tekenen van SD, Instellingen |
+| Menu's | Penlift naar het eerste instellingenmenu. Pendikte heet nu **Foto-opties** en verschijnt alleen als er een afbeelding (`.PBM`) op de SD-kaart staat; voor gewone lijntekeningen doet pendikte niets |
+| F6 | Na een onleesbare regel via USB meldt de firmware meteen weer READY, in plaats van na 5 seconden (`comms.ino`). Gevonden met de stabiliteitstest (`../emulator/tests/stabiliteit.cjs`) |
 
 ## Versie 1.4.3-ab1 (20 november 2026)
 
