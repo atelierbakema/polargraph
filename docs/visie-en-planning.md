@@ -226,6 +226,11 @@ Elke versie werkt op zichzelf. Richttempo: ongeveer één versie per maand.
 
 ### Ideeën om op te nemen in de planning
 
+- **Architectuur: rekenwerk in de browser, hosting als statische site** (besproken 21 nov): de webapp rekent alles op het apparaat van de gebruiker uit (SVG inlezen, volgorde, bestand maken). De openbare versie is daardoor alleen een set bestanden op GitHub Pages of Cloudflare Pages, eventueel op atelierbakema.com: (bijna) gratis, schaalt vanzelf, en tekeningen van anderen komen nooit op een server.
+- **Homelab voor de eigen machine**: in het homelab draait dezelfde webapp in Docker, plus opslag van tekeningen, een wachtrij en instellingen per machine. Een klein bordje bij de machine (Raspberry Pi of ESP32) geeft de commando's via USB door en meldt de voortgang. Alleen bereikbaar in het eigen netwerk of via een VPN (bijv. Tailscale), niet openbaar.
+- **Rechtstreeks SVG/JPG/PDF tekenen** (architectuurvraag van Mark): de Arduino Mega kan G-code aan, maar geen SVG, JPG of PDF (te weinig geheugen). Daarvoor een slimmer brein naast het bord: een Pi bij de machine met dezelfde kern als de webapp (USB-stick erin of via wifi), of een ESP32 die de webapp serveert. Pas na de eerste test op de echte machine.
+- **Steun het project**: een rustige link onderaan de openbare site (GitHub Sponsors, Ko-fi, Liberapay of PayPal.me), met een eerlijke toelichting waar het geld naartoe gaat (hosting, domein, ontwikkeling).
+
 - **Sprites en "rove" uit de firmware** (idee van Mark): Sandy's functies om tekst, krullen en de "Norwegian"-stijl op de machine zelf te laten tekenen, later uit de firmware halen en als bestanden voor de SD-kaart meeleveren, of door de webapp laten maken. Dat geeft ruimte in de firmware, en mensen houden de functies.
 - **Foto-opties / pendikte**: in de webapp komen pendikte en vullingen onder de opties voor een tekening (arceringen hebben de pendikte nodig). Op het touchscreen alleen als er afbeeldingen op de kaart staan.
 - **Instellingen via een AI-agent**: de machine luistert via USB naar commando's, ook voor instellingen. Een AI-agent (bijv. Claude Code op de Mac met de machine eraan) kan die lezen en aanpassen ("mijn machine is nu 2 meter breed").
