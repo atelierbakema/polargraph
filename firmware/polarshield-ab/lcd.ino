@@ -241,7 +241,7 @@ const Theme THEMES[] PROGMEM = {
   {{5, 5, 5},      {51, 102, 204},  {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {200, 220, 255}, {THEME_5_EN, THEME_5_NL}},
 };
 const byte THEME_COUNT = sizeof(THEMES) / sizeof(THEMES[0]);
-const byte DEFAULT_THEME = 0;
+const byte DEFAULT_THEME = 4; // Papier
 byte lcdTheme = DEFAULT_THEME;
 
 // Het blaadje op het opstartscherm is altijd papier met inkt, in elk kleurenschema.
