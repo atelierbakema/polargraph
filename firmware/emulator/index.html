@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PolargraphSD-emulator</title>
+    <style>
+      :root {
+        --bg: #e8ebe6; --panel: #f8f9f6; --ink: #1d2124; --muted: #5d6660; --line: #d3d9d2;
+        --accent: #2f5bb7; --case: #cfd6d1; --bezel: #ffffff; --console: #111614; --console-ink: #b8f0c8;
+        --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #171b1a; --panel: #1f2423; --ink: #e6ebe8; --muted: #9aa5a0; --line: #353d3a; --accent: #7ea2f0; --case: #2b3230; --bezel: #e9ecea; color-scheme: dark; }
+      }
+      :root[data-theme="dark"] { --bg: #171b1a; --panel: #1f2423; --ink: #e6ebe8; --muted: #9aa5a0; --line: #353d3a; --accent: #7ea2f0; --case: #2b3230; --bezel: #e9ecea; color-scheme: dark; }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body { margin: 0; font: 14px/1.45 var(--font); background: var(--bg); color: var(--ink); }
+      main { max-width: 1100px; margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-left)) 40px; display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 24px; align-items: start; }
+      header { grid-column: 1 / -1; }
+      h1 { font-size: 1.25rem; margin: 0; }
+      .sub { color: var(--muted); margin: 2px 0 0; }
+      .device { background: var(--case); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+      .bezel { background: var(--bezel); padding: 14px 14px 30px; border-radius: 6px; position: relative; }
+      .bezel::after { content: "P."; position: absolute; left: 16px; bottom: 6px; font: 600 13px Georgia, serif; color: #b9c0bb; }
+      canvas#screen { display: block; width: 640px; max-width: calc(100vw - 100px); aspect-ratio: 4 / 3; image-rendering: pixelated; background: #000; cursor: pointer; touch-action: none; }
+      .status { display: flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+      .side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+      section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+      h2 { font-size: 0.95rem; margin: 0; }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      button, .button, input[type="text"], select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; }
+      button, .button { cursor: pointer; }
+      input[type="text"] { flex: 1; min-width: 0; font-family: var(--mono); }
+      #log { background: var(--console); color: var(--console-ink); font: 12px/1.4 var(--mono); height: 220px; overflow: auto; padding: 8px; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+      canvas#paper { width: 100%; aspect-ratio: 4 / 3; background: #fff; border-radius: 6px; border: 1px solid var(--line); }
+      .hint { color: var(--muted); font-size: 0.8rem; margin: 0; }
+      @media (max-width: 900px) { main { grid-template-columns: 1fr; } canvas#screen { width: 100%; max-width: 100%; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>PolargraphSD-emulator</h1>
+        <p class="sub">De echte firmware van de machine, in je browser. Druk op het scherm zoals op de machine.</p>
+        <div class="row" style="margin-top: 10px">
+          <label for="fwChoice">Firmware</label>
+          <button type="button" id="reboot">Herstart machine</button>
+          <select id="fwChoice">
+            <option value="ab">Atelier Bakema 1.4.3-ab2 (nieuw)</option>
+            <option value="origineel">Origineel van Sandy Noble 1.4.3</option>
+          </select>
+        </div>
+      </header>
+
+      <div class="device">
+        <div class="bezel"><canvas id="screen" width="320" height="240"></canvas></div>
+        <div class="status"><span id="fw">Opstarten…</span><span id="pen">Pen: ?</span><span id="motors">A 0 · B 0</span></div>
+      </div>
+
+      <div class="side">
+        <section>
+          <h2>SD-kaart</h2>
+          <div class="row">
+            <label class="button">Bestand op de SD-kaart zetten<input type="file" id="sdFile" accept=".txt,.TXT,text/plain" multiple hidden /></label>
+            <button type="button" id="sdExample">Voorbeeldbestand</button>
+          </div>
+          <p class="hint" id="sdList">Leeg. Op een echte kaart staan ook verborgen Mac-bestanden; die zet het voorbeeld er ook op, zodat je ziet dat de nieuwe firmware ze verbergt.</p>
+        </section>
+        <section>
+          <h2>Wat de machine tekent</h2>
+          <canvas id="paper" width="600" height="450"></canvas>
+          <div class="row">
+            <label>Snelheid
+              <select id="speed"><option value="1" selected>1× (echte tijd)</option><option value="5">5×</option><option value="20">20×</option><option value="100">100×</option></select>
+            </label>
+            <button type="button" id="clearPaper">Papier leegmaken</button>
+          </div>
+        </section>
+        <section>
+          <h2>USB-verbinding</h2>
+          <pre id="log"></pre>
+          <form class="row" id="sendForm">
+            <input type="text" id="cmd" placeholder="Commando, bijv. C14,END" autocomplete="off" />
+            <button type="submit">Stuur</button>
+          </form>
+          <p class="hint">Dit zie en stuur je normaal via de USB-kabel. Bijvoorbeeld <code>C13,END</code> (pen omlaag) of <code>C14,END</code> (pen omhoog).</p>
+        </section>
+      </div>
+    </main>
+    <script src="dist/firmware.js"></script>
+    <script src="dist/firmware-original.js"></script>
+    <script>
+      (async () => {
+        const logEl = document.getElementById('log');
+        const lines = [];
+        let lastLine = '';
+        let repeat = 0;
+        const log = (t) => {
+          // Herhaalde meldingen (zoals READY elke 5 seconden) samenvoegen.
+          if (t === lastLine) {
+            repeat++;
+            lines[lines.length - 1] = `${t}  (${repeat + 1}×)`;
+          } else {
+            lastLine = t;
+            repeat = 0;
+            lines.push(t);
+            if (lines.length > 400) lines.shift();
+          }
+          logEl.textContent = lines.join('\n');
+          logEl.scrollTop = logEl.scrollHeight;
+          const w = /^Loaded machine width:(\d+)/.exec(t);
+          if (w) { W = Number(w[1]); last = null; }
+          const h = /^Loaded machine height:(\d+)/.exec(t);
+          if (h) { H = Number(h[1]); last = null; }
+        };
+        let W = 1000; // machinebreedte (mm), uit de meldingen van de firmware
+        let H = 1500;
+        let last = null;
+        // Welke firmware: uit het #-deel van het adres, zodat wisselen een schone herstart is.
+        const original = location.hash === '#origineel';
+        const choice = document.getElementById('fwChoice');
+        choice.value = original ? 'origineel' : 'ab';
+        choice.addEventListener('change', () => {
+          location.hash = choice.value === 'origineel' ? 'origineel' : 'nieuw';
+          location.reload();
+        });
+        const factory = original ? PolargraphFirmwareOriginal : PolargraphFirmware;
+        const M = await factory({
+          onSerial: (t) => {
+            log(t);
+            if (window.emuOnLine) window.emuOnLine(t);
+            const v = /^v?(\d+\.\d+\.\d+[\w-]*)$/.exec(t.trim());
+            if (v) document.getElementById('fw').textContent = 'Firmware ' + v[1];
+          },
+          print: (t) => console.log(t),
+          printErr: (t) => console.warn(t),
+        });
+
+        // EEPROM (instellingen van de machine) bewaren in de browser, per firmware.
+        const eepromKey = 'polargraph-emulator:eeprom:' + (original ? 'origineel' : 'ab');
+        const eepromPtr = M._emu_eeprom();
+        const eepromView = () => new Uint8Array(M.HEAPU8.buffer, eepromPtr, 4096);
+        try {
+          const saved = localStorage.getItem(eepromKey);
+          if (saved) eepromView().set(Uint8Array.from(atob(saved), (c) => c.charCodeAt(0)));
+        } catch (e) { /* geen opslag beschikbaar */ }
+        let lastSaved = '';
+        setInterval(() => {
+          let bin = '';
+          for (const b of eepromView()) bin += String.fromCharCode(b);
+          const enc = btoa(bin);
+          if (enc !== lastSaved) {
+            lastSaved = enc;
+            try { localStorage.setItem(eepromKey, enc); } catch (e) { /* geen opslag beschikbaar */ }
+          }
+        }, 1000);
+        document.getElementById('reboot').addEventListener('click', () => location.reload());
+        M.callMain([]);
+
+        // Scherm
+        const screen = document.getElementById('screen');
+        const sctx = screen.getContext('2d');
+        const img = sctx.createImageData(320, 240);
+        let lastVersion = -1;
+        const fbPtr = M._emu_framebuffer();
+        function drawScreen() {
+          const v = M._emu_framebuffer_version();
+          if (v !== lastVersion) {
+            lastVersion = v;
+            const fb = new Uint16Array(M.HEAPU16.buffer, fbPtr, 320 * 240);
+            const d = img.data;
+            for (let i = 0; i < fb.length; i++) {
+              const c = fb[i];
+              d[i * 4] = ((c >> 11) & 31) * 255 / 31;
+              d[i * 4 + 1] = ((c >> 5) & 63) * 255 / 63;
+              d[i * 4 + 2] = (c & 31) * 255 / 31;
+              d[i * 4 + 3] = 255;
+            }
+            sctx.putImageData(img, 0, 0);
+          }
+        }
+        const toScreen = (e) => {
+          const r = screen.getBoundingClientRect();
+          return [Math.round(((e.clientX - r.left) / r.width) * 320), Math.round(((e.clientY - r.top) / r.height) * 240)];
+        };
+        screen.addEventListener('pointerdown', (e) => { screen.setPointerCapture(e.pointerId); const [x, y] = toScreen(e); M._emu_touch(1, x, y); });
+        screen.addEventListener('pointerup', () => M._emu_touch(0, 0, 0));
+        screen.addEventListener('pointercancel', () => M._emu_touch(0, 0, 0));
+
+        // Seriële invoer
+        const sendText = (t) => { const n = M.lengthBytesUTF8(t) + 1; const p = M._malloc(n); M.stringToUTF8(t, p, n); M._emu_serial_in(p); M._free(p); };
+        // Voor automatische tests: tekst naar de seriële poort sturen.
+        window.emuSend = sendText;
+        window.emuSpeed = (v) => M._emu_set_speed(v);
+        document.getElementById('sendForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('cmd');
+          if (!input.value.trim()) return;
+          log('> ' + input.value.trim());
+          sendText(input.value.trim() + '\n');
+          input.value = '';
+        });
+
+        // SD-kaart
+        const sdNames = [];
+        const shortName = (n) => {
+          if (n.startsWith('._')) return ('_' + n.slice(2).replace(/\.[^.]*$/, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase()).slice(0, 6) + '~1.TXT';
+          const base = n.replace(/\.[^.]*$/, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8) || 'BESTAND';
+          return base + '.TXT';
+        };
+        const addSd = (name, bytes) => {
+          const sn = shortName(name);
+          const np = M._malloc(sn.length + 1); M.stringToUTF8(sn, np, sn.length + 1);
+          const dp = M._malloc(bytes.length); M.HEAPU8.set(bytes, dp);
+          M._emu_sd_add(np, dp, bytes.length);
+          M._free(np); M._free(dp);
+          if (!sdNames.includes(sn)) sdNames.push(sn);
+          document.getElementById('sdList').textContent = 'Op de kaart: ' + sdNames.join(', ') + '. Kies "DRAW FROM SD" op het scherm.';
+        };
+        document.getElementById('sdFile').addEventListener('change', async (e) => {
+          for (const f of e.target.files) addSd(f.name, new Uint8Array(await f.arrayBuffer()));
+          e.target.value = '';
+        });
+        document.getElementById('sdExample').addEventListener('click', () => {
+          // Een vierkant met een kruis, gemaakt zoals de nieuwe app het doet (start linksboven op A3, machine 1000 mm breed).
+          const enc = new TextEncoder();
+          const example = [
+            'C14,END', 'C24,1000,1500,END', 'C29,95,END', 'C30,200,END', 'C37,8,END', 'C09,908,1463,END', 'C14,END',
+            'C17,1000,1460,2,END', 'C13,END', 'C17,1150,1350,2,END', 'C17,1250,1480,2,END', 'C17,1100,1590,2,END', 'C17,1000,1460,2,END',
+            'C14,END', 'C17,1150,1350,2,END', 'C13,END', 'C51,2000,END', 'C17,1100,1590,2,END', 'C14,END', 'C17,908,1463,2,END',
+          ].join('\n') + '\n';
+          addSd('VOORBEELD.TXT', enc.encode(example));
+          addSd('._VOORBEELD.TXT', new Uint8Array([0, 5, 22, 7, 0, 2, 0, 0, 77, 97, 99]));
+        });
+
+        // Wat de machine tekent: motorposities volgen
+        const paper = document.getElementById('paper');
+        const pctx = paper.getContext('2d');
+        const mmPerStep = 95 / 200 / 8;
+        const toXY = (a, b) => {
+          const la = a * mmPerStep, lb = b * mmPerStep;
+          const x = (W * W - lb * lb + la * la) / (2 * W);
+          const y = Math.sqrt(Math.max(0, la * la - x * x));
+          return [x, y];
+        };
+        // Hele machine in beeld: motoren bovenaan, vloer onderaan.
+        const view = (p) => {
+          const scale = Math.min(paper.width / (W * 1.1), paper.height / (H * 1.05));
+          const ox = (paper.width - W * scale) / 2;
+          return [ox + p[0] * scale, 10 + p[1] * scale];
+        };
+        function drawFrame() {
+          const a = view([0, 0]), b = view([W, 0]), f = view([W, H]);
+          pctx.fillStyle = '#8a9a92';
+          for (const m of [a, b]) { pctx.beginPath(); pctx.arc(m[0], m[1], 5, 0, Math.PI * 2); pctx.fill(); }
+          pctx.strokeStyle = '#c9d0cb'; pctx.setLineDash([4, 4]); pctx.lineWidth = 1;
+          pctx.beginPath(); pctx.moveTo(a[0], f[1]); pctx.lineTo(f[0], f[1]); pctx.stroke(); pctx.setLineDash([]);
+        }
+        function track() {
+          const a = M._emu_motor_a(), b = M._emu_motor_b();
+          const down = M._emu_servo_angle() < 135;
+          document.getElementById('motors').textContent = `A ${a} · B ${b}`;
+          document.getElementById('pen').textContent = 'Pen: ' + (down ? 'omlaag' : 'omhoog');
+          const p = view(toXY(a, b));
+          if (last && (last[0] !== p[0] || last[1] !== p[1])) {
+            pctx.strokeStyle = down ? '#1d2124' : 'rgba(224,115,46,0.5)';
+            pctx.lineWidth = down ? 1.5 : 1;
+            pctx.setLineDash(down ? [] : [3, 3]);
+            pctx.beginPath(); pctx.moveTo(last[0], last[1]); pctx.lineTo(p[0], p[1]); pctx.stroke();
+          }
+          last = p;
+        }
+        document.getElementById('clearPaper').addEventListener('click', () => { pctx.clearRect(0, 0, paper.width, paper.height); drawFrame(); });
+        drawFrame();
+        document.getElementById('speed').addEventListener('change', (e) => M._emu_set_speed(Number(e.target.value)));
+
+        (function frame() { drawScreen(); track(); requestAnimationFrame(frame); })();
+      })();
+    </script>
+  </body>
+</html>
