@@ -13,8 +13,13 @@ Je hebt nodig: een computer, de USB-kabel van de machine, en het programma **avr
 brew install avrdude
 ```
 
-**Windows:** installeer de Arduino IDE; daarin zit avrdude. Of gebruik het programma XLoader
-(kies *Mega(ATMEGA2560)* en 115200 baud) en sla stap 3 over.
+**Windows:** installeer de Arduino IDE; daarin zit avrdude. Of download avrdude los van
+GitHub: `avrdudes/avrdude`, onder *Releases*, het Windows-zipbestand. (XLoader kan ook de
+nieuwe firmware schrijven, maar geen reservekopie maken.)
+
+Rode Mega-klonen gebruiken vaak een **CH340**-chip voor de USB-verbinding. Verschijnt de
+machine niet als COM-poort in Apparaatbeheer (of met een geel uitroepteken), installeer dan
+de CH340-driver. Vaak doet Windows Update dat vanzelf.
 
 ## 2. De poort van de machine vinden
 
@@ -26,6 +31,13 @@ ls /dev/cu.*
 
 De machine is meestal iets als `/dev/cu.usbmodem1411` of `/dev/cu.usbserial-A1234`.
 Gebruik die naam hieronder in plaats van `POORT`.
+
+Op **Windows**: open Apparaatbeheer → *Poorten (COM & LPT)*. De machine staat er als
+bijvoorbeeld `USB-SERIAL CH340 (COM3)`. Gebruik dan `COM3` als `POORT`. De commando's
+hieronder werken in de Opdrachtprompt of PowerShell precies hetzelfde.
+
+**Twee snelheden:** firmware lezen en schrijven gaat met **115200** baud (de bootloader);
+commando's sturen tijdens het tekenen gaat met **57600** baud.
 
 ## 3. Reservekopie maken (belangrijk!)
 

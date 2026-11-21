@@ -5,7 +5,7 @@ die we daarna kunnen vergelijken. Reken op een halve dag.
 
 ## Meenemen
 
-- [ ] Laptop (Mac) met internet
+- [ ] Laptop (Mac of Windows) met internet; of test thuis aan de Windows-pc
 - [ ] De USB-kabel van de machine
 - [ ] **SD-kaartlezer** voor de laptop, en het SD-kaartje van de machine
 - [ ] Rolmaat (voor de kalibratie) en een stalen liniaal of schuifmaat (voor het nameten)
@@ -15,7 +15,7 @@ die we daarna kunnen vergelijken. Reken op een halve dag.
 
 ## Vooraf thuis (10 minuten)
 
-1. Installeer **avrdude**: open Terminal en typ `brew install avrdude`.
+1. Installeer **avrdude**: op een Mac in Terminal `brew install avrdude`; op Windows via de Arduino IDE of het zipbestand van github.com/avrdudes/avrdude (zie `INSTALLEREN.md`).
    (Nog geen Homebrew? Zie https://brew.sh.)
 2. Download de repo als zip van GitHub, of zorg dat je hem kunt openen.
    Je hebt nodig: `firmware/polarshield-ab/polarshield-ab-1.4.3-ab2.hex` en
